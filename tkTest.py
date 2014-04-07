@@ -6,7 +6,6 @@ import PIL.Image
 import Tkinter as tk
 import ImageTk
 
-<<<<<<< HEAD
 
 # -> TKWindow
 # creates a new TKWindow, Does not display the window
@@ -52,21 +51,4 @@ def popWindow(window):
 
 if __name__ == "__main__":
 	popWindow(makeImageSlide("testslide1.jpg"))
-=======
-def closeWindow(event):
-	global root
-	root.quit()
 
-root=tk.Tk()
-w, h = root.winfo_screenwidth(), root.winfo_screenheight()
-root.overrideredirect(1)
-root.geometry("%dx%d+0+0" % (w, h))
-root.focus_set() # <-- move focus to this widget
-root.bind("<Key>", closeWindow)
-	
-i = ImageTk.PhotoImage(PIL.Image.open("test.jpg"))
-label = tk.Label(root, image=i)
-label.photo = i
-label.pack()
-root.mainloop()
->>>>>>> cb1b1b684aec234af6aeef81cc999f86e393987c
