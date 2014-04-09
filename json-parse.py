@@ -1,17 +1,20 @@
 #!/usr/bin/python
-# Need shebang when running from command-line
+
 
 # Dependencies:
 
 # cutycapt
 # python-pygame
-# xvfb 
+# xvfb
 
 
 # MISC. TODO
-# - "Better" logging (don't log everything as errors)
-# - Document dependencies and other documentation stuff
-# - Display timings and continuous execution (display for a bit, move on, repeat)
+# - "Better" logging (more detailed?)
+# - Document dependencies and other stuff
+# - Pull properties such as resolution and URL from a PIE config file
+
+# NOTE: PIE = Personal Information Endpoint
+# Use this from now on when referring to clients instead of "Pi".
 
 import json
 import urllib2
@@ -33,14 +36,10 @@ black = 0, 0, 0
 screen = pygame.display.set_mode(size)
 
 
-
-# Stupid test JSON (make sure this directory is on the test machine!)
-tempurl = "http://crewbie-01.crew.ccs.neu.edu/samplejson.txt"
-
 # Used to pull info from JSONs
 decoder = json.JSONDecoder()
 
-# Load Pi-specific properties from some sort of local config
+# Load PIE-specific properties from some sort of local config
 # (maybe get display resolution from that config)
 pID = 0
 
@@ -67,17 +66,16 @@ def json2Slides(json):
 # Screencap the site at the specified URL and save it as the specified file name
 def grabImage(url,name):
     global size
-    urlScreengrab(url, size[0], size[1], name)     
-#call(["sh","script.sh", url, name])
+    urlScreengrab(url, size[0], size[1], name)
 
-
+# grabImage helper with extra parameters (combine these two methods later)
 def urlScreengrab(url, width, height, imageName, **kwargs):
     cmd = '''xvfb-run --server-args "-screen 0, '''+str(width)+'''x'''+str(height)+'''x24" /usr/bin/cutycapt --url='''+url+''' --out='''+imageName+''' --min-width='''+str(width)+''' --min-height='''+str(height)
     print cmd
     proc = subprocess.Popen(shlex.split(cmd))
     proc.communicate()
 
-# Display the specified image using fbi
+# Display the specified image using pygame
 def dispImage(name):
     global size, black
     imagey = pygame.image.load(name)
@@ -97,7 +95,7 @@ def log(msg):
 class Slide:
     # URL where we can find this Slide's content
     location = None
-    # How long to display this Slide (in milliseconds)
+    # How long to display this Slide (in seconds)
     duration = None
        
     def __init__(self, l, d):
@@ -107,7 +105,7 @@ class Slide:
     def __str__(self):
         return self.location + ", " + str(self.duration)
 
-    # Displays this slide on the Pi
+    # Displays this slide on the PIE
     def display(self):
         global pID
         log("grabing image")
@@ -115,26 +113,20 @@ class Slide:
 	log("image retrieved")
 	dispImage("test.jpg")
 
-# Look, I don't know how you guys are doing this, but this code is how I got it to work nicely
+# MUST RUN AS SUDO TO WORK
 
-grabImage("http://pitcam.ccs.neu.edu", "test123.jpg")
-# Testing nonsense
+# Set jsonUrl to the location of the JSON data source
+jsonUrl = "http://10.0.0.61/wp-admin/admin-ajax.php?action=dds_api"
+
 while True:
-    print "grabbing"
-    print "displaying"
-    dispImage("test123.jpg")
-    grabImage("http://pitcam.ccs.neu.edu", "test123.jpg")
-    time.sleep(5)
-    print "finished"
-#slides = json2Slides(getProperties(tempurl))
-#slides[0].display()
+    log("Refreshing slides from jsonUrl")
+    slides = json2Slides(getProperties(jsonUrl))
+    for s in slides:
+        log("Grabbing slide at " + s.location)
+        grabImage(s.location, "currentSlide.png")
+        log("Displaying slide")
+        dispImage("currentSlide.png")
+        log("Waiting for next slide")
+        time.sleep(s.duration)
 
-
-# xvfb-run --server-args="-screen 0, 1280x1024x24" cutycapt --url=URL --out=FILENAME
-# fbi FILENAME
-# URL is the URL for the image in single quotes (don't forget to encode!)
-# FILENAME is the name of the image cutycapt outputs (which gets displayed by fbi)
-# do this with a bash script, i guess
-
-# Make sure clients have the urllib2 library installed!
 #!/bin/sh
