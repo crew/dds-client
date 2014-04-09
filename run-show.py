@@ -42,7 +42,7 @@ decoder = json.JSONDecoder()
 # Load PIE-specific properties from some sort of local config
 # (maybe get display resolution from that config)
 pID = 0
-
+pygame.mouse.set_visible(False)
 # Grabs the contents of the given URL in plain text
 def getProperties(url):
     try:
