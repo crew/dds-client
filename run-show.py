@@ -7,13 +7,15 @@
 # python-pygame
 # xvfb
 
-
 # MISC. TODO
 # - "Better" logging (more detailed?)
 # - Document dependencies and other stuff
 
 # NOTE: PIE = Public Information Endpoint
 # Use this from now on when referring to clients instead of "Pi".
+
+# MUST RUN AS SUDO TO WORK
+# Specify server location in PIEConfig.cfg
 
 import json
 import urllib2
@@ -24,24 +26,21 @@ from subprocess import call
 
 # Logging to syslog
 import syslog
-
 import ConfigParser
-
 import subprocess
 import shlex
+
 pygame.init()
 
 size = (pygame.display.Info().current_w, pygame.display.Info().current_h)
 black = 0, 0, 0
-
 screen = pygame.display.set_mode(size)
-
 
 # Enables reading of configuration settings in PIEConfig.cfg
 settings = ConfigParser.RawConfigParser()
 settings.read('PIEConfig.cfg')
 
-# Eventually find a way to use this in server requests
+# Plan to use this in future server requests.
 pID = settings.get('SlideRequests', 'name')
 
 # Hide mouse
@@ -69,27 +68,35 @@ def json2Slides(jsonString):
 	log("Error: Bad JSON")
 
 # Screencap the site at the specified URL and save it as the specified file name
-def grabImage(url,name):
+def grabImage(url, name):
     global size
     urlScreengrab(url, size[0], size[1], name)
 
 # grabImage helper with extra parameters (combine these two methods later)
 def urlScreengrab(url, width, height, imageName, **kwargs):
-    cmd = '''sudo xvfb-run -e /dev/stdout --server-args "-screen 0, '''+str(width)+'''x'''+str(height)+'''x24" /usr/bin/cutycapt --url='''+url+''' --out='''+imageName+''' --min-width='''+str(width)+''' --min-height='''+str(height)
-    print cmd
+    cmd = ('''sudo xvfb-run -e /dev/stdout --server-args "-screen 0, ''' + 
+    	str(width) + 
+    	'''x''' + 
+    	str(height) + 
+    	'''x24" /usr/bin/cutycapt --url=''' + 
+    	url +
+    	''' --out=''' +
+    	imageName +
+    	''' --min-width=''' +
+    	str(width) + 
+    	''' --min-height=''' +
+    	str(height))
     proc = subprocess.Popen(shlex.split(cmd))
     proc.communicate()
 
 # Display the specified image using pygame
 def dispImage(name):
     global size, black
-    imagey = pygame.image.load(name)
-    #imagey = pygame.transform.scale(imagey,(size[0],size[1]))
-    imageyrect = imagey.get_rect()
+    img = pygame.image.load(name)
+    imgrect = img.get_rect()
     screen.fill(black)
-    screen.blit(imagey, imageyrect)
+    screen.blit(img, imgrect)
     pygame.display.flip()
-    #call(["fbi",name])
 
 # Save messages to syslog
 def log(msg):
@@ -114,12 +121,11 @@ class Slide:
     def display(self):
         global pID
         log("grabing image")
+
 	grabImage(self.location, "test.jpg")
 	log("image retrieved")
 	dispImage("test.jpg")
 
-# MUST RUN AS SUDO TO WORK
-# Specify server location in PIEConfig.cfg
 
 runLoop = True
 while runLoop:
