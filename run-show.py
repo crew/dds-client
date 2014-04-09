@@ -26,6 +26,7 @@ from subprocess import call
 
 # Logging to syslog
 import syslog
+
 import ConfigParser
 import subprocess
 import shlex
@@ -125,7 +126,6 @@ class Slide:
 	grabImage(self.location, "test.jpg")
 	log("image retrieved")
 	dispImage("test.jpg")
-
 
 runLoop = True
 while runLoop:
