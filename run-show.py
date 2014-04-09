@@ -11,9 +11,8 @@
 # MISC. TODO
 # - "Better" logging (more detailed?)
 # - Document dependencies and other stuff
-# - Pull properties such as resolution and URL from a PIE config file
 
-# NOTE: PIE = Personal Information Endpoint
+# NOTE: PIE = Public Information Endpoint
 # Use this from now on when referring to clients instead of "Pi".
 
 import json
@@ -26,6 +25,8 @@ from subprocess import call
 # Logging to syslog
 import syslog
 
+import ConfigParser
+
 import subprocess
 import shlex
 pygame.init()
@@ -36,26 +37,30 @@ black = 0, 0, 0
 screen = pygame.display.set_mode(size)
 
 
-# Used to pull info from JSONs
-decoder = json.JSONDecoder()
+# Enables reading of configuration settings in PIEConfig.cfg
+settings = ConfigParser.RawConfigParser()
+settings.read('PIEConfig.cfg')
 
-# Load PIE-specific properties from some sort of local config
-# (maybe get display resolution from that config)
-pID = 0
+# Eventually find a way to use this in server requests
+pID = settings.get('SlideRequests', 'name')
+
+# Hide mouse
 pygame.mouse.set_visible(False)
-# Grabs the contents of the given URL in plain text
-def getProperties(url):
+
+# Grabs the slide properties JSON from the server in PIEConfig.cfg using dds_api
+def getProperties():
     try:
+        url = str(settings.get('SlideRequests', 'server')) + "/wp-admin/admin-ajax.php?action=dds_api"
         return str(urllib2.urlopen(url).read().decode("utf-8"))
     except:
         log("Error: Bad URL")
 
 # Produce a list of Slides from a JSON string
-def json2Slides(json):
+def json2Slides(jsonString):
     try:
-        print(json)
+        decoder = json.JSONDecoder()
     	slides = []
-    	obj = decoder.decode(json)
+    	obj = decoder.decode(jsonString)
     	list = obj['actions']
     	for item in list:
             slides.append(Slide(item['location'], item['duration']))
@@ -114,14 +119,12 @@ class Slide:
 	dispImage("test.jpg")
 
 # MUST RUN AS SUDO TO WORK
-
-# Set jsonUrl to the location of the JSON data source
-jsonUrl = "http://10.0.0.61/wp-admin/admin-ajax.php?action=dds_api"
+# Specify server location in PIEConfig.cfg
 
 runLoop = True
 while runLoop:
-    log("Refreshing slides from jsonUrl")
-    slides = json2Slides(getProperties(jsonUrl))
+    log("Refreshing slides from " + settings.get('SlideRequests', 'server'))
+    slides = json2Slides(getProperties())
     for s in slides:
         log("Grabbing slide at " + s.location)
         grabImage(s.location, "currentSlide.png")
@@ -136,4 +139,3 @@ while runLoop:
 		if event.type == pygame.KEYUP and event.key == pygame.K_c:
 			runLoop = False
 			pygame.display.quit()
-#!/bin/sh
