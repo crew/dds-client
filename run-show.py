@@ -50,7 +50,7 @@ pygame.mouse.set_visible(False)
 # Grabs the slide properties JSON from the server in PIEConfig.cfg using dds_api
 def getProperties():
     try:
-        url = str(settings.get('SlideRequests', 'server')) + "/wp-admin/admin-ajax.php?action=dds_api"
+        url = str(settings.get('SlideRequests', 'server')) + "/wp-admin/admin-ajax.php?action=dds_api&pie=" + str(pieID)
         return str(urllib2.urlopen(url).read().decode("utf-8"))
     except:
         log("Error: Bad URL")
