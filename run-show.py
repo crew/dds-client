@@ -50,7 +50,8 @@ pygame.mouse.set_visible(False)
 # Grabs the slide properties JSON from the server in PIEConfig.cfg using dds_api
 def getProperties():
     try:
-        url = str(settings.get('SlideRequests', 'server')) + "/wp-admin/admin-ajax.php?action=dds_api&pie_name=" + str(pieID)
+	global pID
+        url = str(settings.get('SlideRequests', 'server')) + "/wp-admin/admin-ajax.php?action=dds_api&pie_name=" + str(pID)
         return str(urllib2.urlopen(url).read().decode("utf-8"))
     except:
         log("Error: Bad URL")
@@ -66,7 +67,7 @@ def json2Slides(jsonString):
             slides.append(Slide(item['location'], item['duration']))
     	return slides
     except:
-	log("Error: Bad JSON")
+	log("Error: Bad JSON "+jsonString)
 
 # Screencap the site at the specified URL and save it as the specified file name
 def grabImage(url, name):
