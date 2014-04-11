@@ -31,21 +31,40 @@ import ConfigParser
 import subprocess
 import shlex
 
-pygame.init()
+def main():
+    pygame.init()
+    size = (pygame.display.Info().current_w, pygame.display.Info().current_h)
+    black = 0, 0, 0
+    screen = pygame.display.set_mode(size)
 
-size = (pygame.display.Info().current_w, pygame.display.Info().current_h)
-black = 0, 0, 0
-screen = pygame.display.set_mode(size)
+    # Enables reading of configuration settings in PIEConfig.cfg
+    settings = ConfigParser.RawConfigParser()
+    settings.read('PIEConfig.cfg')
 
-# Enables reading of configuration settings in PIEConfig.cfg
-settings = ConfigParser.RawConfigParser()
-settings.read('PIEConfig.cfg')
+    # Plan to use this in future server requests.
+    pID = settings.get('SlideRequests', 'name')
 
-# Plan to use this in future server requests.
-pID = settings.get('SlideRequests', 'name')
+    # Hide mouse
+    pygame.mouse.set_visible(False)
 
-# Hide mouse
-pygame.mouse.set_visible(False)
+    runLoop = True
+    while runLoop:
+        log("Refreshing slides from " + settings.get('SlideRequests', 'server'))
+        slides = json2Slides(getProperties())
+        for s in slides:
+            log("Grabbing slide at " + s.location)
+            grabImage(s.location, "currentSlide.png")
+            log("Displaying slide")
+            dispImage("currentSlide.png")
+            log("Waiting for next slide")
+            time.sleep(s.duration)
+      for event in pygame.event.get():
+              if event.type == pygame.KEYDOWN and event.key == pygame.K_c:
+          runLoop = False
+          pygame.display.quit()
+        if event.type == pygame.KEYUP and event.key == pygame.K_c:
+          runLoop = False
+          pygame.display.quit()
 
 # Grabs the slide properties JSON from the server in PIEConfig.cfg using dds_api
 def getProperties():
@@ -75,16 +94,16 @@ def grabImage(url, name):
 
 # grabImage helper with extra parameters (combine these two methods later)
 def urlScreengrab(url, width, height, imageName, **kwargs):
-    cmd = ('''sudo xvfb-run -e /dev/stdout --server-args "-screen 0, ''' + 
-    	str(width) + 
-    	'''x''' + 
-    	str(height) + 
-    	'''x24" /usr/bin/cutycapt --url=''' + 
+    cmd = ('''sudo xvfb-run -e /dev/stdout --server-args "-screen 0, ''' +
+    	str(width) +
+    	'''x''' +
+    	str(height) +
+    	'''x24" /usr/bin/cutycapt --url=''' +
     	url +
     	''' --out=''' +
     	imageName +
     	''' --min-width=''' +
-    	str(width) + 
+    	str(width) +
     	''' --min-height=''' +
     	str(height))
     proc = subprocess.Popen(shlex.split(cmd))
@@ -110,7 +129,7 @@ class Slide:
     location = None
     # How long to display this Slide (in seconds)
     duration = None
-       
+
     def __init__(self, l, d):
         self.location = l
         self.duration = d
@@ -122,26 +141,9 @@ class Slide:
     def display(self):
         global pID
         log("grabing image")
+      	grabImage(self.location, "test.jpg")
+      	log("image retrieved")
+      	dispImage("test.jpg")
 
-	grabImage(self.location, "test.jpg")
-	log("image retrieved")
-	dispImage("test.jpg")
-
-runLoop = True
-while runLoop:
-    log("Refreshing slides from " + settings.get('SlideRequests', 'server'))
-    slides = json2Slides(getProperties())
-    for s in slides:
-        log("Grabbing slide at " + s.location)
-        grabImage(s.location, "currentSlide.png")
-        log("Displaying slide")
-        dispImage("currentSlide.png")
-        log("Waiting for next slide")
-        time.sleep(s.duration)
-	for event in pygame.event.get():
-        	if event.type == pygame.KEYDOWN and event.key == pygame.K_c:
-			runLoop = False
-			pygame.display.quit()
-		if event.type == pygame.KEYUP and event.key == pygame.K_c:
-			runLoop = False
-			pygame.display.quit()
+if __name__ == "__main__":
+    main()
