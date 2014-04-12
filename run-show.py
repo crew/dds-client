@@ -51,7 +51,8 @@ pygame.mouse.set_visible(False)
 def getProperties():
     try:
 	global pID
-        url = str(settings.get('SlideRequests', 'server')) + "/wp-admin/admin-ajax.php?action=dds_api&pie_name="+pID
+        url = str(settings.get('SlideRequests', 'server')) + "/wp-admin/admin-ajax.php?action=dds_api&pie_name=" + str(pID)
+        print(url)
         return str(urllib2.urlopen(url).read().decode("utf-8"))
     except:
         log("Error: Bad URL")
