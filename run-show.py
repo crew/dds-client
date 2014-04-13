@@ -73,7 +73,7 @@ def main():
 # Grabs the slide properties JSON from the server in PIEConfig.cfg using dds_api
 def getProperties(settings, pID):
     try:
-        url = str(settings.get('SlideRequests', 'server')) + "/wp-admin/admin-ajax.php?action=dds_api&pie_name=" + str(pID)
+        url = "http://" + str(settings.get('SlideRequests', 'server')) + "/wp-admin/admin-ajax.php?action=dds_api&pie_name=" + str(pID)
         print("!!!url=")
         print(url)
         print(str(urllib2.urlopen(url).read().decode("utf-8")))
