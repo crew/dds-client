@@ -50,31 +50,35 @@ def main():
     runLoop = True
     while runLoop:
         log("Refreshing slides from " + settings.get('SlideRequests', 'server'))
-        slides = json2Slides(getProperties())
+        print(settings.get('SlideRequests', 'server'))
+        props = getProperties()
+        print("-url=" + str(props))
+        slides = json2Slides(props)
         for s in slides:
             log("Grabbing slide at " + s.location)
-            grabImage(s.location, "currentSlide.png")
+            grabImage(s.location, "currentSlide.png", size)
             log("Displaying slide")
-            dispImage("currentSlide.png")
+            dispImage("currentSlide.png", screen, size, black)
             log("Waiting for next slide")
             time.sleep(s.duration)
-      for event in pygame.event.get():
-              if event.type == pygame.KEYDOWN and event.key == pygame.K_c:
-          runLoop = False
-          pygame.display.quit()
-        if event.type == pygame.KEYUP and event.key == pygame.K_c:
-          runLoop = False
-          pygame.display.quit()
+        for event in pygame.event.get():
+            if event.type == pygame.KEYDOWN and event.key == pygame.K_c:
+                runLoop = False
+                pygame.display.quit()
+            if event.type == pygame.KEYUP and event.key == pygame.K_c:
+                runLoop = False
+                pygame.display.quit()
 
 # Grabs the slide properties JSON from the server in PIEConfig.cfg using dds_api
 def getProperties():
     try:
 	global pID
-        url = str(settings.get('SlideRequests', 'server')) + "/wp-admin/admin-ajax.php?action=dds_api&pie_name=" + str(pID)
-<<<<<<< HEAD
+        #print(settings.get('SlideRequests', 'server'))
+        url = "http://10.0.0.61/wp-admin/admin-ajax.php?action=dds_api&pie_name=key_lime"
+        #url = str(settings.get('SlideRequests', 'server')) + "/wp-admin/admin-ajax.php?action=dds_api&pie_name=" + str(pID)
+        print("!!!url=")
         print(url)
-=======
->>>>>>> e89cfc62f351d7e88fd88b26c043f0a8a1186d79
+        print(str(urllib2.urlopen(url).read().decode("utf-8")))
         return str(urllib2.urlopen(url).read().decode("utf-8"))
     except:
         log("Error: Bad URL")
@@ -93,8 +97,8 @@ def json2Slides(jsonString):
 	log("Error: Bad JSON "+jsonString)
 
 # Screencap the site at the specified URL and save it as the specified file name
-def grabImage(url, name):
-    global size
+def grabImage(url, name, size):
+    #global size
     urlScreengrab(url, size[0], size[1], name)
 
 # grabImage helper with extra parameters (combine these two methods later)
@@ -115,8 +119,8 @@ def urlScreengrab(url, width, height, imageName, **kwargs):
     proc.communicate()
 
 # Display the specified image using pygame
-def dispImage(name):
-    global size, black
+def dispImage(name, screen, size, black):
+    #global size, black
     img = pygame.image.load(name)
     imgrect = img.get_rect()
     screen.fill(black)
