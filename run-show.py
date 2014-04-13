@@ -32,7 +32,9 @@ import subprocess
 import shlex
 
 def main():
+    #initialize graphics
     pygame.init()
+    pygame.mouse.set_visible(False)
     size = (pygame.display.Info().current_w, pygame.display.Info().current_h)
     black = 0, 0, 0
     screen = pygame.display.set_mode(size)
@@ -44,14 +46,13 @@ def main():
     # Plan to use this in future server requests.
     pID = settings.get('SlideRequests', 'name')
 
-    # Hide mouse
-    pygame.mouse.set_visible(False)
+
 
     runLoop = True
     while runLoop:
         log("Refreshing slides from " + settings.get('SlideRequests', 'server'))
         print(settings.get('SlideRequests', 'server'))
-        props = getProperties()
+        props = getProperties(pID)
         print("-url=" + str(props))
         slides = json2Slides(props)
         for s in slides:
@@ -70,12 +71,9 @@ def main():
                 pygame.display.quit()
 
 # Grabs the slide properties JSON from the server in PIEConfig.cfg using dds_api
-def getProperties():
+def getProperties(pID):
     try:
-	global pID
-        #print(settings.get('SlideRequests', 'server'))
-        url = "http://10.0.0.61/wp-admin/admin-ajax.php?action=dds_api&pie_name=key_lime"
-        #url = str(settings.get('SlideRequests', 'server')) + "/wp-admin/admin-ajax.php?action=dds_api&pie_name=" + str(pID)
+        url = str(settings.get('SlideRequests', 'server')) + "/wp-admin/admin-ajax.php?action=dds_api&pie_name=" + str(pID)
         print("!!!url=")
         print(url)
         print(str(urllib2.urlopen(url).read().decode("utf-8")))
