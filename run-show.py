@@ -101,8 +101,8 @@ def getProperties(settings, pID):
 def json2Slides(jsonString):
     try:
         decoder = json.JSONDecoder()
-        lides = []
-        bj = decoder.decode(jsonString)
+        slides = []
+        obj = decoder.decode(jsonString)
         list = obj['actions']
         for item in list:
             slides.append(Slide(item['location'], item['duration']))
