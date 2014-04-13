@@ -52,7 +52,7 @@ def main():
     while runLoop:
         log("Refreshing slides from " + settings.get('SlideRequests', 'server'))
         print(settings.get('SlideRequests', 'server'))
-        props = getProperties(pID)
+        props = getProperties(settings, pID)
         print("-url=" + str(props))
         slides = json2Slides(props)
         for s in slides:
@@ -71,7 +71,7 @@ def main():
                 pygame.display.quit()
 
 # Grabs the slide properties JSON from the server in PIEConfig.cfg using dds_api
-def getProperties(pID):
+def getProperties(settings, pID):
     try:
         url = str(settings.get('SlideRequests', 'server')) + "/wp-admin/admin-ajax.php?action=dds_api&pie_name=" + str(pID)
         print("!!!url=")
