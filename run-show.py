@@ -32,7 +32,7 @@ import subprocess
 import shlex
 
 def main():
-    #initialize graphics
+    # initialize graphics
     pygame.init()
     pygame.mouse.set_visible(False)
     size = (pygame.display.Info().current_w, pygame.display.Info().current_h)
@@ -45,9 +45,15 @@ def main():
 
     # Plan to use this in future server requests.
     pID = settings.get('SlideRequests', 'name')
-
-
-
+    
+    # temporary get before loop
+    log("Getting initial slides from " + settings.get('SlideRequests', 'server'))
+    props = getProperties(settings, pID)
+    slides = json2Slides(props)
+    # render first slide in the loop before we start
+    grabImage(slides[0].location, "slide_0.png", size)
+    
+    
     runLoop = True
     while runLoop:
         log("Refreshing slides from " + settings.get('SlideRequests', 'server'))
@@ -55,13 +61,23 @@ def main():
         props = getProperties(settings, pID)
         print("-url=" + str(props))
         slides = json2Slides(props)
-        for s in slides:
-            log("Grabbing slide at " + s.location)
-            grabImage(s.location, "currentSlide.png", size)
+        
+        
+        
+        for i in range(0, len(slides)):
+            indexNextSlide = (i + 1) % len(slides)
+            s = slides[indexNextSlide]
             log("Displaying slide")
-            dispImage("currentSlide.png", screen, size, black)
+            dispImage("slide_" + str(i) + ".png", screen, size, black)
+            timeStartedRendering = time.time()
+            log("Grabbing slide at " + s.location)
+            grabImage(s.location, "slide_" + str(indexNextSlide) + ".png", size)
+            
             log("Waiting for next slide")
-            time.sleep(s.duration)
+            timeItTookToRenderSlide = timeStartedRendering - time.time()
+            timeToSleep = s.duration - timeItTookToRenderSlide
+            if timeToSleep > 0:
+                time.sleep(timeToSleep)
         for event in pygame.event.get():
             if event.type == pygame.KEYDOWN and event.key == pygame.K_c:
                 runLoop = False
@@ -92,33 +108,30 @@ def json2Slides(jsonString):
             slides.append(Slide(item['location'], item['duration']))
     	return slides
     except:
-	log("Error: Bad JSON "+jsonString)
+	log("Error: Bad JSON " + jsonString)
 
 # Screencap the site at the specified URL and save it as the specified file name
 def grabImage(url, name, size):
-    #global size
-    urlScreengrab(url, size[0], size[1], name)
-
-# grabImage helper with extra parameters (combine these two methods later)
-def urlScreengrab(url, width, height, imageName, **kwargs):
-    cmd = ('''sudo xvfb-run -e /dev/stdout --server-args "-screen 0, ''' +
-    	str(width) +
-    	'''x''' +
-    	str(height) +
-    	'''x24" /usr/bin/cutycapt --url=''' +
-    	url +
-    	''' --out=''' +
-    	imageName +
-    	''' --min-width=''' +
-    	str(width) +
-    	''' --min-height=''' +
-    	str(height))
+    width = size[0]
+    height = size[1]
+    cmd = ('''sudo xvfb-run -e /dev/stdout --server-args "-screen 0, ''' + 
+        str(width) + 
+        '''x''' + 
+        str(height) + 
+        '''x24" /usr/bin/cutycapt --url=''' + 
+        url + 
+        ''' --out=''' + 
+        name + 
+        ''' --min-width=''' + 
+        str(width) + 
+        ''' --min-height=''' + 
+        str(height))
     proc = subprocess.Popen(shlex.split(cmd))
     proc.communicate()
 
 # Display the specified image using pygame
 def dispImage(name, screen, size, black):
-    #global size, black
+    # global size, black
     img = pygame.image.load(name)
     imgrect = img.get_rect()
     screen.fill(black)
