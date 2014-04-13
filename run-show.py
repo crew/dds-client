@@ -101,14 +101,14 @@ def getProperties(settings, pID):
 def json2Slides(jsonString):
     try:
         decoder = json.JSONDecoder()
-    	slides = []
-    	obj = decoder.decode(jsonString)
-    	list = obj['actions']
-    	for item in list:
+        lides = []
+        bj = decoder.decode(jsonString)
+        list = obj['actions']
+        for item in list:
             slides.append(Slide(item['location'], item['duration']))
-    	return slides
+            return slides
     except:
-	log("Error: Bad JSON " + jsonString)
+        log("Error: Bad JSON " + jsonString)
 
 # Screencap the site at the specified URL and save it as the specified file name
 def grabImage(url, name, size):
@@ -161,9 +161,9 @@ class Slide:
     def display(self):
         global pID
         log("grabing image")
-      	grabImage(self.location, "test.jpg")
-      	log("image retrieved")
-      	dispImage("test.jpg")
+        grabImage(self.location, "test.jpg")
+        log("image retrieved")
+        dispImage("test.jpg")
 
 if __name__ == "__main__":
     main()
