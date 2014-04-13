@@ -7,15 +7,9 @@
 # python-pygame
 # xvfb
 
-# MISC. TODO
-# - "Better" logging (more detailed?)
-# - Document dependencies and other stuff
-
-# NOTE: PIE = Public Information Endpoint
-# Use this from now on when referring to clients instead of "Pi".
-
 # MUST RUN AS SUDO TO WORK
-# Specify server location in PIEConfig.cfg
+
+# Specify server location and PIE name in PIEConfig.cfg
 
 import json
 import urllib2
@@ -31,6 +25,9 @@ import ConfigParser
 import subprocess
 import shlex
 
+settings = ConfigParser.RawConfigParser()
+settings.read('PIEConfig.cfg')
+
 def main():
     # initialize graphics
     pygame.init()
@@ -39,31 +36,17 @@ def main():
     black = 0, 0, 0
     screen = pygame.display.set_mode(size)
 
-    # Enables reading of configuration settings in PIEConfig.cfg
-    settings = ConfigParser.RawConfigParser()
-    settings.read('PIEConfig.cfg')
-
-    # Plan to use this in future server requests.
-    pID = settings.get('SlideRequests', 'name')
-    
     # temporary get before loop
     log("Getting initial slides from " + settings.get('SlideRequests', 'server'))
-    props = getProperties(settings, pID)
-    slides = json2Slides(props)
+    slides = getSlides()
     # render first slide in the loop before we start
     grabImage(slides[0].location, "slide_0.png", size)
-    
     
     runLoop = True
     while runLoop:
         log("Refreshing slides from " + settings.get('SlideRequests', 'server'))
         print(settings.get('SlideRequests', 'server'))
-        props = getProperties(settings, pID)
-        print("-url=" + str(props))
-        slides = json2Slides(props)
-        
-        
-        
+        slides = getSlides()
         for i in range(0, len(slides)):
             indexNextSlide = (i + 1) % len(slides)
             s = slides[indexNextSlide]
@@ -86,29 +69,23 @@ def main():
                 runLoop = False
                 pygame.display.quit()
 
-# Grabs the slide properties JSON from the server in PIEConfig.cfg using dds_api
-def getProperties(settings, pID):
+# Get the list of Slides that need to be displayed from the server in PIEConfig.cfg
+def getSlides():
+    global settings
     try:
-        url = "http://" + str(settings.get('SlideRequests', 'server')) + "/wp-admin/admin-ajax.php?action=dds_api&pie_name=" + str(pID)
-        print("!!!url=")
-        print(url)
-        print(str(urllib2.urlopen(url).read().decode("utf-8")))
-        return str(urllib2.urlopen(url).read().decode("utf-8"))
-    except:
-        log("Error: Bad URL")
-
-# Produce a list of Slides from a JSON string
-def json2Slides(jsonString):
-    try:
+        url = "http://" + str(settings.get('SlideRequests', 'server')) + "/wp-admin/admin-ajax.php?action=dds_api&pie_name=" + str(settings.get('SlideRequests', 'name'))
+        jsonString = str(urllib2.urlopen(url).read().decode("utf-8"))
+        print jsonString
         decoder = json.JSONDecoder()
         slides = []
         obj = decoder.decode(jsonString)
         list = obj['actions']
+        print list
         for item in list:
             slides.append(Slide(item['location'], item['duration']))
-            return slides
+        return slides
     except:
-        log("Error: Bad JSON " + jsonString)
+        log("Error: Bad URL/JSON")
 
 # Screencap the site at the specified URL and save it as the specified file name
 def grabImage(url, name, size):
@@ -156,14 +133,6 @@ class Slide:
 
     def __str__(self):
         return self.location + ", " + str(self.duration)
-
-    # Displays this slide on the PIE
-    def display(self):
-        global pID
-        log("grabing image")
-        grabImage(self.location, "test.jpg")
-        log("image retrieved")
-        dispImage("test.jpg")
 
 if __name__ == "__main__":
     main()
