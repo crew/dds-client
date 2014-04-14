@@ -44,9 +44,11 @@ def main():
     
     runLoop = True
     while runLoop:
+        # Refreshes slides
         log("Refreshing slides from " + settings.get('SlideRequests', 'server'))
         print(settings.get('SlideRequests', 'server'))
         slides = getSlides()
+        # Displays slides
         for i in range(0, len(slides)):
             indexNextSlide = (i + 1) % len(slides)
             s = slides[indexNextSlide]
@@ -61,6 +63,7 @@ def main():
             timeToSleep = s.duration - timeItTookToRenderSlide
             if timeToSleep > 0:
                 time.sleep(timeToSleep)
+        # Allows shutdown
         for event in pygame.event.get():
             if event.type == pygame.KEYDOWN and event.key == pygame.K_c:
                 runLoop = False
@@ -87,7 +90,7 @@ def getSlides():
     except:
         log("Error: Bad URL/JSON")
 
-# Screencap the site at the specified URL and save it as the specified file name
+# Screencap the site at the specified URL and save it as the specified file name in the "queued" folder
 def grabImage(url, name, size):
     width = size[0]
     height = size[1]
@@ -98,7 +101,7 @@ def grabImage(url, name, size):
         '''x24" /usr/bin/cutycapt --url=''' + 
         url + 
         ''' --out=''' + 
-        name + 
+        'queued/' + name + 
         ''' --min-width=''' + 
         str(width) + 
         ''' --min-height=''' + 
@@ -106,10 +109,10 @@ def grabImage(url, name, size):
     proc = subprocess.Popen(shlex.split(cmd))
     proc.communicate()
 
-# Display the specified image using pygame
+# Display the specified image (located in the "queued" folder)  using pygame
 def dispImage(name, screen, size, black):
     # global size, black
-    img = pygame.image.load(name)
+    img = pygame.image.load('queued/' + name)
     imgrect = img.get_rect()
     screen.fill(black)
     screen.blit(img, imgrect)
