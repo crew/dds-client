@@ -36,17 +36,25 @@ def main():
     size = (pygame.display.Info().current_w, pygame.display.Info().current_h)
     black = 0, 0, 0
     screen = pygame.display.set_mode(size)
-    
+
+    dispText("DDS: Initializing...", screen)
+    time.sleep(3)
+
     # Make "queued" directory for slides if it does not exist
+    dispText("DDS: Checking for queue directory...", screen)
     if not os.path.exists("queued"):
+        dispText("DDS: Creating queue directory...", screen)
         os.makedirs("queued")
     
     # temporary get before loop
+    dispText("DDS: Getting slides from server...", screen)
     log("Getting initial slides from " + settings.get('SlideRequests', 'server'))
     slides = getSlides()
     # render first slide in the loop before we start
+    dispText("DDS: Rendering first slide...", screen)
     grabImage(slides[0].location, "slide_0.png", size)
     
+    dispText("DDS: Displaying...", screen)
     runLoop = True
     while runLoop:
         # Refreshes slides
@@ -76,6 +84,20 @@ def main():
             if event.type == pygame.KEYUP and event.key == pygame.K_c:
                 runLoop = False
                 pygame.display.quit()
+
+# Display the given text in the center of the given screen
+def dispText(string, screen):
+    font = pygame.font.Font(None, 48)
+    text = font.render(string, 1, (250, 250, 250))
+    bg = pygame.Surface(screen.get_size())
+    bg = bg.convert()
+    bg.fill((0, 0, 0))
+    pos = text.get_rect()
+    pos.centerx = bg.get_rect().centerx
+    pos.centery = bg.get_rect().centery
+    screen.blit(bg, (0, 0))
+    screen.blit(text, pos)
+    pygame.display.flip()
 
 # Get the list of Slides that need to be displayed from the server in PIEConfig.cfg
 def getSlides():
