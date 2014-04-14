@@ -43,6 +43,7 @@ def main():
 
     if str(settings.get('SlideRequests', 'name')) == "default":
         dispText("DDS: PIE name not set. Please modify the config.", screen)
+        errImg("disconnect", screen)
         time.sleep(5)
 
     # Make "queued" directory for slides if it does not exist
@@ -102,6 +103,25 @@ def dispText(string, screen):
     pos.centery = bg.get_rect().centery
     screen.blit(bg, (0, 0))
     screen.blit(text, pos)
+    pygame.display.flip()
+
+def errText(string, screen):
+    font = pygame.font.Font(None, 48)
+    text = font.render(string, 1, (250, 250, 250))
+    bg = pygame.Surface(screen.get_size())
+    pos = text.get_rect()
+    pos.left = bg.get_rect().left
+    pos.bottom = bg.get_rect().bottom
+    screen.blit(text, pos)
+    pygame.display.flip()
+
+def errImg(error, screen):
+    img = pygame.image.load('error/' + error + ".png")
+    bg = pygame.Surface(screen.get_size())
+    pos = img.get_rect()
+    pos.left = bg.get_rect().left
+    pos.bottom = bg.get_rect().bottom
+    screen.blit(img, pos)
     pygame.display.flip()
 
 # Get the list of Slides that need to be displayed from the server in PIEConfig.cfg
