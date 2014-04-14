@@ -30,6 +30,7 @@ settings = ConfigParser.RawConfigParser()
 settings.read('PIEConfig.cfg')
 
 def main():
+    global settings
     # initialize graphics
     pygame.init()
     pygame.mouse.set_visible(False)
@@ -39,6 +40,10 @@ def main():
 
     dispText("DDS: Initializing...", screen)
     time.sleep(3)
+
+    if str(settings.get('SlideRequests', 'name')) == "default":
+        dispText("DDS: PIE name not set. Please modify the config.", screen)
+        time.sleep(5)
 
     # Make "queued" directory for slides if it does not exist
     dispText("DDS: Checking for queue directory...", screen)
