@@ -17,6 +17,7 @@ import pygame
 import sys
 import time
 from subprocess import call
+import os
 
 # Logging to syslog
 import syslog
@@ -35,7 +36,11 @@ def main():
     size = (pygame.display.Info().current_w, pygame.display.Info().current_h)
     black = 0, 0, 0
     screen = pygame.display.set_mode(size)
-
+    
+    # Make "queued" directory for slides if it does not exist
+    if not os.path.exists("queued"):
+        os.makedirs("queued")
+    
     # temporary get before loop
     log("Getting initial slides from " + settings.get('SlideRequests', 'server'))
     slides = getSlides()
