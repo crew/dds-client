@@ -43,7 +43,7 @@ def main():
 
     if str(settings.get('SlideRequests', 'name')) == "default":
         dispText("DDS: PIE name not set. Please modify the config.", screen)
-        errImg("disconnect", screen)
+        errImg("error", screen)
         time.sleep(5)
 
     # Make "queued" directory for slides if it does not exist
