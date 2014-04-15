@@ -18,6 +18,7 @@ import sys
 import time
 from subprocess import call
 import os
+import socket # for hostname
 
 # Logging to syslog
 import syslog
@@ -26,67 +27,85 @@ import ConfigParser
 import subprocess
 import shlex
 
+configFileName = 'PIEConfig.cfg'
+
 settings = ConfigParser.RawConfigParser()
-settings.read('PIEConfig.cfg')
+settings.read(configFileName)
+
 error = None
 
 def main():
     global settings
     global error
+    global slides
     # initialize graphics
     pygame.init()
     pygame.mouse.set_visible(False)
     size = (pygame.display.Info().current_w, pygame.display.Info().current_h)
     black = 0, 0, 0
     screen = pygame.display.set_mode(size)
-
-
-    dispText("DDS: Initializing...", screen)
-    time.sleep(3)
-
+    
+    displayCentered(getImage("icons/crew.png"), screen)
+    time.sleep(2)
+    
     if str(settings.get('SlideRequests', 'name')) == "default":
-        dispText("DDS: PIE name not set. Please modify the config.", screen)
+        hostname = socket.gethostname()
+        displayText("DDS: PIE name not set. Using hostname: " + hostname, screen)
+        settings.set('SlideRequests', 'name', hostname)
+        
+        # save configuration with hostname
+        configFile = open(configFileName, 'w')
+        settings.write(configFile)
+        configFile.close()
+        
+        # set display in error state
         error = "error"
-        errImg(screen)
-        time.sleep(5)
+        displayErrorImage(screen)
+        time.sleep(2)
+        # forget about error and continue
+        error = None
 
     # Make "queued" directory for slides if it does not exist
-    dispText("DDS: Checking for queue directory...", screen)
+    displayText("DDS: Checking for queue directory...", screen)
     if not os.path.exists("queued"):
-        dispText("DDS: Creating queue directory...", screen)
+        displayText("DDS: Creating queue directory...", screen)
         os.makedirs("queued")
     
     # temporary get before loop
-    dispText("DDS: Getting slides from server...", screen)
+    displayText("DDS: Getting slides from server...", screen)
     log("Getting initial slides from " + settings.get('SlideRequests', 'server'))
     slides = getSlides()
     # render first slide in the loop before we start
-    dispText("DDS: Rendering first slide...", screen)
-    grabImage(slides[0].location, "slide_0.png", size)
+    if not (slides is None) and (len(slides) > 0):
+        displayText("DDS: Rendering first slide...", screen)
+        renderPage(slides[0].location, "slide_0.png", size)
+    else:
+        slides = waitForSlides(slides, screen)
     
-    dispText("DDS: Displaying...", screen)
+    displayText("DDS: Displaying...", screen)
     runLoop = True
     while runLoop:
         # Refreshes slides
         log("Refreshing slides from " + settings.get('SlideRequests', 'server'))
-        # print(settings.get('SlideRequests', 'server'))
+        
         if testConnection():
-            slides = getSlides()            
+            slides = getSlides()
         # Displays slides
+        if (slides is None) or (len(slides) == 0):
+            print "thing"
+            slides = waitForSlides(slides, screen)
+            
         for i in range(0, len(slides)):
-            indexNextSlide = (i + 1) % len(slides)
-            s = slides[indexNextSlide]
+            
             log("Displaying slide")
-            dispImage("slide_" + str(i) + ".png", screen, size, black)
-            timeStartedRendering = time.time()
-            log("Grabbing slide at " + s.location)
-            if testConnection():
-                grabImage(s.location, "slide_" + str(indexNextSlide) + ".png", size)
-                log("Waiting for next slide")
-            timeItTookToRenderSlide = timeStartedRendering - time.time()
-            timeToSleep = s.duration - timeItTookToRenderSlide
+            displaySlide("slide_" + str(i) + ".png", screen, size, black)
+            
+            timeToSleep = renderNext(i, slides, size)
+            
             if timeToSleep > 0:
                 time.sleep(timeToSleep)
+            else:
+                log("Missed time budget by " + timeToSleep + " seconds")
         # Allows shutdown
         for event in pygame.event.get():
             if event.type == pygame.KEYDOWN and event.key == pygame.K_c:
@@ -95,42 +114,89 @@ def main():
             if event.type == pygame.KEYUP and event.key == pygame.K_c:
                 runLoop = False
                 pygame.display.quit()
+        
+def renderNext(index, slides, size):
+    timeStartedRendering = time.time()
+    indexNextSlide = (index + 1) % len(slides)
+    s = slides[indexNextSlide]
+    log("Grabbing slide at " + s.location)
+    if testConnection():
+        renderPage(s.location, "slide_" + str(indexNextSlide) + ".png", size)
+        
+    log("Waiting for next slide")
+    
+    timeItTookToRenderSlide = timeStartedRendering - time.time()
+    timeToSleep = s.duration - timeItTookToRenderSlide
+    return timeToSleep
+         
+def waitForSlides(slideList, screen):
+    while (slideList is None) or (len(slideList) == 0):
+        displayText("DDS: No slides assigned to hostname '" + 
+                 str(settings.get('SlideRequests', 'name')) + 
+                 "' on " +
+                 str(settings.get('SlideRequests', 'server')) , screen)
+        time.sleep(5)
+        slideList = getSlides() # try every 5 seconds to get the slides
+    return slideList
 
-# Display the given text in the center of the given screen
-def dispText(string, screen):
+def renderText(string):
     font = pygame.font.Font(None, 48)
     text = font.render(string, 1, (250, 250, 250))
+    return text
+
+def getImage(location):
+    return pygame.image.load(location)
+
+# Display the given text in the center of the given screen
+def displayText(string, screen):
+    displayCentered(renderText(string), screen)
+    
+def displayErrorText(string, screen):
+    displayBottomLeft(renderText(string), screen)
+    
+def displayBottomLeft(image, screen):
+    bg = pygame.Surface(screen.get_size())
+    pos = image.get_rect()
+    pos.left = bg.get_rect().left
+    pos.bottom = bg.get_rect().bottom
+    screen.blit(image, pos)
+    pygame.display.flip()
+    
+def displayCentered(image, screen):
     bg = pygame.Surface(screen.get_size())
     bg = bg.convert()
     bg.fill((0, 0, 0))
-    pos = text.get_rect()
+    pos = image.get_rect()
     pos.centerx = bg.get_rect().centerx
     pos.centery = bg.get_rect().centery
     screen.blit(bg, (0, 0))
-    screen.blit(text, pos)
+    screen.blit(image, pos)
     pygame.display.flip()
-    errImg(screen)
+    displayErrorImage(screen)
 
-def errText(string, screen):
-    font = pygame.font.Font(None, 48)
-    text = font.render(string, 1, (250, 250, 250))
-    bg = pygame.Surface(screen.get_size())
-    pos = text.get_rect()
-    pos.left = bg.get_rect().left
-    pos.bottom = bg.get_rect().bottom
-    screen.blit(text, pos)
-    pygame.display.flip()
-
-def errImg(screen):
+def displayErrorImage(screen):
     global error
     if error != None:
-        img = pygame.image.load('error/' + error + ".png")
+        img = getImage('icons/' + error + ".png")
         bg = pygame.Surface(screen.get_size())
         pos = img.get_rect()
         pos.left = bg.get_rect().left
         pos.bottom = bg.get_rect().bottom
         screen.blit(img, pos)
         pygame.display.flip()
+        
+def displaySlide(name, screen, size, black):
+    displayImage('queued/' + name, screen, size, black)
+
+# Display the specified image (located in the "queued" folder)  using pygame
+def displayImage(name, screen, size, black):
+    # global size, black
+    img = getImage(name)
+    imgrect = img.get_rect()
+    screen.fill(black)
+    screen.blit(img, imgrect)
+    pygame.display.flip()
+    displayErrorImage(screen) # renders on top of this
 
 def testConnection():
     global error
@@ -160,7 +226,7 @@ def getSlides():
         log("Error: Bad URL/JSON")
 
 # Screencap the site at the specified URL and save it as the specified file name in the "queued" folder
-def grabImage(url, name, size):
+def renderPage(url, name, size):
     width = size[0]
     height = size[1]
     cmd = ('''sudo xvfb-run -e /dev/stdout --server-args "-screen 0, ''' + 
@@ -178,20 +244,11 @@ def grabImage(url, name, size):
         ''' --zoom-factor=2''')
     proc = subprocess.Popen(shlex.split(cmd))
     proc.communicate()
-
-# Display the specified image (located in the "queued" folder)  using pygame
-def dispImage(name, screen, size, black):
-    # global size, black
-    img = pygame.image.load('queued/' + name)
-    imgrect = img.get_rect()
-    screen.fill(black)
-    screen.blit(img, imgrect)
-    pygame.display.flip()
-    errImg(screen)
-
+    
 # Save messages to syslog
 def log(msg):
-    msg = "PIE: " + msg
+    msg = "\t\t\t\tPIE: " + msg
+    print msg
     syslog.syslog(syslog.LOG_ERR, msg)
 
 # Represents content grabbed from the server that will be displayed onscreen
