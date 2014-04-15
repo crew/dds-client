@@ -174,7 +174,8 @@ def grabImage(url, name, size):
         ''' --min-width=''' + 
         str(width) + 
         ''' --min-height=''' + 
-        str(height))
+        str(height) +
+        ''' --zoom-factor=2''')
     proc = subprocess.Popen(shlex.split(cmd))
     proc.communicate()
 
