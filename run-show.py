@@ -44,7 +44,7 @@ def main():
     black = 0, 0, 0
     screen = pygame.display.set_mode(size)
     
-    displayCentered("icons/crew.png", screen)
+    displayCentered(getImage("icons/crew.png"), screen)
     time.sleep(2)
     
     if str(settings.get('SlideRequests', 'name')) == "default":
@@ -119,38 +119,47 @@ def main():
                 runLoop = False
                 pygame.display.quit()
 
-# Display the given text in the center of the given screen
-def displayText(string, screen):
+
+def renderText(string):
     font = pygame.font.Font(None, 48)
     text = font.render(string, 1, (250, 250, 250))
+    return text
+
+def getImage(location):
+    return pygame.image.load(name)
+
+# Display the given text in the center of the given screen
+def displayText(string, screen):
+    renderText(string)
     displayCentered(text, screen)
     
 def displayErrorText(string, screen):
-    font = pygame.font.Font(None, 48)
-    text = font.render(string, 1, (250, 250, 250))
+    displayBottomLeft(renderText(string), screen)
+    
+def displayBottomLeft(image, screen):
     bg = pygame.Surface(screen.get_size())
-    pos = text.get_rect()
+    pos = image.get_rect()
     pos.left = bg.get_rect().left
     pos.bottom = bg.get_rect().bottom
-    screen.blit(text, pos)
+    screen.blit(image, pos)
     pygame.display.flip()
     
-def displayCentered(text, screen):
+def displayCentered(image, screen):
     bg = pygame.Surface(screen.get_size())
     bg = bg.convert()
     bg.fill((0, 0, 0))
-    pos = text.get_rect()
+    pos = image.get_rect()
     pos.centerx = bg.get_rect().centerx
     pos.centery = bg.get_rect().centery
     screen.blit(bg, (0, 0))
-    screen.blit(text, pos)
+    screen.blit(image, pos)
     pygame.display.flip()
     displayErrorImage(screen)
 
 def displayErrorImage(screen):
     global error
     if error != None:
-        img = pygame.image.load('icons/' + error + ".png")
+        img = getImage('icons/' + error + ".png")
         bg = pygame.Surface(screen.get_size())
         pos = img.get_rect()
         pos.left = bg.get_rect().left
@@ -164,12 +173,12 @@ def displaySlide(name, screen, size, black):
 # Display the specified image (located in the "queued" folder)  using pygame
 def displayImage(name, screen, size, black):
     # global size, black
-    img = pygame.image.load(name)
+    img = getImage(name)
     imgrect = img.get_rect()
     screen.fill(black)
     screen.blit(img, imgrect)
     pygame.display.flip()
-    displayErrorImage(screen)
+    displayErrorImage(screen) # renders on top of this
 
 def testConnection():
     global error
