@@ -44,8 +44,9 @@ def main():
     black = 0, 0, 0
     screen = pygame.display.set_mode(size)
     
-    displayImage("icons/crew.png", screen, size, black)
-
+    displayCentered("icons/crew.png", screen)
+    time.sleep(2)
+    
     if str(settings.get('SlideRequests', 'name')) == "default":
         hostname = socket.gethostname()
         displayText("DDS: PIE name not set. Using hostname: " + hostname, screen)
@@ -59,7 +60,7 @@ def main():
         # set display in error state
         error = "error"
         displayErrorImage(screen)
-        time.sleep(5)
+        time.sleep(2)
         # forget about error and continue
         error = None
 
