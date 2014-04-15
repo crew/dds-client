@@ -122,6 +122,19 @@ def main():
 def displayText(string, screen):
     font = pygame.font.Font(None, 48)
     text = font.render(string, 1, (250, 250, 250))
+    displayCentered(text, screen)
+    
+def displayErrorText(string, screen):
+    font = pygame.font.Font(None, 48)
+    text = font.render(string, 1, (250, 250, 250))
+    bg = pygame.Surface(screen.get_size())
+    pos = text.get_rect()
+    pos.left = bg.get_rect().left
+    pos.bottom = bg.get_rect().bottom
+    screen.blit(text, pos)
+    pygame.display.flip()
+    
+def displayCentered(text, screen):
     bg = pygame.Surface(screen.get_size())
     bg = bg.convert()
     bg.fill((0, 0, 0))
@@ -133,16 +146,6 @@ def displayText(string, screen):
     pygame.display.flip()
     displayErrorImage(screen)
 
-def displayErrorText(string, screen):
-    font = pygame.font.Font(None, 48)
-    text = font.render(string, 1, (250, 250, 250))
-    bg = pygame.Surface(screen.get_size())
-    pos = text.get_rect()
-    pos.left = bg.get_rect().left
-    pos.bottom = bg.get_rect().bottom
-    screen.blit(text, pos)
-    pygame.display.flip()
-
 def displayErrorImage(screen):
     global error
     if error != None:
@@ -153,6 +156,19 @@ def displayErrorImage(screen):
         pos.bottom = bg.get_rect().bottom
         screen.blit(img, pos)
         pygame.display.flip()
+        
+def displaySlide(name, screen, size, black):
+    displayImage('queued/' + name, screen, size, black)
+
+# Display the specified image (located in the "queued" folder)  using pygame
+def displayImage(name, screen, size, black):
+    # global size, black
+    img = pygame.image.load(name)
+    imgrect = img.get_rect()
+    screen.fill(black)
+    screen.blit(img, imgrect)
+    pygame.display.flip()
+    displayErrorImage(screen)
 
 def testConnection():
     global error
@@ -200,21 +216,7 @@ def renderPage(url, name, size):
         ''' --zoom-factor=2''')
     proc = subprocess.Popen(shlex.split(cmd))
     proc.communicate()
-
-
-def displaySlide(name, screen, size, black):
-    displayImage('queued/' + name, screen, size, black)
-
-# Display the specified image (located in the "queued" folder)  using pygame
-def displayImage(name, screen, size, black):
-    # global size, black
-    img = pygame.image.load(name)
-    imgrect = img.get_rect()
-    screen.fill(black)
-    screen.blit(img, imgrect)
-    pygame.display.flip()
-    displayErrorImage(screen)
-
+    
 # Save messages to syslog
 def log(msg):
     msg = "PIE: " + msg
