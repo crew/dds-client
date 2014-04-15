@@ -130,8 +130,7 @@ def getImage(location):
 
 # Display the given text in the center of the given screen
 def displayText(string, screen):
-    renderText(string)
-    displayCentered(text, screen)
+    displayCentered(renderText(string), screen)
     
 def displayErrorText(string, screen):
     displayBottomLeft(renderText(string), screen)
