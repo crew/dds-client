@@ -28,9 +28,11 @@ import shlex
 
 settings = ConfigParser.RawConfigParser()
 settings.read('PIEConfig.cfg')
+error = None
 
 def main():
     global settings
+    global error
     # initialize graphics
     pygame.init()
     pygame.mouse.set_visible(False)
@@ -38,12 +40,14 @@ def main():
     black = 0, 0, 0
     screen = pygame.display.set_mode(size)
 
+
     dispText("DDS: Initializing...", screen)
     time.sleep(3)
 
     if str(settings.get('SlideRequests', 'name')) == "default":
         dispText("DDS: PIE name not set. Please modify the config.", screen)
-        errImg("error", screen)
+        error = "error"
+        errImg(screen)
         time.sleep(5)
 
     # Make "queued" directory for slides if it does not exist
@@ -65,8 +69,9 @@ def main():
     while runLoop:
         # Refreshes slides
         log("Refreshing slides from " + settings.get('SlideRequests', 'server'))
-        print(settings.get('SlideRequests', 'server'))
-        slides = getSlides()
+        # print(settings.get('SlideRequests', 'server'))
+        if testConnection():
+            slides = getSlides()            
         # Displays slides
         for i in range(0, len(slides)):
             indexNextSlide = (i + 1) % len(slides)
@@ -75,9 +80,9 @@ def main():
             dispImage("slide_" + str(i) + ".png", screen, size, black)
             timeStartedRendering = time.time()
             log("Grabbing slide at " + s.location)
-            grabImage(s.location, "slide_" + str(indexNextSlide) + ".png", size)
-            
-            log("Waiting for next slide")
+            if testConnection():
+                grabImage(s.location, "slide_" + str(indexNextSlide) + ".png", size)
+                log("Waiting for next slide")
             timeItTookToRenderSlide = timeStartedRendering - time.time()
             timeToSleep = s.duration - timeItTookToRenderSlide
             if timeToSleep > 0:
@@ -104,6 +109,7 @@ def dispText(string, screen):
     screen.blit(bg, (0, 0))
     screen.blit(text, pos)
     pygame.display.flip()
+    errImg(screen)
 
 def errText(string, screen):
     font = pygame.font.Font(None, 48)
@@ -115,15 +121,25 @@ def errText(string, screen):
     screen.blit(text, pos)
     pygame.display.flip()
 
-def errImg(error, screen):
-    img = pygame.image.load('error/' + error + ".png")
-    bg = pygame.Surface(screen.get_size())
-    pos = img.get_rect()
-    pos.left = bg.get_rect().left
-    pos.bottom = bg.get_rect().bottom
-    screen.blit(img, pos)
-    pygame.display.flip()
+def errImg(screen):
+    global error
+    if error != None:
+        img = pygame.image.load('error/' + error + ".png")
+        bg = pygame.Surface(screen.get_size())
+        pos = img.get_rect()
+        pos.left = bg.get_rect().left
+        pos.bottom = bg.get_rect().bottom
+        screen.blit(img, pos)
+        pygame.display.flip()
 
+def testConnection():
+    global error
+    response = os.system("ping -c 1 " + str(settings.get('SlideRequests', 'server')))
+    if response == 0:
+        return True
+    else:
+        error = "discconect"
+        return False
 # Get the list of Slides that need to be displayed from the server in PIEConfig.cfg
 def getSlides():
     global settings
@@ -169,6 +185,7 @@ def dispImage(name, screen, size, black):
     screen.fill(black)
     screen.blit(img, imgrect)
     pygame.display.flip()
+    errImg(screen)
 
 # Save messages to syslog
 def log(msg):
