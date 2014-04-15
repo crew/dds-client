@@ -37,6 +37,7 @@ error = None
 def main():
     global settings
     global error
+    global slides
     # initialize graphics
     pygame.init()
     pygame.mouse.set_visible(False)
@@ -75,17 +76,11 @@ def main():
     log("Getting initial slides from " + settings.get('SlideRequests', 'server'))
     slides = getSlides()
     # render first slide in the loop before we start
-    if not (slides is None):
+    if not (slides is None) and (len(slides) > 0):
         displayText("DDS: Rendering first slide...", screen)
         renderPage(slides[0].location, "slide_0.png", size)
     else:
-        while (slides is None):
-            displayText("DDS: No slides assigned to hostname '" + 
-                     str(settings.get('SlideRequests', 'name')) + 
-                     "' on " +
-                     str(settings.get('SlideRequests', 'server')) , screen)
-            time.sleep(5)
-            slides = getSlides() # try every 5 seconds to get the slides
+        slides = waitForSlides(slides, screen)
     
     displayText("DDS: Displaying...", screen)
     runLoop = True
@@ -94,22 +89,23 @@ def main():
         log("Refreshing slides from " + settings.get('SlideRequests', 'server'))
         
         if testConnection():
-            slides = getSlides()            
+            slides = getSlides()
         # Displays slides
+        if (slides is None) or (len(slides) == 0):
+            print "thing"
+            slides = waitForSlides(slides, screen)
+            
         for i in range(0, len(slides)):
-            indexNextSlide = (i + 1) % len(slides)
-            s = slides[indexNextSlide]
+            
             log("Displaying slide")
             displaySlide("slide_" + str(i) + ".png", screen, size, black)
-            timeStartedRendering = time.time()
-            log("Grabbing slide at " + s.location)
-            if testConnection():
-                renderPage(s.location, "slide_" + str(indexNextSlide) + ".png", size)
-                log("Waiting for next slide")
-            timeItTookToRenderSlide = timeStartedRendering - time.time()
-            timeToSleep = s.duration - timeItTookToRenderSlide
+            
+            timeToSleep = renderNext(i, slides, size)
+            
             if timeToSleep > 0:
                 time.sleep(timeToSleep)
+            else:
+                log("Missed time budget by " + timeToSleep + " seconds")
         # Allows shutdown
         for event in pygame.event.get():
             if event.type == pygame.KEYDOWN and event.key == pygame.K_c:
@@ -118,7 +114,30 @@ def main():
             if event.type == pygame.KEYUP and event.key == pygame.K_c:
                 runLoop = False
                 pygame.display.quit()
-
+        
+def renderNext(index, slides, size):
+    timeStartedRendering = time.time()
+    indexNextSlide = (index + 1) % len(slides)
+    s = slides[indexNextSlide]
+    log("Grabbing slide at " + s.location)
+    if testConnection():
+        renderPage(s.location, "slide_" + str(indexNextSlide) + ".png", size)
+        
+    log("Waiting for next slide")
+    
+    timeItTookToRenderSlide = timeStartedRendering - time.time()
+    timeToSleep = s.duration - timeItTookToRenderSlide
+    return timeToSleep
+         
+def waitForSlides(slideList, screen):
+    while (slideList is None) or (len(slideList) == 0):
+        displayText("DDS: No slides assigned to hostname '" + 
+                 str(settings.get('SlideRequests', 'name')) + 
+                 "' on " +
+                 str(settings.get('SlideRequests', 'server')) , screen)
+        time.sleep(5)
+        slideList = getSlides() # try every 5 seconds to get the slides
+    return slideList
 
 def renderText(string):
     font = pygame.font.Font(None, 48)
@@ -228,7 +247,8 @@ def renderPage(url, name, size):
     
 # Save messages to syslog
 def log(msg):
-    msg = "PIE: " + msg
+    msg = "\t\t\t\tPIE: " + msg
+    print msg
     syslog.syslog(syslog.LOG_ERR, msg)
 
 # Represents content grabbed from the server that will be displayed onscreen
