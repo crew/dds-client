@@ -126,7 +126,7 @@ def renderText(string):
     return text
 
 def getImage(location):
-    return pygame.image.load(name)
+    return pygame.image.load(location)
 
 # Display the given text in the center of the given screen
 def displayText(string, screen):
