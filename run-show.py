@@ -32,6 +32,7 @@ configFileName = 'PIEConfig.cfg'
 settings = ConfigParser.RawConfigParser()
 settings.read(configFileName)
 
+# Keeps track of errors that happen
 error = None
 
 def main():
@@ -114,7 +115,8 @@ def main():
             if event.type == pygame.KEYUP and event.key == pygame.K_c:
                 runLoop = False
                 pygame.display.quit()
-        
+
+# Renders the next slide so it can be displayed
 def renderNext(index, slides, size):
     timeStartedRendering = time.time()
     indexNextSlide = (index + 1) % len(slides)
@@ -128,7 +130,8 @@ def renderNext(index, slides, size):
     timeItTookToRenderSlide = timeStartedRendering - time.time()
     timeToSleep = s.duration - timeItTookToRenderSlide
     return timeToSleep
-         
+
+# Keep on contacting the server until you get something to display
 def waitForSlides(slideList, screen):
     while (slideList is None) or (len(slideList) == 0):
         displayText("DDS: No slides assigned to hostname '" + 
@@ -139,29 +142,21 @@ def waitForSlides(slideList, screen):
         slideList = getSlides() # try every 5 seconds to get the slides
     return slideList
 
+# Display the given text onscreen
 def renderText(string):
     font = pygame.font.Font(None, 48)
     text = font.render(string, 1, (250, 250, 250))
     return text
 
+# Load the image at the specified location
 def getImage(location):
     return pygame.image.load(location)
 
 # Display the given text in the center of the given screen
 def displayText(string, screen):
     displayCentered(renderText(string), screen)
-    
-def displayErrorText(string, screen):
-    displayBottomLeft(renderText(string), screen)
-    
-def displayBottomLeft(image, screen):
-    bg = pygame.Surface(screen.get_size())
-    pos = image.get_rect()
-    pos.left = bg.get_rect().left
-    pos.bottom = bg.get_rect().bottom
-    screen.blit(image, pos)
-    pygame.display.flip()
-    
+
+# Display the given image in the center of the given screen
 def displayCentered(image, screen):
     bg = pygame.Surface(screen.get_size())
     bg = bg.convert()
@@ -174,6 +169,7 @@ def displayCentered(image, screen):
     pygame.display.flip()
     displayErrorImage(screen)
 
+# Display the icon associated with the current error
 def displayErrorImage(screen):
     global error
     if error != None:
@@ -184,11 +180,12 @@ def displayErrorImage(screen):
         pos.bottom = bg.get_rect().bottom
         screen.blit(img, pos)
         pygame.display.flip()
-        
+
+# Display the specified slide
 def displaySlide(name, screen, size, black):
     displayImage('queued/' + name, screen, size, black)
 
-# Display the specified image (located in the "queued" folder)  using pygame
+# Display the specified image (located in the "queued" folder) using pygame
 def displayImage(name, screen, size, black):
     # global size, black
     img = getImage(name)
@@ -198,6 +195,7 @@ def displayImage(name, screen, size, black):
     pygame.display.flip()
     displayErrorImage(screen) # renders on top of this
 
+# Can this PIE connect to the server?
 def testConnection():
     global error
     response = os.system("ping -c 1 " + str(settings.get('SlideRequests', 'server')))
@@ -207,6 +205,7 @@ def testConnection():
     else:
         error = "disconnect"
         return False
+
 # Get the list of Slides that need to be displayed from the server in PIEConfig.cfg
 def getSlides():
     global settings
@@ -265,5 +264,6 @@ class Slide:
     def __str__(self):
         return self.location + ", " + str(self.duration)
 
+# Runs everything
 if __name__ == "__main__":
     main()
