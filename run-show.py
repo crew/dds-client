@@ -27,12 +27,12 @@ import ConfigParser
 import subprocess
 import shlex
 
-configFileName = 'PIEConfig.cfg'
+fileLocation = os.path.dirname(os.path.abspath(__file__)) + "/"
+
+configFileName = fileLocation + 'PIEConfig.cfg'
 
 settings = ConfigParser.RawConfigParser()
 settings.read(configFileName)
-
-fileLocation = os.path.dirname(os.path.abspath(__file__)) + "/"
 
 # Keeps track of errors that happen
 error = None
