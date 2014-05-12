@@ -32,6 +32,8 @@ configFileName = 'PIEConfig.cfg'
 settings = ConfigParser.RawConfigParser()
 settings.read(configFileName)
 
+fileLocation = os.path.dirname(os.path.abspath(__file__)) + "/"
+
 # Keeps track of errors that happen
 error = None
 
@@ -39,6 +41,7 @@ def main():
     global settings
     global error
     global slides
+    global fileLocation
     # initialize graphics
     pygame.init()
     pygame.mouse.set_visible(False)
@@ -46,7 +49,7 @@ def main():
     black = 0, 0, 0
     screen = pygame.display.set_mode(size)
     
-    displayCentered(getImage("icons/crew.png"), screen)
+    displayCentered(getImage(fileLocation + "icons/crew.png"), screen)
     time.sleep(2)
     
     if str(settings.get('SlideRequests', 'name')) == "default":
@@ -68,9 +71,9 @@ def main():
 
     # Make "queued" directory for slides if it does not exist
     displayText("DDS: Checking for queue directory...", screen)
-    if not os.path.exists("queued"):
+    if not os.path.exists(fileLocation + "queued"):
         displayText("DDS: Creating queue directory...", screen)
-        os.makedirs("queued")
+        os.makedirs(fileLocation + "queued")
     
     # temporary get before loop
     displayText("DDS: Getting slides from server...", screen)
@@ -173,7 +176,7 @@ def displayCentered(image, screen):
 def displayErrorImage(screen):
     global error
     if error != None:
-        img = getImage('icons/' + error + ".png")
+        img = getImage(fileLocation + 'icons/' + error + ".png")
         bg = pygame.Surface(screen.get_size())
         pos = img.get_rect()
         pos.left = bg.get_rect().left
@@ -183,7 +186,7 @@ def displayErrorImage(screen):
 
 # Display the specified slide
 def displaySlide(name, screen, size, black):
-    displayImage('queued/' + name, screen, size, black)
+    displayImage(fileLocation + 'queued/' + name, screen, size, black)
 
 # Display the specified image (located in the "queued" folder) using pygame
 def displayImage(name, screen, size, black):
@@ -235,7 +238,7 @@ def renderPage(url, name, size):
         '''x24" /usr/bin/cutycapt --url=''' + 
         url + 
         ''' --out=''' + 
-        'queued/' + name + 
+        fileLocation + 'queued/' + name + 
         ''' --min-width=''' + 
         str(width) + 
         ''' --min-height=''' + 
