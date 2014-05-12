@@ -243,7 +243,7 @@ def renderPage(url, name, size):
         str(width) + 
         ''' --min-height=''' + 
         str(height) +
-        ''' --zoom-factor=2''')
+        ''' --zoom-factor=1''')
     proc = subprocess.Popen(shlex.split(cmd))
     proc.communicate()
     
