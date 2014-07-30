@@ -92,9 +92,9 @@ def main():
       # called <folder-name>.py for plugin to load
       for pluginfolder in pluginsfolders:
           displayText("DDS: Loading Plugin " + pluginfolder + "...", screen)
-          if !load_plugin(pluginfolder) :
+          if not load_plugin(pluginfolder) :
             displayText("ERROR: Error Loading Plugin " + pluginfolder + ".  Will Run Without It", screen)
-            sleep(5)
+            time.sleep(5)
 
     # temporary get before loop
     displayText("DDS: Getting slides from server...", screen)
@@ -147,10 +147,12 @@ def include(filename):
 
 # Determine the Plugin Path of the Plugin with the given Name
 def plugin_path(name):
-  return os.path.join(filelocation, 'plugins', name, name + '.py')
+  global fileLocation
+  return os.path.join(fileLocation, 'plugins', name, name + '.py')
 
 def plugin_folder(name):
-  return os.path.join(filelocation, 'plugins', name)
+  global fileLocation
+  return os.path.join(fileLocation, 'plugins', name)
 
 # Determine if we have a plugin with the given name installed
 def have_plugin(name):
@@ -162,22 +164,22 @@ def plugin_loaded(name):
   return (name in loaded_plugins)
 
 # Load a plugin with the given name
-def load_plugin(name) :
+def load_plugin(name):
   global loaded_plugins
-  if have_plugin(name) and !plugin_loaded(name) :
-    try :
+  if have_plugin(name) and not plugin_loaded(name) :
+    try:
       include(plugin_path(name))
       return True
-    except :
+    except:
       return False
-  else
+  else:
     return False
 
 # Installs the plugin with the given name from the Crew Github Account
 # TODO: Check if plugin indeed exists in the github repo... might cause hang if it doesn't
 def install_plugin(name) :
-  if !have_plugin(name) :
-    os.system('git clone https://github.com/crew/' . name . ' ' . plugin_folder(name) )
+  if not have_plugin(name) :
+    os.system('git clone https://github.com/crew/' + name + ' ' + plugin_folder(name) )
 
 # Renders the next slide so it can be displayed
 def renderNext(index, slides, size):
@@ -285,16 +287,16 @@ def getSlides():
             valid_slide = True
             if "plugins" in list:
                 for plugin in list["plugins"]:
-                  if !have_plugin(plugin) :
+                  if not have_plugin(plugin):
                     #TODO: does Python or short-circuit
-                    if !install_plugin(plugin) or !load_plugin(plugin):
+                    if not install_plugin(plugin) or not load_plugin(plugin):
                       valid_slide = False
                       break
-                  else if !plugin_loaded(plugin) :
-                    if !load_plugin(plugin) :
+                  elif not plugin_loaded(plugin):
+                    if not load_plugin(plugin):
                       valid_slide = False
                       break
-                  else
+                  else:
                     valid_slide = False
             if valid_slide:
               slides.append(Slide(item['location'], item['duration']))
