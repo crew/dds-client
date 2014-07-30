@@ -29,6 +29,8 @@ import shlex
 
 fileLocation = os.path.dirname(os.path.abspath(__file__)) + "/"
 
+loaded_plugins = []
+
 configFileName = fileLocation + 'PIEConfig.cfg'
 
 settings = ConfigParser.RawConfigParser()
@@ -42,26 +44,27 @@ def main():
     global error
     global slides
     global fileLocation
+    global loaded_plugins
     # initialize graphics
     pygame.init()
     pygame.mouse.set_visible(False)
     size = (pygame.display.Info().current_w, pygame.display.Info().current_h)
     black = 0, 0, 0
     screen = pygame.display.set_mode(size)
-    
+
     displayCentered(getImage(fileLocation + "icons/crew.png"), screen)
     time.sleep(2)
-    
+
     if str(settings.get('SlideRequests', 'name')) == "default":
         hostname = socket.gethostname()
         displayText("DDS: PIE name not set. Using hostname: " + hostname, screen)
         settings.set('SlideRequests', 'name', hostname)
-        
+
         # save configuration with hostname
         configFile = open(configFileName, 'w')
         settings.write(configFile)
         configFile.close()
-        
+
         # set display in error state
         error = "error"
         displayErrorImage(screen)
@@ -74,7 +77,25 @@ def main():
     if not os.path.exists(fileLocation + "queued"):
         displayText("DDS: Creating queue directory...", screen)
         os.makedirs(fileLocation + "queued")
-    
+
+    # Make "plugins" directory for all plugins if it doesn't exist
+    displayText("DDS: Checking for plugins directory...", screen)
+    if not os.path.exists(fileLocation + "plugins"):
+        displayText("DDS: Creating plugins directory...", screen)
+        os.makedirs(fileLocation + "plugins")
+
+
+    displayText("DDS: Loading Plugins...", screen)
+    # Scan the Plugins Folder
+    for dirname, pluginsfolders, filenames in os.walk(fileLocation + 'plugins/'):
+      # Each Plugins has it's own folder... folder must contain file
+      # called <folder-name>.py for plugin to load
+      for pluginfolder in pluginsfolders:
+          displayText("DDS: Loading Plugin " + pluginfolder + "...", screen)
+          if !load_plugin(pluginfolder) :
+            displayText("ERROR: Error Loading Plugin " + pluginfolder + ".  Will Run Without It", screen)
+            sleep(5)
+
     # temporary get before loop
     displayText("DDS: Getting slides from server...", screen)
     log("Getting initial slides from " + settings.get('SlideRequests', 'server'))
@@ -85,27 +106,27 @@ def main():
         renderPage(slides[0].location, "slide_0.png", size)
     else:
         slides = waitForSlides(slides, screen)
-    
+
     displayText("DDS: Displaying...", screen)
     runLoop = True
     while runLoop:
         # Refreshes slides
         log("Refreshing slides from " + settings.get('SlideRequests', 'server'))
-        
+
         if testConnection():
             slides = getSlides()
         # Displays slides
         if (slides is None) or (len(slides) == 0):
             print "thing"
             slides = waitForSlides(slides, screen)
-            
+
         for i in range(0, len(slides)):
-            
+
             log("Displaying slide")
             displaySlide("slide_" + str(i) + ".png", screen, size, black)
-            
+
             timeToSleep = renderNext(i, slides, size)
-            
+
             if timeToSleep > 0:
                 time.sleep(timeToSleep)
             else:
@@ -119,6 +140,45 @@ def main():
                 runLoop = False
                 pygame.display.quit()
 
+# Includes an external Python File
+def include(filename):
+    if os.path.exists(filename):
+        execfile(filename)
+
+# Determine the Plugin Path of the Plugin with the given Name
+def plugin_path(name):
+  return os.path.join(filelocation, 'plugins', name, name + '.py')
+
+def plugin_folder(name):
+  return os.path.join(filelocation, 'plugins', name)
+
+# Determine if we have a plugin with the given name installed
+def have_plugin(name):
+  return os.path.exists(plugin_path(name))
+
+# Determine if a Plugin with the given Name has been loaded
+def plugin_loaded(name):
+  global loaded_plugins
+  return (name in loaded_plugins)
+
+# Load a plugin with the given name
+def load_plugin(name) :
+  global loaded_plugins
+  if have_plugin(name) and !plugin_loaded(name) :
+    try :
+      include(plugin_path(name))
+      return True
+    except :
+      return False
+  else
+    return False
+
+# Installs the plugin with the given name from the Crew Github Account
+# TODO: Check if plugin indeed exists in the github repo... might cause hang if it doesn't
+def install_plugin(name) :
+  if !have_plugin(name) :
+    os.system('git clone https://github.com/crew/' . name . ' ' . plugin_folder(name) )
+
 # Renders the next slide so it can be displayed
 def renderNext(index, slides, size):
     timeStartedRendering = time.time()
@@ -127,9 +187,9 @@ def renderNext(index, slides, size):
     log("Grabbing slide at " + s.location)
     if testConnection():
         renderPage(s.location, "slide_" + str(indexNextSlide) + ".png", size)
-        
+
     log("Waiting for next slide")
-    
+
     timeItTookToRenderSlide = timeStartedRendering - time.time()
     timeToSleep = s.duration - timeItTookToRenderSlide
     return timeToSleep
@@ -137,8 +197,8 @@ def renderNext(index, slides, size):
 # Keep on contacting the server until you get something to display
 def waitForSlides(slideList, screen):
     while (slideList is None) or (len(slideList) == 0):
-        displayText("DDS: No slides assigned to hostname '" + 
-                 str(settings.get('SlideRequests', 'name')) + 
+        displayText("DDS: No slides assigned to hostname '" +
+                 str(settings.get('SlideRequests', 'name')) +
                  "' on " +
                  str(settings.get('SlideRequests', 'server')) , screen)
         time.sleep(5)
@@ -222,7 +282,22 @@ def getSlides():
         list = obj['actions']
         print list
         for item in list:
-            slides.append(Slide(item['location'], item['duration']))
+            valid_slide = True
+            if "plugins" in list:
+                for plugin in list["plugins"]:
+                  if !have_plugin(plugin) :
+                    #TODO: does Python or short-circuit
+                    if !install_plugin(plugin) or !load_plugin(plugin):
+                      valid_slide = False
+                      break
+                  else if !plugin_loaded(plugin) :
+                    if !load_plugin(plugin) :
+                      valid_slide = False
+                      break
+                  else
+                    valid_slide = False
+            if valid_slide:
+              slides.append(Slide(item['location'], item['duration']))
         return slides
     except:
         log("Error: Bad URL/JSON")
@@ -231,22 +306,22 @@ def getSlides():
 def renderPage(url, name, size):
     width = size[0]
     height = size[1]
-    cmd = ('''sudo xvfb-run -e /dev/stdout --server-args "-screen 0, ''' + 
-        str(width) + 
-        '''x''' + 
-        str(height) + 
-        '''x24" /usr/bin/cutycapt --url=''' + 
-        url + 
-        ''' --out=''' + 
-        fileLocation + 'queued/' + name + 
-        ''' --min-width=''' + 
-        str(width) + 
-        ''' --min-height=''' + 
+    cmd = ('''sudo xvfb-run -e /dev/stdout --server-args "-screen 0, ''' +
+        str(width) +
+        '''x''' +
+        str(height) +
+        '''x24" /usr/bin/cutycapt --url=''' +
+        url +
+        ''' --out=''' +
+        fileLocation + 'queued/' + name +
+        ''' --min-width=''' +
+        str(width) +
+        ''' --min-height=''' +
         str(height) +
         ''' --zoom-factor=1''')
     proc = subprocess.Popen(shlex.split(cmd))
     proc.communicate()
-    
+
 # Save messages to syslog
 def log(msg):
     msg = "\t\t\t\tPIE: " + msg
