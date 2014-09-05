@@ -262,14 +262,7 @@ def displayImage(name, screen, size, black):
 
 # Can this PIE connect to the server?
 def testConnection():
-    global error
-    response = os.system("ping -c 1 " + str(settings.get('SlideRequests', 'server')))
-    if response == 0:
-        error = None
         return True
-    else:
-        error = "disconnect"
-        return False
 
 # Get the list of Slides that need to be displayed from the server in PIEConfig.cfg
 def getSlides():
