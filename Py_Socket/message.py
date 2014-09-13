@@ -1,3 +1,5 @@
+import json
+
 class Message:
     """"A message object to be passed between threads via Queue"""
     def __init__(self, src, dest, action, content):
@@ -9,4 +11,7 @@ class Message:
 
     def add_content(self, key, val):
         self.content[key] = val
-        
+    
+    def toJSON(self):
+    	text = json.dumps(self.__dict__)
+    	return text

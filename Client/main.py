@@ -1,12 +1,16 @@
 #!/usr/bin/python
+# General Imports
 import sys
 import Queue
 import thread
-import curses
 
+# Import Classes
 from message import Message
+
+# Import childern
 from logging import logging_thread
 from display import display_thread
+from socketListener import socket_thread
 
 def main(debug=False):
 	#Setup individual Queues
