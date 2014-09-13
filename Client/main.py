@@ -6,6 +6,7 @@ import curses
 
 from message import Message
 from logging import logging_thread
+from display import display_thread
 
 def main(debug=False):
 	#Setup individual Queues
@@ -23,8 +24,8 @@ def main(debug=False):
 
 	#Order of Queues passed to functions: Queue passing data into function, Queue passing data from function to Main, Queue for logging function
 	thread.start_new_thread(logging_thread,(childrenQueues["Logging"]))
-	thread.start_new_thread(display_thread,(mainQueue, childrenQueues))
-	thread.start_new_thread(socket_thread, (mainQueue, childrenQueues))
+	thread.start_new_thread(display_thread,(childrenQueues["Display"], mainQueue, childrenQueues["Logging"]))
+	thread.start_new_thread(socket_thread, (childrenQueues["Socket"], mainQueue, childrenQueues["Logging"]))
 
 	Run = True
 	## Forwards messages to apropriate Queues/ runs appropriate functions
@@ -42,7 +43,7 @@ def main(debug=False):
 				functions[currentMessage.message]()
 
 
-## Logging Queue
+## Logging
 # Passes a message to the logging thread to log.
 def log(queue,mes):
 	newLog = Message("Main", "Logging", {})
