@@ -1,6 +1,6 @@
-DDS-Client-2
-============
+DDS-Client-2 -- Project Bakesale
+================================
 
 Version 2 of DDS 2014 
-Digital Display System
+
 DDS is a NU Crew project.
