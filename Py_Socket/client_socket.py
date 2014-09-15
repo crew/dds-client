@@ -16,6 +16,5 @@ while True:
 	s.send(prompt)
 	result = s.recv(1024) #json.loads(s.recv(1024))
 	print result
-	sleep(5)
 	
 #s.close()
