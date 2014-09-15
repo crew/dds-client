@@ -1,4 +1,4 @@
-#!/usr/bin/python*
+#!/usr/bin/python
 
 ## Check out zmq, activemq rabbitmq
 # Tcp Chat server
@@ -23,8 +23,8 @@ def broadcast_data (sock, message , CONNECTION_LIST, server_socket):
 
 def connect(**kwargs):
     pie = kwargs["currentMessage"]["content"]["name"] 
-    pieMap[pie] = sock
-    return pieMap
+    kwargs["pieMap"][pie] = kwargs["sock"]
+    return kwargs["pieMap"]
 
 
 def main():
@@ -76,7 +76,7 @@ def main():
                     data = sock.recv(RECV_BUFFER)
                     print data
                     currentMessage = json.loads(data)
-                    pieMap = functions[currentMessage["action"]](currentMessage, pieMap, sock)
+                    pieMap = functions[currentMessage["action"]](currentMessage = currentMessage, pieMap = pieMap, sock = sock)
 #                    CONNECTION_LIST = broadcast_data(sock, "\r" + '<' + str(sock.getpeername()) + '> ' + data, CONNECTION_LIST, server_socket)                
                  
                #except:
