@@ -44,21 +44,21 @@ def main(debug=False):
 				Run = False
 				break;
 			else:
-				functions[currentMessage.message]()
+				functions[currentMessage.action]()
 
 
 ## Logging
 # Passes a message to the logging thread to log.
 def log(queue,mes):
-	newLog = Message("Main", "Logging", {})
+	newLog = Message("Main", "Logging", "log", {})
 	newLog.add_content("1",mes)
 	queue.put(newLog)
 
 ## Functions called:
 # When function is called, passes a terminate message to all the children threads.
 def terminate():
-	terminateMes = Message("Main", "All", {})
-	terminateMes.add_content("die",True)
+	terminateMes = Message("Main", "All", "Terminate",{})
+	terminateMes.add_content("Terminate",True)
 	for queue in childernQueues:
 	    queue.put(terminateMes)
 

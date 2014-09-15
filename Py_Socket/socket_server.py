@@ -1,6 +1,9 @@
-#!/usr/bin/python
+#!/usr/bin/python*
+
+## Check out zmq, activemq rabbitmq
 # Tcp Chat server
- 
+
+
 import socket, select, json
  
 
@@ -18,8 +21,8 @@ def broadcast_data (sock, message , CONNECTION_LIST, server_socket):
                 CONNECTION_LIST.remove(socket)
     return CONNECTION_LIST
 
-def connect(currentMessage, pieMap, sock):
-    pie = currentMessage["content"]["name"] 
+def connect(**kwargs):
+    pie = kwargs["currentMessage"]["content"]["name"] 
     pieMap[pie] = sock
     return pieMap
 
