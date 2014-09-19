@@ -39,7 +39,8 @@ def Input():
     return jsonRequest
 
 def getSlides():
-    jsonRequest = {}
+    jsonRequest = Message("blueberry", "Grandma", "getSlides", {})
+    jsonRequest.add_content("name", "blueberry")
     return jsonRequest
 
 def heartbeat():

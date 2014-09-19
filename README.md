@@ -21,7 +21,7 @@ Note: This is a working todo list. Will add things as they come up
 2. Core Display cycling functionality (Display running through the slides)
 
 ** Server **
-1. WP to Server communication (JSON parsing and then acting upon that information)
+1. 1WP to Server communication (JSON parsing and then acting upon that information)
 
 Moar functionality
 

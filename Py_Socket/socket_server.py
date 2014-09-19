@@ -26,6 +26,9 @@ def connect(**kwargs):
     kwargs["pieMap"][pie] = kwargs["sock"]
     return kwargs["pieMap"]
 
+def getSlides(**kwargs):
+
+
 
 def main():
     #Function mapping
@@ -60,8 +63,6 @@ def main():
             if sock == server_socket:
                 # Handle the case in which there is a new connection recieved through server_socket
                 sockfd, addr = server_socket.accept()
-                print sockfd
-                print addr
                 CONNECTION_LIST.append(sockfd)
                 print "Client (%s, %s) connected" % addr
                  
@@ -76,6 +77,8 @@ def main():
                     data = sock.recv(RECV_BUFFER)
                     print data
                     currentMessage = json.loads(data)
+                    #if currentMessage == "connect":
+                    #    pieMap = connect(pieMap)
                     pieMap = functions[currentMessage["action"]](currentMessage = currentMessage, pieMap = pieMap, sock = sock)
 #                    CONNECTION_LIST = broadcast_data(sock, "\r" + '<' + str(sock.getpeername()) + '> ' + data, CONNECTION_LIST, server_socket)                
                  
