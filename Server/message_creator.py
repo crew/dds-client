@@ -1,4 +1,4 @@
-from message import mMessage
+from message import Message
 import json
 
 # STUB COMMENT
@@ -7,24 +7,24 @@ import json
 #     String
 #     Returned Message object's src field.
 #
-# jsonData:
+# json_data:
 #     String
 #     JSON data. Check jsonToMessageContent
-#     jsonData specifications.
+#     json_data specifications.
 #
 ##Return:##
 #
 #     Message object
-def jsonToMessage(pie, jsonData):
+def message_creator(pie, json_data):
     return Message("Grandma", 
                    pie, 
                    "STATIC", 
-                   jsonToMessageContent(jsonData));
+                   json_extract(json_data));
 
 
 # STUB COMMENT
 ##Params:##
-# jsonData:
+# json_data:
 #     String
 #     JSON Data. Must be enclosed as a
 #     dictionary with key "actions" mapped
@@ -35,9 +35,9 @@ def jsonToMessage(pie, jsonData):
 #     A dictionary as a list, integer values
 #     from 0 to n-1 mapped to n list of
 #     dictionaries stated in the input.
-def jsonToMessageContent(jsonData):
-    resultDict = {};    
-    jsonDict = json.loads(jsonData);
-    for index, value in enumerate(jsonDict["actions"]):
-        resultDict[index] = value;
-    return resultDict;
+def json_extract(json_data):
+    result_dict = {};    
+    json_dict = json.loads(json_data);
+    for index, value in enumerate(json_dict["actions"]):
+        result_dict[index] = value;
+    return result_dict;
