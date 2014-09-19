@@ -16,7 +16,8 @@
         var ws;
  
          ws = new WebSocket("ws://localhost:8888/ws");
- 
+         
+ 		//takes the message from the server and sets the label
          ws.onmessage = function(evt) {document.getElementById('messageHolder').innerHTML = "" + evt.data;};
  
          ws.onclose = function(evt) { alert("Connection close"); };
