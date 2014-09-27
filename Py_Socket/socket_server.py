@@ -14,10 +14,11 @@ from socketlist import socketList
 
 
 def connect(**kwargs):
-    print "wooho"
-    #pie = kwargs["currentMessage"]["content"]["name"] 
-    #kwargs["pieMap"][pie] = kwargs["sock"]
+    #print "wooho"
+    pie = kwargs["currentMessage"]["content"]["name"] 
+    kwargs["connection"].mapPie(kwargs["sock"],pie)
     #return kwargs["pieMap"]
+    return kwargs
 
 def getSlides(**kwargs):
     print "hello!"
@@ -49,23 +50,29 @@ def main():
     print "Chat server started on port " + str(PORT)
  
     while 1:
+        print("WHILE")
         # Get the list sockets which are ready to be read through select
+        print("PRE ")
+        print(connection.pieMap)
+        print(connection.sockList)
         read_sockets,write_sockets,error_sockets = select.select(connection.sockList,[],[])
-        print "sup"
         for sock in read_sockets:
-            print sock
+            print(connection.pieMap)
+            print(read_sockets)
             if sock == server_socket:
-                # Handle the case in which there is a new connection recieved through server_socket
+                # Handle the case in which there is a new connections    recieved through server_socket
                 sockfd, addr = server_socket.accept()
                 connection.addSocket(sockfd)
-                print "Client (%s, %s) connected" % addr     
-                connection.broadcast(sockfd, "[%s:%s] entered room\n" % addr)
+                print "Client Connected"  
+                connection.broadcast(sockfd, "[%s:%s] entered room\n la-de-da" % addr)
             else:
                 data = sock.recv(RECV_BUFFER)
-                print data
-                currentMessage = json.loads(data)
-                functions[currentMessage["action"]](currentMessage = currentMessage, pieMap = connection.pieMap, sock = sock)
-    server_socket.close()
+                if data == "":
+                    connection.removeSocket(sock)
+                else:
+                    currentMessage = json.loads(data)
+                    functions[currentMessage["action"]](connection = connection, currentMessage = currentMessage, pieMap = connection.pieMap, sock = sock)
+
 
 def checkIncoming(server_socket, connection):
     print "debug"

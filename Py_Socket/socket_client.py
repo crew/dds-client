@@ -78,7 +78,7 @@ def main():
     s = connect(host, port)
 
     run = True
-    
+    print("blueberry")
     while run:
         print 'Connected to remote host. Start sending messages'
 	#Input()
@@ -98,7 +98,7 @@ def main():
                 else :
                     #print data
                     sys.stdout.write(data)
-                    prompt()
+                    #prompt()
              
             #user entered a message
             else :

@@ -1,4 +1,4 @@
-import socket
+import socket, time
 
 class socketList:
 	def __init__(self, pieMap, sockList, serverSocket):
@@ -10,18 +10,22 @@ class socketList:
 		self.sockList.append(sock)
 
 	def mapPie(self, sock, pieName):
+		print "mapping" + pieName
 		self.pieMap[pieName] = sock
 
 	def removeSocket(self, sock):
+		print "Good bye!"
  		sock.close()
 		self.sockList.remove(sock)
-		del self.pieMap[self.getPie(sock)]
+		print(self.getPie(sock))
+		self.pieMap.pop(self.getPie(sock))
 
 	def broadcast(self, sock, msg):
     #Do not send the message to master socket and the client who has send us the message
 		for socket in self.sockList:
-		    if socket != self.serverSocket and socket != sock :
-		    	self.sendMessage(sock, msg)
+			print(self.getPie(socket))
+			if socket != self.serverSocket and socket != sock:
+				self.sendMessage(socket, msg)
 
 	def sendMessage(self, sock, msg):
 		try :
@@ -33,7 +37,8 @@ class socketList:
 		return self.pieMap[pie]
 
 	def getPie(self, sock):
-		for pie, socket in self.pieMap:
+		print(len(self.pieMap))
+		for pie, socket in self.pieMap.iteritems():
 			if sock == socket:
 				return pie
 
