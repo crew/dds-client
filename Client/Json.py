@@ -1,4 +1,5 @@
 import json
+import datetime
 
 # all of the information to be sent to be displayed
 obj = {
@@ -40,17 +41,17 @@ obj = {
         }
     ]
 }
-
-# variable to be increased to len(obj["actions"])
+#Loops through the Json and outputs the data
+#Once it reaches the end of the data it resets
 x = 0
+while x < len(obj["actions"]):
+        print obj["actions"][x]["type"] + ": " + obj["actions"][x]["location"]
+        target_time = datetime.datetime.now() + datetime.timedelta(seconds = obj["actions"][x]["duration"])
+        while(datetime.datetime.now() < target_time):
+            pass
+        if x < (len(obj["actions"]) - 1):
+            x+=1
+        else:            
+            x=0
 
-# loops through all of the data in the json while using the duration to pause inbetween each entry
-while x<len(obj["actions"]):
-    print obj["actions"][x]["type"]
-    print obj["actions"][x]["location"]
-    time.sleep(obj["actions"][x]["duration"])
-    if x<(len(obj["actions"])-1):
-        x+=1
-    else:
-        x=0
 

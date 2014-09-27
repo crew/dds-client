@@ -1,7 +1,7 @@
 from message import Message
 import Queue
 import syslog
-
+# Takes a dict input and logs its contents to the syslog
 def logging_thread(input_queue):
     while True:
         if not input_queue.empty():
