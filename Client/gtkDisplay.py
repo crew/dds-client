@@ -41,37 +41,13 @@ class WebBrowser(gtk.Window):
         self.show_all()
 
         gobject.threads_init()
+        
+        
 
     def updatePage(self,url):
         self.connect("destroy", gtk.main_quit)
         self._browser.open(url)
         self.show_all()
-
-# Class Definition of Main Program Thread
-#   (responsible for running gtk.main())
-# Arguments:
-#       url=(String) Initial URL to display
-class MainThread (threading.Thread):
-    def __init__(self, url):
-        #global webbrowser
-        threading.Thread.__init__(self)
-        self.threadID = 1
-        self.name = "Main GTK"
-        self.webBrowser = WebBrowser(url)
-
-    def updatePage(self,url):
-        self.webBrowser = WebBrowser(url)
-
-
-# Called by page-updating thread to change
-#   the page displayed by the WebBrowser
-#   object.
-# Arguments:
-#       url=(String) The new page to display
-def openPage(url):
-    global mainThread
-    mainThread.webBrowser.updatePage(url)
-
 #test
 def openPageTest():
     time.sleep(5)
@@ -86,10 +62,11 @@ class PageUpdateThread (threading.Thread):
         self.threadID = 1
         self.name = "Page Update"
         self.queue = queue
+        self.webBrowser = WebBrowser("")
     def run(self):
         while 1:
             currentSlide = self.queue.get()
-            openPage(currentSlide.url)
+            self.webBrowser.updatePage(currentSlide.url)
             time.sleep(currentSlide.duration)
             self.queue.put(currentSlide)
 
@@ -105,13 +82,11 @@ testQueue.put(Slide("http://facebook.com", 5))
 testQueue.put(Slide("http://dds-wp.ccs.neu.edu/?slide=test-ccis-tutoring&pie_name=chocolate", 10))
 
 
-mainThread = MainThread("/loading_screen/index.html")
 pageUpdateThread = PageUpdateThread(testQueue)
 
 pageUpdateThread.start()
-mainThread.start()
 
-gtk.main()    
+gtk.main()
 
 # Called on program start and contains
 #   gtk.main() (Runs until gtk.main_quit()...
