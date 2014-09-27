@@ -41,13 +41,17 @@ obj = {
         }
     ]
 }
-
-# Takes current time and then uses to duration to find the time for the json input to end
-# Stops when the current time reaches the target time, then moves onto the next thing in the json
-for x in obj["actions"]:
-    print x["type"] + ": " + x["location"]
-    target_time = datetime.datetime.now() + datetime.timedelta(seconds = x["duration"])
-    while(datetime.datetime.now() < target_time):
-        pass
+#Loops through the Json and outputs the data
+#Once it reaches the end of the data it resets
+x = 0
+while x < len(obj["actions"]):
+        print obj["actions"][x]["type"] + ": " + obj["actions"][x]["location"]
+        target_time = datetime.datetime.now() + datetime.timedelta(seconds = obj["actions"][x]["duration"])
+        while(datetime.datetime.now() < target_time):
+            pass
+        if x < (len(obj["actions"]) - 1):
+            x+=1
+        else:            
+            x=0
 
 
