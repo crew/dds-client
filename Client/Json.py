@@ -1,5 +1,11 @@
 import json
+import Queue
+import msvcrt
 import datetime
+
+data = {"type":"slide", "location":"www.reddit.com", "duration":2} 
+q = Queue.Queue(0)
+q.put(data)
 
 # all of the information to be sent to be displayed
 obj = {
@@ -48,10 +54,14 @@ while x < len(obj["actions"]):
         print obj["actions"][x]["type"] + ": " + obj["actions"][x]["location"]
         target_time = datetime.datetime.now() + datetime.timedelta(seconds = obj["actions"][x]["duration"])
         while(datetime.datetime.now() < target_time):
+            if not q.empty():
+                currentMessage = q.get()
+                obj["actions"].append(currentMessage)
             pass
         if x < (len(obj["actions"]) - 1):
             x+=1
         else:            
             x=0
+
 
 
