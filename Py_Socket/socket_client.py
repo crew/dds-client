@@ -1,44 +1,20 @@
 #!/usr/bin/python
-
-# telnet program example
 import socket, select, string, sys, time, json
 
 from message import Message
+from socketlist import socketList
+import Queue
+import thread
+from types import *
+from time import sleep
+import multiprocessing
 
 def Input():
-    while True:
-        print("""
-        1. getSlides()
-        2. heartbeat()
-        3. getHardware()
-        4. List Groups that a User is in
-        5. List Users that are in 12 or more groups
-        6. Suggest a cleanup
-        7. Quit
-        """)
-        selection = raw_input("Select an option [1-7] \n")
-        if selection == "1":
-            jsonRequest = getSlides()
-            break
-        elif selection == "2":
-            jsonRequest = heartbeat()
-            break
-        elif selection == "3":
-            jsonRequest = getHardware()
-            break
-        elif selection == "4":
-            userInGroup(Users)
-        elif selection == "5":
-            moreThan12(Users)
-        elif selection == "6":
-            suggest(Groups, Users)
-        elif selection == "7":
-            loop = False
-        else:
-            print "nope"
-    return jsonRequest
+    sleep(5)
+    return getSlides()
 
 def getSlides():
+    print "getSlides"
     jsonRequest = Message("blueberry", "Grandma", "getSlides", {})
     jsonRequest.add_content("name", "blueberry")
     return jsonRequest
@@ -55,7 +31,7 @@ def connect(host, port):
     while True:
         # connect to remote host
         s = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
-        s.settimeout(2)
+        #s.settimeout(2)
         try :
             s.connect((host, port))
             print "Connected"
@@ -67,43 +43,68 @@ def connect(host, port):
     identify = Message("blueberry", "Grandma", "connect",{})
     identify.add_content("name","blueberry")
     identify.add_content("item2","bob")
+    print s
+    print type(s)
+        # print "Its a Socket!"
     s.send(identify.toJSON())
     return s  
 
-#main function
+def reConnect(s, host, port):
+    print "Disconnected"
+    s.close()
+    s = None
+    s = connect(host, port)
+
 def main():
+    socketQueue = multiprocessing.Queue(100)
+    thread.start_new_thread(socket_thread, (socketQueue,))
+    sleep(20)
+    socketQueue.put("{\"dest\": \"Grandma\", \"src\": \"blueberry\", \"content\": {\"name\": \"blueberry\"}, \"action\": \"getSlides\"}")
+
+
+#main function
+def socket_thread(socketQueue):
     host = "127.0.0.1"
     port = 5000
-    
+
+    # self_socket = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
+    # self.settimeout(2)
+    # connection = socketList({}, [], self_socket)
+    # connection.addSocket(server_socket)
     s = connect(host, port)
+    print s
 
     run = True
     print("blueberry")
-    while run:
-        print 'Connected to remote host. Start sending messages'
-	#Input()
-        socket_list = [sys.stdin, s]
+    while run:      
+        socket_list = [sys.stdin, s, socketQueue._reader]
         # Get the list sockets which are readable
+        print "Hang"
         read_sockets, write_sockets, error_sockets = select.select(socket_list , [], [])
-         
+        print read_sockets
         for sock in read_sockets:
-            #incoming message from remote server
-            if sock == s:
-                data = sock.recv(4096)
-                if not data :
-                    print "Disconnected"
-                    s.close()
-                    s = None
-                    s = connect(host, port)
+            print sock
+            if type(sock) == type(s):
+                if sock == s:
+                    data = sock.recv(4096)
+                    print data
+                    if not data:
+                        s = reConnect(s, host , port)
+                    else :
+                        currentMessage = json.loads(data)
+                        functions[currentMessage["action"]](connection = connection, currentMessage = currentMessage, pieMap = connection.pieMap, sock = sock)
+
+                #user entered a message
                 else :
-                    #print data
-                    sys.stdout.write(data)
-                    #prompt()
-             
-            #user entered a message
-            else :
-                msg = Input()
-                s.send(msg.toJSON())
+                    print "input"
+                    msg = Input()
+                    print s
+                    print "Sending"
+                    print msg.toJSON()
+                    s.send("{\"dest\": \"Grandma\", \"src\": \"blueberry\", \"content\": {\"name\": \"blueberry\"}, \"action\": \"getSlides\"}")
+            else:
+                if not sock.empty():
+                    s.send(mainQueue.get())
 
 if __name__ == "__main__":
     main()
