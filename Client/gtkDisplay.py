@@ -79,18 +79,10 @@ class PageUpdateThread (threading.Thread):
     def run(self):
         while 1:
             currentSlide = self.queue.get()
-<<<<<<< HEAD
             gobject.timeout_add(100,self.webBrowser.updatePage, currentSlide.url)
             time.sleep(currentSlide.duration)
             self.queue.put(currentSlide)
-=======
-	    print currentSlide.url
-            self.webBrowser.updatePage(currentSlide.url)
-	    for i in range(0, currentSlide.duration):
-                print i
-                time.sleep(1)
-#            self.queue.put(currentSlide)
->>>>>>> 885e8a3eeb7f730db587a7f2ea6db98139ec0e08
+
 
 # Allows initial bash invocation to load
 #      webpage passed as argument
