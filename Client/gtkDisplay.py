@@ -79,9 +79,18 @@ class PageUpdateThread (threading.Thread):
     def run(self):
         while 1:
             currentSlide = self.queue.get()
+<<<<<<< HEAD
             gobject.timeout_add(100,self.webBrowser.updatePage, currentSlide.url)
             time.sleep(currentSlide.duration)
             self.queue.put(currentSlide)
+=======
+	    print currentSlide.url
+            self.webBrowser.updatePage(currentSlide.url)
+	    for i in range(0, currentSlide.duration):
+                print i
+                time.sleep(1)
+#            self.queue.put(currentSlide)
+>>>>>>> 885e8a3eeb7f730db587a7f2ea6db98139ec0e08
 
 # Allows initial bash invocation to load
 #      webpage passed as argument
@@ -93,7 +102,11 @@ class PageUpdateThread (threading.Thread):
 testQueue = Queue.Queue(100)
 testQueue.put(Slide("http://facebook.com", 5))
 testQueue.put(Slide("http://dds-wp.ccs.neu.edu/?slide=test-ccis-tutoring&pie_name=chocolate", 10))
-
+testQueue.put(Slide("http:\/\/m.weather.com\/weather\/tenday\/USMA0046", 10))
+testQueue.put(Slide("http:\/\/dds-wp.ccs.neu.edu\/?slide=cisters-welcome-dinner&pie_name=chocolate", 10))
+testQueue.put(Slide("http:\/\/dds-wp.ccs.neu.edu\/?slide=test-ccis-tutoring&pie_name=chocolate", 10))
+testQueue.put(Slide("http:\/\/dds-wp.ccs.neu.edu\/?slide=cisters&pie_name=chocolate", 10))
+testQueue.put(Slide("http:\/\/dds-wp.ccs.neu.edu\/?slide=welcome-to-the-ccis-main-office&pie_name=chocolate", 10))
 
 pageUpdateThread = PageUpdateThread(testQueue)
 

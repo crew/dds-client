@@ -7,7 +7,7 @@
 import socket, select, json
 
 from socketlist import socketList
- 
+from message import Message
 
 
 #Function to broadcast chat messages to all connected clients
@@ -21,7 +21,11 @@ def connect(**kwargs):
     return kwargs
 
 def getSlides(**kwargs):
-    print "hello!"
+    print "getSlides"
+    identify = Message("Grandma", "blueberry", "Slides",{})
+    identify.add_content("type","slide")
+    identify.add_content("loation","http:\/\/m.weather.com\/weather\/tenday\/USMA0046")
+    kwargs["connection"].sendMessage(kwargs["sock"],identify.toJSON())
 
 
 def main():
@@ -64,24 +68,15 @@ def main():
                 sockfd, addr = server_socket.accept()
                 connection.addSocket(sockfd)
                 print "Client Connected"  
-                connection.broadcast(sockfd, "[%s:%s] entered room\n la-de-da" % addr)
+                #connection.broadcast(sockfd, "[%s:%s] entered room\n la-de-da" % addr)
             else:
                 data = sock.recv(RECV_BUFFER)
                 if data == "":
                     connection.removeSocket(sock)
                 else:
+                    print "incoming Message"
                     currentMessage = json.loads(data)
                     functions[currentMessage["action"]](connection = connection, currentMessage = currentMessage, pieMap = connection.pieMap, sock = sock)
-
-
-def checkIncoming(server_socket, connection):
-    print "debug"
-    # Handle the case in which there is a new connection recieved through server_socket
-    sockfd, addr = server_socket.accept()
-    connection.addSocket(sockfd)
-    print "Client (%s, %s) connected" % addr     
-    connection.broadcast(sockfd, "[%s:%s] entered room\n" % addr)
-
 
 if __name__ == "__main__":
     main()

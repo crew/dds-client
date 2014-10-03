@@ -28,9 +28,12 @@ class socketList:
 				self.sendMessage(socket, msg)
 
 	def sendMessage(self, sock, msg):
+		print "Sending"
+		print sock
 		try :
 			sock.send(msg)
 		except :
+			print "Failed"
 			self.removeSocket(sock)
 
 	def getSock(self, pie):
