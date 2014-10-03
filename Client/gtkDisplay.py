@@ -16,6 +16,7 @@
 import sys
 import gobject
 import gtk
+#import glib
 import webkit
 import threading
 from slide import Slide
@@ -35,9 +36,12 @@ class WebBrowser(gtk.Window):
 
         self._browser= webkit.WebView()
         self.add(self._browser)
+        settings = webkit.WebSettings()
+        settings.set_property('enable-page-cache', True)
+        self._browser.set_settings(settings)
         self.connect('destroy', gtk.main_quit)
 
-        self._browser.open(url)
+        self._browser.load_uri(url)
         self.show_all()
 
         gobject.threads_init()
@@ -45,9 +49,18 @@ class WebBrowser(gtk.Window):
         
 
     def updatePage(self,url):
-        self.connect("destroy", gtk.main_quit)
-        self._browser.open(url)
+        print "updatePage"
+        # self.connect("destroy", gtk.main_quit)
+        self._browser.load_uri(url)
+        #while (self._browser.get_load_status() < 2):
+        #   continue
+        try:
+           self.fullscreen()
+        except:
+           pass
+        print "showing"
         self.show_all()
+
 #test
 def openPageTest():
     time.sleep(5)
@@ -66,7 +79,7 @@ class PageUpdateThread (threading.Thread):
     def run(self):
         while 1:
             currentSlide = self.queue.get()
-            self.webBrowser.updatePage(currentSlide.url)
+            gobject.timeout_add(100,self.webBrowser.updatePage, currentSlide.url)
             time.sleep(currentSlide.duration)
             self.queue.put(currentSlide)
 
