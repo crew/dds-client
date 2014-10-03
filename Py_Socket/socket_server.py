@@ -7,7 +7,7 @@
 import socket, select, json
 
 from socketlist import socketList
- 
+from message import Message
 
 
 #Function to broadcast chat messages to all connected clients
@@ -21,8 +21,11 @@ def connect(**kwargs):
     return kwargs
 
 def getSlides(**kwargs):
-    print "gerSlides"
-    kwargs["connection"].sendMessage(kwargs["sock"],{"slide":{"type":"slide","location":"http:\/\/m.weather.com\/weather\/tenday\/USMA0046","duration":10}})
+    print "getSlides"
+    identify = Message("Grandma", "blueberry", "Slides",{})
+    identify.add_content("type","slide")
+    identify.add_content("loation","http:\/\/m.weather.com\/weather\/tenday\/USMA0046")
+    kwargs["connection"].sendMessage(kwargs["sock"],identify.toJSON())
 
 
 def main():
