@@ -8,6 +8,7 @@ import socket, select, json
 
 from socketlist import socketList
 from message import Message
+from slide import Slide
 
 
 #Function to broadcast chat messages to all connected clients
@@ -22,9 +23,8 @@ def connect(**kwargs):
 
 def getSlides(**kwargs):
     print "getSlides"
-    identify = Message("Grandma", "blueberry", "Slides",{})
-    identify.add_content("type","slide")
-    identify.add_content("loation","http:\/\/m.weather.com\/weather\/tenday\/USMA0046")
+    identify = Message("Grandma", "blueberry", "addSlides",{})
+    identify.add_content("loadSlides", Slide("http:\/\/m.weather.com\/weather\/tenday\/USMA0046", 10))
     kwargs["connection"].sendMessage(kwargs["sock"],identify.toJSON())
 
 

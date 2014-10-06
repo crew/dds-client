@@ -28,34 +28,6 @@ def getHardware():
     jsonRequest = {}
     return jsonRequest
 
-# def connect(s, host, port): 
-#     while True:
-#         # connect to remote host
-#         #s = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
-#         #s.settimeout(2)
-#         try :
-#             s.connect((host, port))
-#             print "Connected"
-#             break
-#         except :
-#             print 'Unable to connect'
-#             time.sleep(2)
-#     # Passes along PIE name to Grandma
-#     identify = Message("blueberry", "Grandma", "connect",{})
-#     identify.add_content("name","blueberry")
-#     identify.add_content("item2","bob")
-#     print s
-#     print type(s)
-#         # print "Its a Socket!"
-#     s.send(identify.toJSON())
-#     return s  
-
-# def reConnect(s, host, port):
-#     print "Disconnected"
-#     s.close()
-#     s = None
-#     s = connect(host, port)
-
 def main():
     host = "127.0.0.1"
     port = 5000
@@ -65,21 +37,14 @@ def main():
     sleep(20)
     s.sock.send("{\"dest\": \"Grandma\", \"src\": \"blueberry\", \"content\": {\"name\": \"blueberry\"}, \"action\": \"getSlides\"}")
     sleep(20)
-    
+
 
 #main function
 def socket_thread(s):
-
-    # self.settimeout(2)
-    # connection = socketList({}, [], self_socket)
-    # connection.addSocket(server_socket)
-    # s = connect(s, host, port)
-    print s.sock
-
     run = True
     print("blueberry")
     while run:      
-        socket_list = [sys.stdin, s.sock]
+        socket_list = [s.sock,]
         # Get the list sockets which are readable
         print "Hang"
         read_sockets, write_sockets, error_sockets = select.select(socket_list , [], [])
