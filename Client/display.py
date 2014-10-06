@@ -47,14 +47,18 @@ def main_display_thread(inputQueue, Queues, runtimeVars):
     Run = True
     while Run:
         currentSlide = slides[x]
+        print currentSlide.duration
         target_time = datetime.datetime.now() + datetime.timedelta(seconds = currentSlide.duration)
         while(datetime.datetime.now() < target_time):
             pass
             if not inputQueue.empty():
-                currentMessage = input_queue.get()
+                currentMessage = inputQueue.get()
                 if currentMessage.action == "addSlide":
                     print "New Slide!!!!"
-                    slides.append(currentMessage.content)
+                    print currentMessage.content
+                    tempSlide = json.loads(currentMessage.content)
+                    if  '__type__' in tempSlide and tempSlide["__type__"] == "slide":
+                        slides.append(Slide(tempSlide["url"], tempSlide["duration"], tempSlide["action"]))
                 elif currentMessage.action == "removeSlide":
                     slides.remove(currentMessage.content)
                 elif currentMessage.action == "Terminate":

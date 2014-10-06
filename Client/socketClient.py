@@ -12,7 +12,8 @@ def getSlides(s):
     s.send(jsonRequest.toJSON())
 
 def loadSlides(**kwargs):
-    for slide in kwargs["currentMessage"].content:
+    print kwargs["currentMessage"]
+    for key, slide in kwargs["currentMessage"]["content"].items():
         kwargs["Queues"]["Display"].put(Message("Socket", "Display", "addSlide", slide))
 
 def main_socket_thread(inputQueue, Queues, runtimeVars):
