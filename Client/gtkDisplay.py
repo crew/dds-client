@@ -81,7 +81,7 @@ class PageUpdateThread (threading.Thread):
             currentSlide = self.queue.get()
             gobject.timeout_add(100,self.webBrowser.updatePage, currentSlide.url)
             time.sleep(currentSlide.duration)
-            self.queue.put(currentSlide)
+            #self.queue.put(currentSlide)
 
 
 # Allows initial bash invocation to load
@@ -100,11 +100,12 @@ testQueue.put(Slide("http:\/\/dds-wp.ccs.neu.edu\/?slide=test-ccis-tutoring&pie_
 testQueue.put(Slide("http:\/\/dds-wp.ccs.neu.edu\/?slide=cisters&pie_name=chocolate", 10))
 testQueue.put(Slide("http:\/\/dds-wp.ccs.neu.edu\/?slide=welcome-to-the-ccis-main-office&pie_name=chocolate", 10))
 
-pageUpdateThread = PageUpdateThread(testQueue)
+def main_gtk_thread(inputQueue, Queues, runtimeVars):
+    pageUpdateThread = PageUpdateThread(inputQueue)
 
-pageUpdateThread.start()
+    pageUpdateThread.start(inputQueue)
 
-gtk.main()
+    gtk.main()
 
 # Called on program start and contains
 #   gtk.main() (Runs until gtk.main_quit()...

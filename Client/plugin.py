@@ -7,3 +7,4 @@ def plugin(Threads, Queues):
 #	Threads.addThread("Logging", "logging_thread", Queues)
 	Threads.addThread("Display", main_display_thread, Queues)
 	Threads.addThread("Socket", main_socket_thread, Queues)
+	Threads.addThread("Gtk", main_gtk_thread, Queues)

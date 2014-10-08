@@ -49,6 +49,7 @@ def main_display_thread(inputQueue, Queues, runtimeVars):
         currentSlide = slides[x]
         print currentSlide.duration
         target_time = datetime.datetime.now() + datetime.timedelta(seconds = currentSlide.duration)
+        Queues["Gtk"].put(currentSlide)
         while(datetime.datetime.now() < target_time):
             pass
             if not inputQueue.empty():
