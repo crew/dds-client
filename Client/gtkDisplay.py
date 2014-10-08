@@ -19,7 +19,7 @@ import gtk
 #import glib
 import webkit
 import threading
-from slide import Slide
+from Classes.slide import Slide
 import Queue
 
 #for testing
@@ -103,7 +103,7 @@ testQueue.put(Slide("http:\/\/dds-wp.ccs.neu.edu\/?slide=welcome-to-the-ccis-mai
 def main_gtk_thread(inputQueue, Queues, runtimeVars):
     pageUpdateThread = PageUpdateThread(inputQueue)
 
-    pageUpdateThread.start(inputQueue)
+    pageUpdateThread.start()
 
     gtk.main()
 

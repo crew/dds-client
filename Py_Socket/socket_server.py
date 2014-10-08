@@ -24,7 +24,7 @@ def connect(**kwargs):
 def getSlides(**kwargs):
     print "getSlides"
     identify = Message("Grandma", "blueberry", "loadSlides",{})
-    identify.add_content("loadSlides", Slide("http:\/\/m.weather.com\/weather\/tenday\/USMA0046", 5).toJSON())
+    identify.add_content("loadSlides", Slide("https://i.imgur.com/RWD9u6F.jpg", 60).toJSON())
     kwargs["connection"].sendMessage(kwargs["sock"],identify.toJSON())
 
 
