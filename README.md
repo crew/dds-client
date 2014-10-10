@@ -1,4 +1,4 @@
-DDS-Client-2 -- Project Bakesale
+DDS-Client -- Project Bakesale
 ================================
 Todo:
 Note: This is a working todo list. Will add things as they come up
@@ -7,7 +7,7 @@ Note: This is a working todo list. Will add things as they come up
 	i.e. given the folder structure below, both client and server need 
 	Message.py but preferably if only needed to have it in one place, a Classes folder
 
-		DDS-Client-2
+		DDS-Client
 			-> Client
 				-> main.py
 			-> Server
