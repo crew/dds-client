@@ -1,4 +1,4 @@
-DDS-Client-2 -- Project Bakesale
+extracharactersDDS-Client-2 -- Project Bakesale
 ================================
 Todo:
 Note: This is a working todo list. Will add things as they come up
