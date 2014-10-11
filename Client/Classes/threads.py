@@ -1,7 +1,9 @@
 from QueueDict import QueueDict
 
 class threads:
-	"""docstring for """
+	"""Warpper around thread object, allows us to start all the persistant
+	Threads in a consistent simple fashion. See plugins.py for more details."""
+
 	def __init__(self):
 		self.Threads = {}
 
