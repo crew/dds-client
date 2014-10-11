@@ -8,13 +8,13 @@ class sockClass:
 	def __init__(self, runtimeVars):
 		self.sock = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
 		self.hostIP = runtimeVars["server"]
-		self.hostPort = runtimeVars["port"]
-		self.connect()
+		self.hostPort = int(runtimeVars["port"])
+		self.connect(runtimeVars)
 
 	def send(self, msg):
 		self.sock.send(msg)
 
-	def connect(self):
+	def connect(self, runtimeVars):
 		while True:
 			# connect to remote host
 			#s = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
