@@ -18,10 +18,10 @@ from logging import logging_thread
 def main():
 
 	# Will be generated from config files
-	runtimeVars = {}
-	runtimeVars["PIEname"] = "blueberry"
-	runtimeVars["Server"] = "dds-wp.ccs.neu.edu"
-	runtimeVars["serverPort"] = "5000"
+	runtimeVars = ConfigParser.readConfig()
+	#runtimeVars["PIEname"] = "blueberry"
+	#runtimeVars["Server"] = "dds-wp.ccs.neu.edu"
+	#runtimeVars["serverPort"] = "5000"
 
 
 	#Setup individual Queues
