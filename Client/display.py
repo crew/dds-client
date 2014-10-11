@@ -33,6 +33,8 @@ from Classes.slide import Slide
 
 ## Functions
 def main_display_thread(inputQueue, Queues, runtimeVars):
+    slideRequest = Message("blueberry", "Grandma", 'WPHandler', "querySlides", "placeHolder")
+    Queues["Socket"].put(slideRequest.toJSON())
     slides = []
     # Replace with loading slide
     slides.append(Slide("http://facebook.com", 10)) 

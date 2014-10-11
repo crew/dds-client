@@ -7,8 +7,7 @@ import Queue , thread
 
 def getSlides(s):
     print "getSlides"
-    jsonRequest = Message("blueberry", "Grandma", "getSlides", {})
-    jsonRequest.add_content("name", "blueberry")
+    jsonRequest = Message("blueberry", "Grandma", 'WPHandler', "querySlides", "placeHolder")
     s.send(jsonRequest.toJSON())
 
 def loadSlides(**kwargs):
@@ -38,7 +37,8 @@ def main_socket_thread(inputQueue, Queues, runtimeVars):
         if not Queues["Socket"].empty():
             log(Queues["Socket"], "Message in Queue")
             currentMessage = Queues["Socket"].get()
-            functions[currentMessage.action]()
+            if currentMessage["dest"] == "Grandma":
+                s.send(currentMessage.toJSON)
 #    s.sock.send("{\"dest\": \"Grandma\", \"src\": \"blueberry\", \"content\": {\"name\": \"blueberry\"}, \"action\": \"getSlides\"}")
 
 #main function

@@ -13,8 +13,6 @@ from logging import log
 
 # Import childern
 from logging import logging_thread
-# from display import main_display_thread
-# from socketClient import main_socket_thread
 
 
 def main():
@@ -33,20 +31,14 @@ def main():
 	Queues.Queues["Logging"] = Queue.Queue(100)
 	Queues.Queues["Main"] = Queue.Queue(100)
 
-	#Function mapping
-	functions = {}
-#	functions["Terminate"] = terminate
-
 	#Order of Queues passed to functions: Queue passing data into function, Queue passing data from function to Main, Queue for logging function
 	thread.start_new_thread(logging_thread,(Queues.Queues["Logging"], Queues, runtimeVars))
-	#thread.start_new_thread(display_thread,(Queues, runtimeVars))
-	#thread.start_new_thread(socket_thread, (Queues, runtimeVars))
 	for Thread in Threads.Threads:
 		log(Queues.Queues["Logging"],"Starting thread" + Thread)
 		thread.start_new_thread(Threads.Threads[Thread], (Queues.Queues[Thread], Queues, runtimeVars))
 
 	Run = True
-	## Forwards messages to apropriate Queues/ runs appropriate functions
+	## Keeps the program running until recieves a terminate command.
 	while Run:
 		log(Queues.Queues["Logging"], "Empty Log")
 		while not Queues.Queues["Main"].empty():
@@ -57,8 +49,8 @@ def main():
 				terminate()
 				Run = False
 				break;
-			# else:
-			# 	functions[currentMessage.action]()
+			 else:
+			 	log(Queues["Logging"], "Runaway Message: " + message)
 
 ## Functions called:
 # When function is called, passes a terminate message to all the children threads.

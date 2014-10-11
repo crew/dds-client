@@ -6,9 +6,9 @@
 
 import socket, select, json
 
-from socketlist import socketList
-from message import Message
-from slide import Slide
+from Classes.socketlist import socketList
+from Classes.message import Message
+from Classes.slide import Slide
 
 
 #Function to broadcast chat messages to all connected clients
@@ -21,14 +21,7 @@ def connect(**kwargs):
     #return kwargs["pieMap"]
     return kwargs
 
-def getSlides(**kwargs):
-    print "getSlides"
-    identify = Message("Grandma", "blueberry", "loadSlides",{})
-    identify.add_content("loadSlides", Slide("https://i.imgur.com/RWD9u6F.jpg", 60).toJSON())
-    kwargs["connection"].sendMessage(kwargs["sock"],identify.toJSON())
-
-
-def main():
+def main_socketServer_thread(inputQueue, Queues, runtimeVars):
     #Function mapping
     functions = {}
     functions["connect"] = connect 
@@ -52,7 +45,17 @@ def main():
     pieMap = {}
 
     print "Chat server started on port " + str(PORT)
- 
+    thread.start_new_thread(socketServer, (s, Queues, functions))
+
+    Run = True
+    while Run:
+        if not Queues["socketServer"].empty():
+            log(Queues["socketServer"], "Message in Queue")
+            currentMessage = Queues["socketServer"].get()
+            connection.sendMessage(connection.getSock(currentMessage["dest"]), currentMessage.toJSON)
+            
+
+def socketServer(connection, Queues):
     while 1:
         print("WHILE")
         # Get the list sockets which are ready to be read through select
@@ -76,7 +79,7 @@ def main():
                 else:
                     print "incoming Message"
                     currentMessage = json.loads(data)
-                    functions[currentMessage["action"]](connection = connection, currentMessage = currentMessage, pieMap = connection.pieMap, sock = sock)
-
-if __name__ == "__main__":
-    main()
+                    if not currentMessage["pluginDest"] == "socketServer": 
+                        Queues[currentMessage["pluginDest"]].put(currentMessage)
+                    else:
+                        connect(kwargs)
