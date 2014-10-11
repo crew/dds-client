@@ -10,25 +10,24 @@ def main_socket_thread(inputQueue, Queues, runtimeVars):
     # Will be replaced with settings from config
     host = "127.0.0.1"
     port = 5000
-    s = sockClass(host,port)
-
-    functions = {}
-    functions["loadSlides"] = loadSlides
+    s = sockClass(host,port, runtimeVars)
 
     log(Queues["Logging"], "Starting Socket Listener")
-    thread.start_new_thread(socket_thread, (s, Queues, functions))
+    thread.start_new_thread(socket_thread, (s, Queues, runtimeVars))
+
+    time.sleep(1)
 
     Run = True
     while Run:
         if not Queues["Socket"].empty():
-            log(Queues["Socket"], "Message in Queue")
+            log(Queues["Logging"], "Message in Queue")
             currentMessage = Queues["Socket"].get()
+            print currentMessage.toJSON()
             if currentMessage.dest == "Grandma":
                 s.send(currentMessage.toJSON())
-#    s.sock.send("{\"dest\": \"Grandma\", \"src\": \"blueberry\", \"content\": {\"name\": \"blueberry\"}, \"action\": \"getSlides\"}")
 
 #main function
-def socket_thread(s, Queues, functions):
+def socket_thread(s, Queues, runtimeVars):
     run = True
     print("blueberry")
     while run:      
@@ -43,11 +42,10 @@ def socket_thread(s, Queues, functions):
                 data = sock.recv(4096)
                 print data
                 if not data:
-                    s.connect()
+                    s.connect(runtimeVars)
                 else :
                     currentMessage = json.loads(data)
-                    functions[currentMessage["action"]](currentMessage = currentMessage, Queues = Queues)
-            #user entered a message
+                    Queues[currentMessage["pluginDest"]].put(currentMessage)
             else :
                 print "Something Goofed"
 

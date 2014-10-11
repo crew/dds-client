@@ -6,6 +6,7 @@ import sys, Queue, thread
 from Classes.message import Message
 from Classes.QueueDict import QueueDict
 from Classes.ThreadDict import ThreadDict
+from Classes.ConfigParser import ConfigParser
 
 # Import functions
 from plugin import plugin

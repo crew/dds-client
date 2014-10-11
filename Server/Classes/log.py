@@ -3,4 +3,3 @@ class logging(object):
 	def __init__(self, arg):
 		super(logging, self).__init__()
 		self.arg = arg
-		

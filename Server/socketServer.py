@@ -16,7 +16,7 @@ from Classes.slide import Slide
 
 def connect(**kwargs):
     #print "wooho"
-    pie = kwargs["currentMessage"]["content"]["name"] 
+    pie = kwargs["currentMessage"]["src"] 
     kwargs["connection"].mapPie(kwargs["sock"],pie)
     return kwargs
 
@@ -44,9 +44,9 @@ def main_socketServer_thread(inputQueue, Queues, runtimeVars):
     Run = True
     while Run:
         if not Queues["socketServer"].empty():
-            log(Queues["socketServer"], "Message in Queue")
+            log(Queues["Logging"], "Message in Queue")
             currentMessage = Queues["socketServer"].get()
-            connection.sendMessage(connection.getSock(currentMessage.dest), currentMessage.toJSON)
+            connection.sendMessage(connection.getSock(currentMessage.dest), currentMessage.toJSON())
             
 
 def socketServer(connection, Queues, server_socket, RECV_BUFFER):
@@ -65,9 +65,9 @@ def socketServer(connection, Queues, server_socket, RECV_BUFFER):
                 sockfd, addr = server_socket.accept()
                 connection.addSocket(sockfd)
                 print "Client Connected"  
-                #connection.broadcast(sockfd, "[%s:%s] entered room\n la-de-da" % addr)
             else:
                 data = sock.recv(RECV_BUFFER)
+                print data
                 if data == "":
                     connection.removeSocket(sock)
                 else:
@@ -78,3 +78,8 @@ def socketServer(connection, Queues, server_socket, RECV_BUFFER):
                         Queues[currentMessage["pluginDest"]].put(currentMessage)
                     else:
                         connect(connection = connection, currentMessage = currentMessage, pieMap = connection.pieMap, sock = sock)
+
+def log(queue,mes):
+    newLog = Message("Socket", "Logging", "Logger" ,"log", {})
+    newLog.add_content("1",mes)
+    queue.put(newLog)

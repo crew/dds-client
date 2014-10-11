@@ -1,7 +1,7 @@
 class ConfigParser:
 	@staticmethod
 	def readConfig():
-		config  = open("../Configs/PIE.conf", "r")
+		config  = open("Configs/PIE.conf", "r")
 		configContents = config.read()
 		configDict = {}
 		for line in configContents.splitlines():

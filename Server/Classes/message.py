@@ -19,9 +19,9 @@ class Message:
         self.content[key] = val
     
     def toJSON(self):
-        text = json.dumps(self.__dict__)
-        return text
-
+    	text = json.dumps(self.__dict__)
+    	return text
+    	
 """ Sample Messge Usage:
     Making a new message that will send terminate from main to display.
     

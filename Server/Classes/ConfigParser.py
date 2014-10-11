@@ -1,7 +1,7 @@
 class ConfigParser:
 	@staticmethod
 	def readConfig():
-		config  = open("../Configs/PIE.conf", "r")
+		config  = open("Configs/PIE.conf", "r")
 		configContents = config.read()
 		configDict = {}
 		for line in configContents.splitlines():
@@ -11,6 +11,7 @@ class ConfigParser:
 		return configDict
 	@staticmethod
 	def getPair(line):
+		## Need to deal with blank lines
 		split = line.replace(" ","").split("=")
 		if len(split) != 2:
 			raise Exception("Bad config file...")

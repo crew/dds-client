@@ -33,12 +33,13 @@ from Classes.slide import Slide
 
 ## Functions
 def main_display_thread(inputQueue, Queues, runtimeVars):
-    slideRequest = Message("blueberry", "Grandma", 'WPHandler', "querySlides", "placeHolder")
+    slideRequest = Message(runtimeVars["name"], "Grandma", 'WPHandler', "querySlides", "placeHolder")
+    print "slideReuqest " + slideRequest.toJSON()
     Queues["Socket"].put(slideRequest)
-    
+
     slides = []
     # Replace with loading slide
-    slides.append(Slide("http://facebook.com", 10)) 
+    slides.append(Slide("http://mrwgifs.com/wp-content/uploads/2013/08/Success-Kid-Meme-Gif.gif", 10)) 
 
     # all of the information to be sent to be displayed
     #Loops through the Json and outputs the data
@@ -57,15 +58,17 @@ def main_display_thread(inputQueue, Queues, runtimeVars):
             pass
             if not inputQueue.empty():
                 currentMessage = inputQueue.get()
-                if currentMessage.action == "addSlide":
+                if currentMessage["action"] == "loadSlides":
                     print "New Slide!!!!"
-                    print currentMessage.content
-                    tempSlide = json.loads(currentMessage.content)
-                    if  '__type__' in tempSlide and tempSlide["__type__"] == "slide":
-                        slides.append(Slide(tempSlide["url"], tempSlide["duration"], tempSlide["action"]))
-                elif currentMessage.action == "removeSlide":
+                    print currentMessage["content"]
+                    tempSlides = json.loads(currentMessage["content"])
+                    for slide in tempSlides["actions"]:
+                        print slide
+#                        if  '__type__' in tempSlide and tempSlide["__type__"] == "slide":
+                        slides.append(Slide(slide["location"], slide["duration"]))
+                elif currentMessage["content"] == "removeSlide":
                     slides.remove(currentMessage.content)
-                elif currentMessage.action == "Terminate":
+                elif currentMessage["content"] == "Terminate":
                     Run = False
             else:
                 pass
