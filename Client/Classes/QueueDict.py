@@ -15,19 +15,13 @@ class QueueDict:
     """
 
     def __init__(self, queueSize = 100):
-        self._queues = {}
-        self._queueSize = queueSize
+        self.Queues = {}
+        self.queueSize = queueSize
     
     # Allows us to retrvive Queues using queues[name]
     def __getitem__(self, name):
-        return self.getQueue(name)
-
-    """
-    :param <name> : String. Markup name of a queue.
-    """
-    def getQueue(self, name):
-        return self._queues[name]
+        return self.Queues[name]
 
     # Adds a Queue to the dict.
     def addQueue(self, name):
-        self._queues[name] = Queue.Queue(queueSize)
+        self.Queues[name] = Queue.Queue(self.queueSize)

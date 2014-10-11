@@ -4,7 +4,7 @@
 # Tcp Chat server
 
 
-import socket, select, json
+import socket, select, json, thread
 
 from Classes.socketlist import socketList
 from Classes.message import Message
@@ -22,11 +22,6 @@ def connect(**kwargs):
     return kwargs
 
 def main_socketServer_thread(inputQueue, Queues, runtimeVars):
-    #Function mapping
-    functions = {}
-    functions["connect"] = connect 
-    functions["getSlides"] = getSlides
-
     # List to keep track of socket descriptors
     RECV_BUFFER = 4096 # Advisable to keep it as an exponent of 2
     PORT = 5000
@@ -45,7 +40,7 @@ def main_socketServer_thread(inputQueue, Queues, runtimeVars):
     pieMap = {}
 
     print "Chat server started on port " + str(PORT)
-    thread.start_new_thread(socketServer, (s, Queues, functions))
+    thread.start_new_thread(socketServer, (connection, Queues))
 
     Run = True
     while Run:

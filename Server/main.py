@@ -5,7 +5,7 @@ import sys, Queue, thread
 # Import Classes
 from Classes.message import Message
 from Classes.QueueDict import QueueDict
-from Classes.threads import threads
+from Classes.ThreadDict import ThreadDict
 
 # Import functions
 from plugin import plugin
@@ -28,7 +28,7 @@ def main():
 
 	#Setup individual Queues
 	Queues = QueueDict()
-	Threads = threads()
+	Threads = ThreadDict()
 	plugin(Threads, Queues)
 	Queues.Queues["Logging"] = Queue.Queue(100)
 	Queues.Queues["Main"] = Queue.Queue(100)
@@ -39,8 +39,6 @@ def main():
 
 	#Order of Queues passed to functions: Queue passing data into function, Queue passing data from function to Main, Queue for logging function
 	thread.start_new_thread(logging_thread,(Queues.Queues["Logging"], Queues, runtimeVars))
-	#thread.start_new_thread(display_thread,(Queues, runtimeVars))
-	#thread.start_new_thread(socket_thread, (Queues, runtimeVars))
 	for Thread in Threads.Threads:
 		log(Queues.Queues["Logging"],"Starting thread" + Thread)
 		thread.start_new_thread(Threads.Threads[Thread], (Queues.Queues[Thread], Queues, runtimeVars))

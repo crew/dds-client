@@ -1,6 +1,6 @@
 from QueueDict import QueueDict
 
-class threads:
+class ThreadDict:
 	"""Warpper around thread object, allows us to start all the persistant
 	Threads in a consistent simple fashion. See plugins.py for more details."""
 
@@ -8,7 +8,7 @@ class threads:
 		self.Threads = {}
 
 	def addThread(self, name, function, queue):
-		queueDict.addQueue(name)
+		queue.addQueue(name)
 		self.Threads[name] = function
 		#self.Threads[thread]["Queue"] = queue
 		

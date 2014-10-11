@@ -1,7 +1,7 @@
 #inputQueue is info for this plugin
 #queues are queues for every plugin
 #runtimeVars is a dictionary containing all important information for this program
-def WPHandler_main_thread(inputQueue, queues, runtimeVars):
+def main_WPHandler_thread(inputQueue, queues, runtimeVars):
 	wpListenerStart()
 	while True:
 		if not inputQueue.empty():

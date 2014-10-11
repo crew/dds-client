@@ -1,5 +1,5 @@
 # Import thread module
-from Classes.threads import Threads
+from Classes.ThreadDict import ThreadDict
 
 
 # Import plugin thread
