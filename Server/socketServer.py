@@ -23,7 +23,7 @@ def connect(**kwargs):
 def main_socketServer_thread(inputQueue, Queues, runtimeVars):
     # List to keep track of socket descriptors
     RECV_BUFFER = 4096 # Advisable to keep it as an exponent of 2
-    PORT = 5000
+    runtimeVars["port"] = 5000
      
     server_socket = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
     # this has no effect, why ?

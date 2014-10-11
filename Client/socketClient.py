@@ -8,9 +8,7 @@ import Queue , thread
 def main_socket_thread(inputQueue, Queues, runtimeVars):
     log(Queues["Logging"], "Starting Main Socket")
     # Will be replaced with settings from config
-    host = "127.0.0.1"
-    port = 5000
-    s = sockClass(host,port, runtimeVars)
+    s = sockClass(runtimeVars)
 
     log(Queues["Logging"], "Starting Socket Listener")
     thread.start_new_thread(socket_thread, (s, Queues, runtimeVars))

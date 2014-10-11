@@ -5,10 +5,10 @@ class sockClass:
 	""" Client Socket class. Lets us split off socket functionality into 
 	multiple threads such that we can send and recive sockets comunications
 	without any troubles."""
-	def __init__(self, host, port, runtimeVars):
+	def __init__(self, runtimeVars):
 		self.sock = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
-		self.hostIP = host
-		self.hostPort = port
+		self.hostIP = runtimeVars["server"]
+		self.hostPort = runtimeVars["port"]
 		self.connect(runtimeVars)
 
 	def send(self, msg):
