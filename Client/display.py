@@ -79,7 +79,7 @@ def updateBrowser(slide):
 ## Logging
 # Passes a message to the logging thread to log.
 def log(queue,mes):
-        newLog = Message("Display", "Logging", "log", {})
+        newLog = Message("Display", "Logging", "Logger", "log", {})
         newLog.add_content("1",mes)
         queue.put(newLog)
 

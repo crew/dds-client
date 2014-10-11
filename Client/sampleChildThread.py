@@ -20,7 +20,7 @@ def main_SAMPLE_thread(input_queue, output_queue, logging_queue):
             currentMessage = input_queue.get()
             ## Terminate functionality (when it recieves the die message terminates child threads and then terminates self)
             if "Terminate" in currentMessage.content and currentMessage.content["Terminate"] is True:
-                sendMessage = Message("SAMPLE", "SAMPLEchild", {})
+                sendMessage = Message("SAMPLE", "SAMPLEchild", "Sample" , {})
                 sendMessage.add_content("Terminate", True)
                 output_queue.put(sendMessage)
                 run = False
@@ -34,7 +34,7 @@ def FUNC1(output_queue, logging_queue):
 ## Logging
 # Passes a message to the logging thread to log.
 def log(queue,mes):
-        newLog = Message("SAMPLE", "Logging", {})
+        newLog = Message("SAMPLE", "Logging", "Logger", {})
         newLog.add_content("1",mes)
         queue.put(newLog)
 

@@ -14,6 +14,6 @@ def logging_thread(input_queue, Queues, runtimeVars):
 ## Logging
 # Passes a message to the logging thread to log.
 def log(queue,mes):
-	newLog = Message("Main", "Logging", "log", {})
+	newLog = Message("Main", "Logging", "Logger" , "log", {})
 	newLog.add_content("1",mes)
 	queue.put(newLog)

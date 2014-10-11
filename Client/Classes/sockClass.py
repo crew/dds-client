@@ -26,7 +26,7 @@ class sockClass:
 
 		# Passes along PIE name to Grandma
 		# Needs to be abstracted to allow config setting of these parameters
-		identify = Message("blueberry", "Grandma", "connect",{})
+		identify = Message("blueberry", "Grandma","socketServer" , "connect",{})
 		identify.add_content("name","blueberry")
 		identify.add_content("item2","bob")
 		self.sock.send(identify.toJSON())

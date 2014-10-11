@@ -66,6 +66,6 @@ def socket_thread(s, Queues, functions):
                 print "Something Goofed"
 
 def log(queue,mes):
-    newLog = Message("Socket", "Logging", "log", {})
+    newLog = Message("Socket", "Logging", "Logger" ,"log", {})
     newLog.add_content("1",mes)
     queue.put(newLog)
