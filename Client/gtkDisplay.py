@@ -38,6 +38,10 @@ class WebBrowser(gtk.Window):
         self.add(self._browser)
         settings = webkit.WebSettings()
         settings.set_property('enable-page-cache', True)
+        #Hopefully stopping page lag
+        settings.set_property('enable-smooth-scrolling', True)
+        settings.set_property('enable-accelerated-compositing', True)
+        
         self._browser.set_settings(settings)
         self.connect('destroy', gtk.main_quit)
 
