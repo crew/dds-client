@@ -11,7 +11,7 @@ class Message:
         """src is the name of the thread, dest is the goal thread, action is a string that can run a function, content is a dictionary"""
         self.src = src
         self.dest = dest
-	self.pluginDest = pluginDest
+        self.pluginDest = pluginDest
         self.action = action
         self.content = content
 

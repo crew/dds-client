@@ -18,7 +18,6 @@ def connect(**kwargs):
     #print "wooho"
     pie = kwargs["currentMessage"]["content"]["name"] 
     kwargs["connection"].mapPie(kwargs["sock"],pie)
-    #return kwargs["pieMap"]
     return kwargs
 
 def main_socketServer_thread(inputQueue, Queues, runtimeVars):
@@ -40,17 +39,17 @@ def main_socketServer_thread(inputQueue, Queues, runtimeVars):
     pieMap = {}
 
     print "Chat server started on port " + str(PORT)
-    thread.start_new_thread(socketServer, (connection, Queues))
+    thread.start_new_thread(socketServer, (connection, Queues, server_socket, RECV_BUFFER))
 
     Run = True
     while Run:
         if not Queues["socketServer"].empty():
             log(Queues["socketServer"], "Message in Queue")
             currentMessage = Queues["socketServer"].get()
-            connection.sendMessage(connection.getSock(currentMessage["dest"]), currentMessage.toJSON)
+            connection.sendMessage(connection.getSock(currentMessage.dest), currentMessage.toJSON)
             
 
-def socketServer(connection, Queues):
+def socketServer(connection, Queues, server_socket, RECV_BUFFER):
     while 1:
         print("WHILE")
         # Get the list sockets which are ready to be read through select
@@ -73,8 +72,9 @@ def socketServer(connection, Queues):
                     connection.removeSocket(sock)
                 else:
                     print "incoming Message"
+                    print data
                     currentMessage = json.loads(data)
                     if not currentMessage["pluginDest"] == "socketServer": 
                         Queues[currentMessage["pluginDest"]].put(currentMessage)
                     else:
-                        connect(kwargs)
+                        connect(connection = connection, currentMessage = currentMessage, pieMap = connection.pieMap, sock = sock)

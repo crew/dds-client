@@ -49,7 +49,7 @@ def main():
 				terminate()
 				Run = False
 				break;
-			 else:
+			else:
 			 	log(Queues["Logging"], "Runaway Message: " + message)
 
 ## Functions called:

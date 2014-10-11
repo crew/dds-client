@@ -6,7 +6,7 @@ def main_WPHandler_thread(inputQueue, queues, runtimeVars):
 	while True:
 		if not inputQueue.empty():
 			message = inputQueue.get()
-			handle(message,queues["Socket"], runtimVars)
+			handle(message,queues["socketServer"], runtimeVars)
 #Action: querySlides -> queries for the slides of a given pie
 #         content = the name of the pie requesting its slides 
 def handle(message, outputQueue, runtime):

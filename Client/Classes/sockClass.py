@@ -11,6 +11,9 @@ class sockClass:
 		self.hostPort = port
 		self.connect()
 
+	def send(self, msg):
+		self.sock.send(msg)
+
 	def connect(self):
 		while True:
 			# connect to remote host

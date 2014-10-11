@@ -5,16 +5,6 @@ from Classes.message import Message
 from Classes.sockClass import sockClass
 import Queue , thread
 
-def getSlides(s):
-    print "getSlides"
-    jsonRequest = Message("blueberry", "Grandma", 'WPHandler', "querySlides", "placeHolder")
-    s.send(jsonRequest.toJSON())
-
-def loadSlides(**kwargs):
-    print kwargs["currentMessage"]
-    for key, slide in kwargs["currentMessage"]["content"].items():
-        kwargs["Queues"]["Display"].put(Message("Socket", "Display", "addSlide", slide))
-
 def main_socket_thread(inputQueue, Queues, runtimeVars):
     log(Queues["Logging"], "Starting Main Socket")
     # Will be replaced with settings from config
@@ -28,17 +18,13 @@ def main_socket_thread(inputQueue, Queues, runtimeVars):
     log(Queues["Logging"], "Starting Socket Listener")
     thread.start_new_thread(socket_thread, (s, Queues, functions))
 
-    time.sleep(5)
-    print "Getting Slides"
-    getSlides(s.sock)
-
     Run = True
     while Run:
         if not Queues["Socket"].empty():
             log(Queues["Socket"], "Message in Queue")
             currentMessage = Queues["Socket"].get()
-            if currentMessage["dest"] == "Grandma":
-                s.send(currentMessage.toJSON)
+            if currentMessage.dest == "Grandma":
+                s.send(currentMessage.toJSON())
 #    s.sock.send("{\"dest\": \"Grandma\", \"src\": \"blueberry\", \"content\": {\"name\": \"blueberry\"}, \"action\": \"getSlides\"}")
 
 #main function
