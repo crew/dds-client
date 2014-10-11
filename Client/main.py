@@ -4,7 +4,7 @@ import sys, Queue, thread
 
 # Import Classes
 from Classes.message import Message
-from Classes.queues import queues
+from Classes.QueueDict import QueueDict
 from Classes.threads import threads
 
 # Import functions
@@ -27,7 +27,7 @@ def main():
 
 
 	#Setup individual Queues
-	Queues = queues()
+	Queues = QueueDict()
 	Threads = threads()
 	plugin(Threads, Queues)
 	Queues.Queues["Logging"] = Queue.Queue(100)

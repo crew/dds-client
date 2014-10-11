@@ -11,7 +11,7 @@ class QueueDict:
     """
 
     def __init__(self, queueSize = 100):
-		self._queues = {}
+        self._queues = {}
         self._queueSize = queueSize
     
 

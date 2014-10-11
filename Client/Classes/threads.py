@@ -1,4 +1,4 @@
-from queues import queues
+from QueueDict import QueueDict
 
 class threads:
 	"""docstring for """
@@ -6,7 +6,7 @@ class threads:
 		self.Threads = {}
 
 	def addThread(self, name, function, queue):
-		queue.addQueue(name)
+		queueDict.addQueue(name)
 		self.Threads[name] = function
 		#self.Threads[thread]["Queue"] = queue
 		
