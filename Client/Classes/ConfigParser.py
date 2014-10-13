@@ -5,7 +5,7 @@ class ConfigParser:
 		configContents = config.read()
 		configDict = {}
 		for line in configContents.splitlines():
-			if not line.startswith("["):
+			if not (line.startswith("[") or line == ""):
 				pair = ConfigParser.getPair(line)
 				configDict[pair[0]]=pair[1]
 		return configDict
