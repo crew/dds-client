@@ -43,7 +43,7 @@ def socket_thread(s, Queues, runtimeVars):
                     s.connect(runtimeVars)
                 else :
                     currentMessage = json.loads(data)
-                    Queues[currentMessage["pluginDest"]].put(currentMessage)
+                    Queues[currentMessage["pluginDest"]].put(Message.fromJSON(currentMessage))
             else :
                 print "Something Goofed"
 
