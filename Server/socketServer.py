@@ -75,7 +75,7 @@ def socketServer(connection, Queues, server_socket, RECV_BUFFER):
                     print data
                     currentMessage = json.loads(data)
                     if not currentMessage["pluginDest"] == "socketServer": 
-                        Queues[currentMessage["pluginDest"]].put(currentMessage)
+                        Queues[currentMessage["pluginDest"]].put(Message.fromJSON(currentMessage))
                     else:
                         connect(connection = connection, currentMessage = currentMessage, pieMap = connection.pieMap, sock = sock)
 

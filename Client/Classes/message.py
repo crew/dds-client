@@ -21,6 +21,27 @@ class Message:
     def toJSON(self):
     	text = json.dumps(self.__dict__)
     	return text
+    def fromJSON(jsonObj):
+    	src = jsonObj['src']
+    	dest = jsonObj['dest']
+    	pluginDest = jsonObj['pluginDest']
+    	action = jsonObj['action']
+    	content = jsonObj['content']
+    	return Message(src, dest, pluginDest, action, content)
+
+    def __getitem__(self, item):
+    	if item == self.src:
+    		return self.src
+    	elif item == self.dest:
+    		return self.dest
+    	elif item == self.pluginDest:
+    		return self.pluginDest
+    	elif item == self.action:
+    		return self.action
+    	elif item == self.content
+    		return self.content
+    	else
+    		raise Exception("Message does not have an attribute \""+item+"\"")
     	
 """ Sample Messge Usage:
     Making a new message that will send terminate from main to display.
