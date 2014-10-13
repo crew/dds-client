@@ -4,14 +4,15 @@ class ConfigParser:
 		config  = open("Configs/PIE.conf", "r")
 		configContents = config.read()
 		configDict = {}
+		print len(configContents.splitlines())
 		for line in configContents.splitlines():
-			if not line.startswith("["):
+			if not (line.startswith("[") or line == ""):
+
 				pair = ConfigParser.getPair(line)
 				configDict[pair[0]]=pair[1]
 		return configDict
 	@staticmethod
 	def getPair(line):
-		## Need to deal with blank lines
 		split = line.replace(" ","").split("=")
 		if len(split) != 2:
 			raise Exception("Bad config file...")
