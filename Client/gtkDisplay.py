@@ -30,7 +30,7 @@ import time
 #   the URL provided to it
 # Note: URL must begin with prefix (e.g. "http://")
 class WebBrowser(gtk.Window):
-    def __init__(self, url):
+    def __init__(self, url, width, height):
         gtk.Window.__init__(self)
         self.fullscreen()
 
@@ -46,6 +46,7 @@ class WebBrowser(gtk.Window):
         self.add(self._browser)
 
         self._browser.load_uri(url)
+        self._browser.set_size_request(int(width), int(height))
         self.show_all()
 
         gobject.threads_init()
@@ -74,12 +75,12 @@ def openPageTest():
 
 # TODO: Integrate with existing queues
 class PageUpdateThread (threading.Thread):
-    def __init__(self, queue=None):
+    def __init__(self, width, height, queue=None):
         threading.Thread.__init__(self)
         self.threadID = 1
         self.name = "Page Update"
         self.queue = queue
-        self.webBrowser = WebBrowser("")
+        self.webBrowser = WebBrowser("", width, height)
     def run(self):
         while 1:
             currentSlide = self.queue.get()
@@ -105,7 +106,7 @@ testQueue.put(Slide("http:\/\/dds-wp.ccs.neu.edu\/?slide=cisters&pie_name=chocol
 testQueue.put(Slide("http:\/\/dds-wp.ccs.neu.edu\/?slide=welcome-to-the-ccis-main-office&pie_name=chocolate", 10))
 
 def main_gtk_thread(inputQueue, Queues, runtimeVars):
-    pageUpdateThread = PageUpdateThread(inputQueue)
+    pageUpdateThread = PageUpdateThread(runtimeVars["width"], runtimeVars["height"],inputQueue)
 
     pageUpdateThread.start()
 
