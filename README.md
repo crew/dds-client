@@ -2,28 +2,30 @@ DDS-Client -- Project Bakesale
 ================================
 Todo:
 Note: This is a working todo list. Will add things as they come up
-** All ** 
-1. Relative Path imports in python and/or appending a parent directory to the path
-	i.e. given the folder structure below, both client and server need 
-	Message.py but preferably if only needed to have it in one place, a Classes folder
-
-		DDS-Client
-			-> Client
-				-> main.py
-			-> Server
-				-> main.py
-			-> Classes
-				-> Message.py
-
-** Display **
-1. Python to webpage communication. Should be dynamic and a two way connection
-
-2. Core Display cycling functionality (Display running through the slides)
-
 ** Server **
 1. 1WP to Server communication (JSON parsing and then acting upon that information)
 
 Moar functionality
 
-
 DDS is a NU Crew project.
+The MIT License (MIT)
+
+Copyright (c) 2014 Northeastern University College of Computer and Information Science's Experimental Systems Group
+
+Permission is hereby granted, free of charge, to any person obtaining a copy
+of this software and associated documentation files (the "Software"), to deal
+in the Software without restriction, including without limitation the rights
+to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+copies of the Software, and to permit persons to whom the Software is
+furnished to do so, subject to the following conditions:
+
+The above copyright notice and this permission notice shall be included in all
+copies or substantial portions of the Software.
+
+THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
+SOFTWARE.
