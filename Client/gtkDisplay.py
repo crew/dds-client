@@ -75,15 +75,15 @@ def openPageTest():
 
 # TODO: Integrate with existing queues
 class PageUpdateThread (threading.Thread):
-    def __init__(self, width, height, queue=None):
+    def __init__(self, width, height, show):
         threading.Thread.__init__(self)
         self.threadID = 1
         self.name = "Page Update"
-        self.queue = queue
+		self.show = show
         self.webBrowser = WebBrowser("", width, height)
     def run(self):
         while 1:
-            currentSlide = self.queue.get()
+            currentSlide = show.
             gobject.timeout_add(100,self.webBrowser.updatePage, currentSlide.url)
             time.sleep(currentSlide.duration)
             #self.queue.put(currentSlide)
@@ -106,11 +106,17 @@ testQueue.put(Slide("http:\/\/dds-wp.ccs.neu.edu\/?slide=cisters&pie_name=chocol
 testQueue.put(Slide("http:\/\/dds-wp.ccs.neu.edu\/?slide=welcome-to-the-ccis-main-office&pie_name=chocolate", 10))
 
 def main_gtk_thread(inputQueue, Queues, runtimeVars):
-    pageUpdateThread = PageUpdateThread(runtimeVars["width"], runtimeVars["height"],inputQueue)
-
-    pageUpdateThread.start()
-
     gtk.main()
+	
+	
+
+#Initializes the browser and returns a function used to update the page
+def getUpdateHandle(inputQueue, Queues, runtimeVars):
+	browser = WebBrowser("", width, height)
+	def updatePage(url):
+		gobject.timeout_add(100,browser.updatePage, url)
+	return updatePage
+	
 
 # Called on program start and contains
 #   gtk.main() (Runs until gtk.main_quit()...

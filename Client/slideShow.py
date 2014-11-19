@@ -31,8 +31,26 @@ from Classes.slide import Slide
 #                 run = False
 #         ## Can add additional logic here/spawn threads as needed
 
+
+		
+class SlideShowPlugin(Plugin):
+	def __init__(self):
+		self.updateHandle = None
+	def needsThread(self):
+		return True;
+	def startThread(self, inQ, queues, runtimeVars):
+		if self.updateHandle == None:
+			raise Exception("Something got fucked")
+		runShow(inQ, queues, runtimeVars, self.updateHandle)
+	def setup(self, inQ = None, queues = None, runtimeVars = None):
+		if inQ is None or queues is None or runtimeVars is None:
+			raise Exception("SlideShowPlugin setup recieved bad arguments")
+		self.updateHandle = gtkDisplay.getUpdateHandle(inQ, queues, runtimeVars)
+	def getName():
+		return "slideShow"
+
 ## Functions
-def main_display_thread(inputQueue, Queues, runtimeVars):
+def runShow(inputQueue, Queues, runtimeVars, setPage):
     slideRequest = Message(runtimeVars["name"], "Grandma", 'WPHandler', "querySlides", "placeHolder")
     print "slideReuqest " + slideRequest.toJSON()
     Queues["Socket"].put(slideRequest)
@@ -51,42 +69,29 @@ def main_display_thread(inputQueue, Queues, runtimeVars):
     Run = True
     while Run:
         currentSlide = slides[x]
-        print currentSlide.duration
         target_time = datetime.datetime.now() + datetime.timedelta(seconds = currentSlide.duration)
-        Queues["Gtk"].put(currentSlide)
+        setPage(currentSlide.url)
         while(datetime.datetime.now() < target_time):
-            pass
             if not inputQueue.empty():
                 currentMessage = inputQueue.get()
                 if currentMessage["action"] == "loadSlides":
-                    print "New Slide!!!!"
-                    print currentMessage["content"]
+					log("DEBUG", "Recieved new slide: "+currentMessage["content"])
                     tempSlides = json.loads(currentMessage["content"])
                     for slide in tempSlides["actions"]:
-                        print slide
-#                        if  '__type__' in tempSlide and tempSlide["__type__"] == "slide":
                         slides.append(Slide(slide["location"], slide["duration"]))
                 elif currentMessage["content"] == "removeSlide":
                     slides.remove(currentMessage.content)
                 elif currentMessage["content"] == "Terminate":
                     Run = False
-            else:
-                pass
-        # Load Slide
-        if x < (len(slides) - 1):
-            x+=1
-        else:            
-            x=0
+            
+        # Move on
+        x %= len(slides)
 
-def updateBrowser(slide):
-    # Insert Websocket code here
-    print "Place holder"
+
 
 ## Logging
 # Passes a message to the logging thread to log.
 def log(queue,mes):
-        newLog = Message("Display", "Logging", "Logger", "log", {})
-        newLog.add_content("1",mes)
-        queue.put(newLog)
+        raise Exception("You forgot to finish me")
 
 

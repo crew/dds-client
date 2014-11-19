@@ -1,6 +1,6 @@
 #!/usr/bin/python
 # General Imports
-import sys, Queue, thread
+import sys, Queue, thread, os
 
 # Import Classes
 from Classes.message import Message
@@ -23,12 +23,14 @@ def main():
 	#runtimeVars["PIEname"] = "blueberry"
 	#runtimeVars["Server"] = "dds-wp.ccs.neu.edu"
 	#runtimeVars["serverPort"] = "5000"
-
+		
 
 	#Setup individual Queues
 	Queues = QueueDict()
-	Threads = ThreadDict()
-	plugin(Threads, Queues)
+	#Threads = ThreadDict()
+	plugins = PluginDict()
+	
+	plugin(plugins, Queues)
 	Queues.Queues["Logging"] = Queue.Queue(100)
 	Queues.Queues["Main"] = Queue.Queue(100)
 

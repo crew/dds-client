@@ -5,40 +5,27 @@ from Classes.message import Message
 from Classes.sockClass import sockClass
 import Queue , thread
 
-def main_socket_thread(inputQueue, Queues, runtimeVars):
-    log(Queues["Logging"], "Starting Main Socket")
-    # Will be replaced with settings from config
-    s = sockClass(runtimeVars)
-
-    log(Queues["Logging"], "Starting Socket Listener")
-    thread.start_new_thread(socket_thread, (s, Queues, runtimeVars))
-
-    time.sleep(1)
-
-    Run = True
+def socket_out(Queues, socket):
+	Run = True
     while Run:
         if not Queues["Socket"].empty():
-            log(Queues["Logging"], "Message in Queue")
+            log("DEBUG", "Outbound Message: "+currentMessage.toJSON())
             currentMessage = Queues["Socket"].get()
-            print currentMessage.toJSON()
             if currentMessage.dest == "Grandma":
-                s.send(currentMessage.toJSON())
+                socket.send(currentMessage.toJSON())
+			else:
+				log("WARNING", "Message not addressed to grandma")
 
-#main function
-def socket_thread(s, Queues, runtimeVars):
+
+def socket_in(s, Queues, runtimeVars):
     run = True
-    print("blueberry")
     while run:      
         socket_list = [s.sock,]
         # Get the list sockets which are readable
-        print "Hang"
         read_sockets, write_sockets, error_sockets = select.select(socket_list , [], [])
-        print "Incoming Socket"
         for sock in read_sockets:
-            print sock
             if sock == s.sock:
                 data = sock.recv(4096)
-                print data
                 if not data:
                     s.connect(runtimeVars)
                 else :
@@ -46,8 +33,27 @@ def socket_thread(s, Queues, runtimeVars):
                     Queues[currentMessage["pluginDest"]].put(Message.fromJSON(currentMessage))
             else :
                 print "Something Goofed"
+				
+def runSocketIO(inQ, queues, runtimeVars):
+	sock = sockClass(runtimeVars)
+	
+	
+	log("DEBUG", "Starting Socket Listener")
+    thread.start_new_thread(socket_thread, (sockClass(runtimeVars), Queues, runtimeVars))
+	
+	
+	log("DEBUG", "Starting Socket Writer")
+	socket_out(queues, sock)
+	
+	
+#TODO seperate in and out threads, this is non-specific		
+class IOPlugin(Plugin):
+	def needsThread(self):
+		return True;
+	def startThread(self, inQ, queues, runtimeVars):
+		runSocketIO(inQ, queues, runtimeVars)
+	def getName():
+		return "IOPlugin"
 
 def log(queue,mes):
-    newLog = Message("Socket", "Logging", "Logger" ,"log", {})
-    newLog.add_content("1",mes)
-    queue.put(newLog)
+	raise Exception("Didn't finish")
