@@ -46,7 +46,7 @@ class Logger:
 	def addErrorMessage(self, msg):
 		self.error.append(msg)
 		if len(self.error) > self.threshhold:
-			writeAllAndClear(self.warning, open("error.txt", "a"), self.errorLock)
+			writeAllAndClear(self.error, open("error.txt", "a"), self.errorLock)
 	
 	def writeAllAndClear(list, file, lock):
 		lock.aquire(true)
