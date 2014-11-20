@@ -1,6 +1,7 @@
 #!/usr/bin/python
 # General Imports
 import sys, Queue, thread, os
+from time import sleep
 
 # Import Classes
 from Classes.message import Message
@@ -9,11 +10,9 @@ from Classes.ThreadDict import ThreadDict
 from Classes.ConfigParser import ConfigParser
 
 # Import functions
-from plugin import plugin
-from logging import log
+from plugin import getPlugins
+from logging import Logger
 
-# Import childern
-from logging import logging_thread
 
 
 def main():
@@ -28,32 +27,36 @@ def main():
 	#Setup individual Queues
 	Queues = QueueDict()
 	#Threads = ThreadDict()
-	plugins = PluginDict()
 	
-	plugin(plugins, Queues)
+	plguins = getPlugins()
 	Queues.Queues["Logging"] = Queue.Queue(100)
 	Queues.Queues["Main"] = Queue.Queue(100)
 
-	#Order of Queues passed to functions: Queue passing data into function, Queue passing data from function to Main, Queue for logging function
-	thread.start_new_thread(logging_thread,(Queues.Queues["Logging"], Queues, runtimeVars))
-	for Thread in Threads.Threads:
-		log(Queues.Queues["Logging"],"Starting thread" + Thread)
-		thread.start_new_thread(Threads.Threads[Thread], (Queues.Queues[Thread], Queues, runtimeVars))
+	#Why does this need its own thread #overengineering
+	#thread.start_new_thread(logging_thread,(Queues.Queues["Logging"], Queues, runtimeVars))
+	for plugin in plugins:
+		Logger.log("DEBUG","Starting plugin: "+plugin.getName())
+		plugin.setup()
+		if plugin.needsThread():
+			thread.start_new_thread(plugin.startThread, (Queues.Queues[Thread], Queues, runtimeVars))
 
 	Run = True
 	## Keeps the program running until recieves a terminate command.
+	#This is pointless we should run something in the main thread, instead of spawning new ones for everything.
+	#in addition this is a busy wait loop, meaning that it still takes cpu time, which is something we don't want
 	while Run:
-		log(Queues.Queues["Logging"], "Empty Log")
+		Logger.log("DEBUG", "Empty Log")
 		while not Queues.Queues["Main"].empty():
-			log(Queues.Queues["Logging"], "Entries in Log")
+			Logger.log("DEBUG", "Entries in Log")
 			currentMessage = Queues.Queues["Main"].get()
 			if "Terminate" in currentMessage.content:
-				log(Queues.Queues["Logging"], "Terminating")
+				Logger.log("DEBUG", "Terminating")
 				terminate()
 				Run = False
 				break;
 			else:
-			 	log(Queues["Logging"], "Runaway Message: " + message)
+			 	Logger.log("ERROR", "Runaway Message: " + message)
+		sleep(10)
 
 ## Functions called:
 # When function is called, passes a terminate message to all the children threads.

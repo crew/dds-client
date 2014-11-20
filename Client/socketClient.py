@@ -3,18 +3,19 @@ import socket, select, string, sys, time, json
 
 from Classes.message import Message
 from Classes.sockClass import sockClass
+from logging import Logger
 import Queue , thread
 
 def socket_out(Queues, socket):
 	Run = True
     while Run:
         if not Queues["Socket"].empty():
-            log("DEBUG", "Outbound Message: "+currentMessage.toJSON())
+            Logger.log("DEBUG", "Outbound Message: "+currentMessage.toJSON())
             currentMessage = Queues["Socket"].get()
             if currentMessage.dest == "Grandma":
                 socket.send(currentMessage.toJSON())
 			else:
-				log("WARNING", "Message not addressed to grandma")
+				Logger.log("WARNING", "Message not addressed to grandma")
 
 
 def socket_in(s, Queues, runtimeVars):
@@ -38,11 +39,11 @@ def runSocketIO(inQ, queues, runtimeVars):
 	sock = sockClass(runtimeVars)
 	
 	
-	log("DEBUG", "Starting Socket Listener")
+	Logger.log("DEBUG", "Starting Socket Listener")
     thread.start_new_thread(socket_thread, (sockClass(runtimeVars), Queues, runtimeVars))
 	
 	
-	log("DEBUG", "Starting Socket Writer")
+	Logger.log("DEBUG", "Starting Socket Writer")
 	socket_out(queues, sock)
 	
 	
@@ -55,5 +56,4 @@ class IOPlugin(Plugin):
 	def getName():
 		return "IOPlugin"
 
-def log(queue,mes):
-	raise Exception("Didn't finish")
+

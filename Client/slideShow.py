@@ -1,9 +1,11 @@
-import Queue, thread, json, datetime
+import Queue, thread, json, datetime, time
 
 from Classes.message import Message
 from Classes.slide import Slide
+from logging import log
 
-#from logging import log
+
+from logging import Logger
 
 
 # Proably not needed anymore
@@ -71,11 +73,13 @@ def runShow(inputQueue, Queues, runtimeVars, setPage):
         currentSlide = slides[x]
         target_time = datetime.datetime.now() + datetime.timedelta(seconds = currentSlide.duration)
         setPage(currentSlide.url)
+		#Holy shit this didn't do any waiting, thats A LOT of wasted
+		#cpu time, in this loop
         while(datetime.datetime.now() < target_time):
             if not inputQueue.empty():
                 currentMessage = inputQueue.get()
                 if currentMessage["action"] == "loadSlides":
-					log("DEBUG", "Recieved new slide: "+currentMessage["content"])
+					Logger.log("DEBUG", "Recieved new slide: "+currentMessage["content"])
                     tempSlides = json.loads(currentMessage["content"])
                     for slide in tempSlides["actions"]:
                         slides.append(Slide(slide["location"], slide["duration"]))
@@ -83,15 +87,14 @@ def runShow(inputQueue, Queues, runtimeVars, setPage):
                     slides.remove(currentMessage.content)
                 elif currentMessage["content"] == "Terminate":
                     Run = False
-            
+					#this inner loop will still run even if we set Run = false, we need to break
+					#in order to terminate immediately
+					break
+			#Should sleep, we need only support slide durations with precision .1 seconds (we could lesson this to 1 second
+            sleep(.1)
         # Move on
         x %= len(slides)
 
 
-
-## Logging
-# Passes a message to the logging thread to log.
-def log(queue,mes):
-        raise Exception("You forgot to finish me")
 
 

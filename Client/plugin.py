@@ -1,11 +1,9 @@
-# Import thread module
-from Classes.ThreadDict import ThreadDict
-import os
-
-# Import plugin thread
-from slideShow import main_display_thread
-from socketClient import main_socket_thread
-from gtkDisplay import main_gtk_thread
+#In the future we should house these in a file of there own
+#We can dynamically load plugins from the directory
+#we wouldn't need to import and add everything by hand.
+from slideShow import SlideShowPlugin
+from socketClient import IOPlugin
+from gtkDisplay import GTKPlugin
 
 
 def class Plugin:
@@ -15,7 +13,6 @@ def class Plugin:
 		pass
 	def setup(self, inQ = None, queues = None, runtimeVars = None):
 		pass
-		
 	def getName():
 		raise Exception("Abstract Plugin does not have a name")
 	

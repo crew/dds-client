@@ -37,8 +37,6 @@ class WebBrowser(gtk.Window):
         self._browser= webkit.WebView()
         settings = webkit.WebSettings()
         settings.set_property('enable-page-cache', True)
-        #Hopefully stopping page lag
-        #settings.set_property('enable-smooth-scrolling', True)
         settings.set_property('enable-accelerated-compositing', True)
         
         self._browser.set_settings(settings)
@@ -71,30 +69,8 @@ def openPageTest():
     time.sleep(5)
     openPage("http://dds-wp.ccs.neu.edu/?slide=test-ccis-tutoring&pie_name=chocolate")
 
-# Class Definition of Page-Updating Thread
-
-# TODO: Integrate with existing queues
-class PageUpdateThread (threading.Thread):
-    def __init__(self, width, height, show):
-        threading.Thread.__init__(self)
-        self.threadID = 1
-        self.name = "Page Update"
-		self.show = show
-        self.webBrowser = WebBrowser("", width, height)
-    def run(self):
-        while 1:
-            currentSlide = show.
-            gobject.timeout_add(100,self.webBrowser.updatePage, currentSlide.url)
-            time.sleep(currentSlide.duration)
-            #self.queue.put(currentSlide)
 
 
-# Allows initial bash invocation to load
-#      webpage passed as argument
-#if __name__ == "__main__":
-    #if len(sys.argv) <= 1 :
-    #    print("Usage:", sys.argv[0], "url")
-    #    sys.exit(0)
 
 testQueue = Queue.Queue(100)
 testQueue.put(Slide("http://facebook.com", 5))
@@ -105,9 +81,7 @@ testQueue.put(Slide("http:\/\/dds-wp.ccs.neu.edu\/?slide=test-ccis-tutoring&pie_
 testQueue.put(Slide("http:\/\/dds-wp.ccs.neu.edu\/?slide=cisters&pie_name=chocolate", 10))
 testQueue.put(Slide("http:\/\/dds-wp.ccs.neu.edu\/?slide=welcome-to-the-ccis-main-office&pie_name=chocolate", 10))
 
-def main_gtk_thread(inputQueue, Queues, runtimeVars):
-    gtk.main()
-	
+
 	
 
 #Initializes the browser and returns a function used to update the page
@@ -118,16 +92,12 @@ def getUpdateHandle(inputQueue, Queues, runtimeVars):
 	return updatePage
 	
 
-# Called on program start and contains
-#   gtk.main() (Runs until gtk.main_quit()...
-#   i.e. for the program's duration)
-#def mainThread(url):
-#    gobject.threads_init()
-#    webbrowser = WebBrowser(sys.argv[1])
-#   gtk.main()
+class GTKPlugin(Plugin):
+	def needsThread(self):
+		return True;
+	def startThread(self, inQ, queues, runtimeVars):
+		gtk.main()
+	def getName():
+		return "Gtk Plugin"
+	
 
-
-
-# Refreshing:
-# while True:
-#   time.sleep(10)
