@@ -1,44 +1,48 @@
 #!/usr/bin/python
-import socket, select, string, sys, time, json
+import socket, select, string, sys, time, json, Queue
 
 from Classes.message import Message
 from Classes.sockClass import sockClass
 from logging import Logger
 
+from plugin import Plugin
+
 def socket_out(outMessageQueue, socket):
 	Run = True
-    while Run:
-        if not outMessageQueue.empty():
+	while Run:
+		if not outMessageQueue.empty():
 			currentMessage = outMessageQueue.get()
-            Logger.log("DEBUG", "Outbound Message: "+currentMessage.toJSON())
-            if currentMessage.dest == "Grandma":
-                socket.send(currentMessage.toJSON())
+			Logger.log("DEBUG", "Outbound Message: "+currentMessage.toJSON())
+			if currentMessage.dest == "Grandma":
+				socket.send(currentMessage.toJSON())
 			else:
 				Logger.log("WARNING", "Message not addressed to grandma")
+	time.sleep(.25)
 
 
 def socket_in(s, runtimeVars, route):
-    run = True
-    while run:      
-        socket_list = [s.sock,]
-        # Get the list sockets which are readable
-        read_sockets, write_sockets, error_sockets = select.select(socket_list , [], [])
-        for sock in read_sockets:
-            if sock == s.sock:
-                data = sock.recv(4096)
-                if not data:
-                    s.connect(runtimeVars)
-                else :
-                    currentMessage = json.loads(data)
+	run = True
+	while run:      
+		socket_list = [s.sock,]
+		# Get the list sockets which are readable
+		read_sockets, write_sockets, error_sockets = select.select(socket_list , [], [])
+		for sock in read_sockets:
+			if sock == s.sock:
+				data = sock.recv(4096)
+				if not data:
+					s.connect(runtimeVars)
+				else :
+					currentMessage = json.loads(data)
 					if currentMessage["pluginDest"] == "Main":
 						#TODO terminate program
 						continue
+					print "Got message : "+str(currentMessage)
 					messageDestination = currentMessage["pluginDest"]
-					
+					print "Recieved message sending it too : "+str(messageDestination)
 					route[messageDestination](Message.fromJSON(currentMessage))
-                    #Queues[currentMessage["pluginDest"]].put(Message.fromJSON(currentMessage))
-            else :
-                print "Something Goofed"
+					#Queues[currentMessage["pluginDest"]].put(Message.fromJSON(currentMessage))
+			else :
+				print "Something Goofed"
 				
 	
 class IPlugin(Plugin):

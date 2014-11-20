@@ -9,6 +9,7 @@ def main_WPHandler_thread(inputQueue, queues, runtimeVars):
 	wpListenerStart()
 	while True:
 		if not inputQueue.empty():
+			print "WPListener recieved a message"
 			message = inputQueue.get()
 			handle(message,queues["socketServer"], runtimeVars)
 #Action: querySlides -> queries for the slides of a given pie
@@ -18,6 +19,7 @@ def handle(message, outputQueue, runtime):
 		pieName = message["src"]
 		jsonToSend = querySlidesFor(pieName, runtime["server"])
 		message = Message("WPHandler", pieName, "slideShow", "loadSlides", jsonToSend)
+		print "Wp sending message"
 		outputQueue.put(message)
 	#TODO more to come...
 

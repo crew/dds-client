@@ -7,11 +7,22 @@ from time import sleep
 from Classes.message import Message
 from Classes.ConfigParser import ConfigParser
 
+
+
 # Import functions
-from plugin import getPlugins
 from logging import Logger
 
+#In the future we should house these in a file of there own
+#We can dynamically load plugins from the directory
+#we wouldn't need to import and add everything by hand.
+from slideShow import SlideShowPlugin
+from socketClient import IPlugin, OPlugin
+from gtkDisplay import GTKPlugin
 
+#TODO dynamically create
+def getPlugins():
+	return [SlideShowPlugin(), IPlugin(), OPlugin()]
+	
 
 def main():
 	runtimeVars = ConfigParser.readConfig()
@@ -25,7 +36,10 @@ def main():
 	#the plugin is the key, and the value is that plugins addMessage function
 	#also preserves safety of each plugin from the others
 	#they only have access to the addMessage function, and nothing else
-	messageDict = reduce(lambda dict,p : dict[p.getName] = p.addMessage, plugins, {})
+	def addPluginToDict(dict, p):
+		dict[p.getName()] = p.addMessage
+		return dict
+	messageDict = reduce(addPluginToDict, plugins, {})
 	
 	
 	#Main thread now runs gtk.main() before it was busy waiting
@@ -33,7 +47,7 @@ def main():
 		Logger.log("DEBUG","Starting plugin: "+plugin.getName())
 		plugin.setup(messageDict, runtimeVars)
 		if plugin.needsThread():
-			thread.start_new_thread(plugin.startThread, (runtimeVars))
+			thread.start_new_thread(plugin.run, (runtimeVars,))
 	GTKPlugin().run(runtimeVars) #This is kinda gross, need to clean
 	
 

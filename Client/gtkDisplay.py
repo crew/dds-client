@@ -20,6 +20,8 @@ import gtk
 import webkit
 import threading
 from Classes.slide import Slide
+import Queue
+from plugin import Plugin
 
 #for testing
 import time

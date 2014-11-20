@@ -30,6 +30,7 @@ class socketList:
 	def sendMessage(self, sock, msg):
 		print "Sending"
 		print sock
+		print "Message "+str(msg)
 		try :
 			sock.send(msg)
 		except :

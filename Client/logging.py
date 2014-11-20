@@ -12,8 +12,9 @@ import threading
 '''	
 #a thread-safe logging class
 #use Logger.log to log a message with the given priority
+
 class Logger:
-	instance = Logger(5)
+	
 	
 	def __init__(self, threshold):
 		self.debug = []
@@ -22,7 +23,7 @@ class Logger:
 		self.warningLock = threading.Lock()
 		self.error = []
 		self.errorLock = threading.Lock()
-		self.threshold = threshhold
+		self.threshold = threshold
 	#In the future these can be modified to use syslog.syslog(PRIORITY, MESSAGE)
 	#If we want to use syslog instead of our own logs (theirs might be faster)
 	
@@ -36,20 +37,20 @@ class Logger:
 	def addDebugMsg(self, msg):
 		self.debug.append(msg)
 		if len(self.debug) > self.threshold:
-			writeAllAndClear(self.debug, open("debug.txt", "a"), self.debugLock)
+			self.writeAllAndClear(self.debug, open("./debug.txt", "a+"), self.debugLock)
 		
 	def addWarningMessage(self, msg):
 		self.warning.append(msg)
 		if len(self.warning) > self.threshhold:
-			writeAllAndClear(self.warning, open("warning.txt", "a"), self.warningLock)
+			self.writeAllAndClear(self.warning, open("./warning.txt", "a+"), self.warningLock)
 	
 	def addErrorMessage(self, msg):
 		self.error.append(msg)
 		if len(self.error) > self.threshhold:
-			writeAllAndClear(self.error, open("error.txt", "a"), self.errorLock)
+			self.writeAllAndClear(self.error, open("./error.txt", "a+"), self.errorLock)
 	
-	def writeAllAndClear(list, file, lock):
-		lock.aquire(true)
+	def writeAllAndClear(self,list, file, lock):
+		lock.acquire(True)
 		for msg in list:
 			file.write(msg+"\n")
 		file.close()
@@ -74,7 +75,7 @@ class Logger:
 			instance.addErrorMessage(msg)
 		
 		
-	
+instance = Logger(1)
 	
 
 #	newLog = Message("Main", "Logging", "Logger" , "log", {})

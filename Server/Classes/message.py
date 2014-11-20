@@ -21,6 +21,9 @@ class Message:
     def toJSON(self):
     	text = json.dumps(self.__dict__)
     	return text
+
+    def __str__(self):
+        return "Src = "+self.src+" dest = "+self.dest+" pluginDest = "+self.pluginDest+" action = "+self.action+" content = "+self.content
     @staticmethod
     def fromJSON(jsonObj):
     	src = jsonObj['src']

@@ -4,7 +4,7 @@
 # Tcp Chat server
 
 
-import socket, select, json, thread
+import socket, select, json, thread, string
 
 from Classes.socketlist import socketList
 from Classes.message import Message
@@ -73,11 +73,27 @@ def socketServer(connection, Queues, server_socket, RECV_BUFFER):
                 else:
                     print "incoming Message"
                     print data
-                    currentMessage = json.loads(data)
-                    if not currentMessage["pluginDest"] == "socketServer": 
-                        Queues[currentMessage["pluginDest"]].put(Message.fromJSON(currentMessage))
-                    else:
-                        connect(connection = connection, currentMessage = currentMessage, pieMap = connection.pieMap, sock = sock)
+                    nextSplit = string.find(data, "}{")+1
+                    previousSplit = 0
+                    jsonList = []
+                    while nextSplit != 0:
+                        jsonList.append(data[previousSplit:nextSplit])
+                        previousSplit = nextSplit
+                        nextSplit = string.find(data, "}{", previousSplit)+1
+                        if nextSplit == 0:
+                            jsonList.append(data[previousSplit:])
+                    if jsonList == []:
+                        jsonList.append(data)
+
+                    print "Recieved JSON List: "+str(jsonList)
+                    for jsonString in jsonList:
+                        currentMessage = json.loads(jsonString)
+                        if not currentMessage["pluginDest"] == "socketServer":
+                            print "Placing message in destination: "+currentMessage["pluginDest"]
+                            Queues[currentMessage["pluginDest"]].put(Message.fromJSON(currentMessage))
+                        else:
+                            print "Connecting"
+                            connect(connection = connection, currentMessage = currentMessage, pieMap = connection.pieMap, sock = sock)
 
 def log(queue,mes):
     newLog = Message("Socket", "Logging", "Logger" ,"log", {})
