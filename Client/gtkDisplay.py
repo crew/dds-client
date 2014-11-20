@@ -20,7 +20,6 @@ import gtk
 import webkit
 import threading
 from Classes.slide import Slide
-import Queue
 
 #for testing
 import time
@@ -85,8 +84,8 @@ testQueue.put(Slide("http:\/\/dds-wp.ccs.neu.edu\/?slide=welcome-to-the-ccis-mai
 	
 
 #Initializes the browser and returns a function used to update the page
-def getUpdateHandle(inputQueue, Queues, runtimeVars):
-	browser = WebBrowser("", width, height)
+def getUpdateHandle(runtimeVars):
+	browser = WebBrowser("", runtimeVars["width"], runtimeVars["height"])
 	def updatePage(url):
 		gobject.timeout_add(100,browser.updatePage, url)
 	return updatePage
@@ -95,9 +94,9 @@ def getUpdateHandle(inputQueue, Queues, runtimeVars):
 class GTKPlugin(Plugin):
 	def needsThread(self):
 		return True;
-	def startThread(self, inQ, queues, runtimeVars):
+	def run(self, runtimeVars):
 		gtk.main()
-	def getName():
+	def getName(self):
 		return "Gtk Plugin"
-	
-
+	def addMessage(self, message):
+		raise Exception("GTKPlugin does not take any messages")

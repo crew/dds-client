@@ -22,3 +22,5 @@ class Slide():
 	def toJSON(self):
 		text = json.dumps(self.__dict__)
 		return text
+	def __str__(self):
+		return self.action

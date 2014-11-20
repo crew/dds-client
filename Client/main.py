@@ -5,8 +5,6 @@ from time import sleep
 
 # Import Classes
 from Classes.message import Message
-from Classes.QueueDict import QueueDict
-from Classes.ThreadDict import ThreadDict
 from Classes.ConfigParser import ConfigParser
 
 # Import functions
@@ -16,47 +14,28 @@ from logging import Logger
 
 
 def main():
-
-	# Will be generated from config files
 	runtimeVars = ConfigParser.readConfig()
-	#runtimeVars["PIEname"] = "blueberry"
-	#runtimeVars["Server"] = "dds-wp.ccs.neu.edu"
-	#runtimeVars["serverPort"] = "5000"
+	
 		
 
-	#Setup individual Queues
-	Queues = QueueDict()
-	#Threads = ThreadDict()
 	
-	plguins = getPlugins()
-	Queues.Queues["Logging"] = Queue.Queue(100)
-	Queues.Queues["Main"] = Queue.Queue(100)
-
-	#Why does this need its own thread #overengineering
-	#thread.start_new_thread(logging_thread,(Queues.Queues["Logging"], Queues, runtimeVars))
+	
+	plugins = getPlugins()
+	#reduce == foldl, just mapping each plugin to an entry in a dict, where the name of
+	#the plugin is the key, and the value is that plugins addMessage function
+	#also preserves safety of each plugin from the others
+	#they only have access to the addMessage function, and nothing else
+	messageDict = reduce(lambda dict,p : dict[p.getName] = p.addMessage, plugins, {})
+	
+	
+	#Main thread now runs gtk.main() before it was busy waiting
 	for plugin in plugins:
 		Logger.log("DEBUG","Starting plugin: "+plugin.getName())
-		plugin.setup()
+		plugin.setup(messageDict, runtimeVars)
 		if plugin.needsThread():
-			thread.start_new_thread(plugin.startThread, (Queues.Queues[Thread], Queues, runtimeVars))
-
-	Run = True
-	## Keeps the program running until recieves a terminate command.
-	#This is pointless we should run something in the main thread, instead of spawning new ones for everything.
-	#in addition this is a busy wait loop, meaning that it still takes cpu time, which is something we don't want
-	while Run:
-		Logger.log("DEBUG", "Empty Log")
-		while not Queues.Queues["Main"].empty():
-			Logger.log("DEBUG", "Entries in Log")
-			currentMessage = Queues.Queues["Main"].get()
-			if "Terminate" in currentMessage.content:
-				Logger.log("DEBUG", "Terminating")
-				terminate()
-				Run = False
-				break;
-			else:
-			 	Logger.log("ERROR", "Runaway Message: " + message)
-		sleep(10)
+			thread.start_new_thread(plugin.startThread, (runtimeVars))
+	GTKPlugin().run(runtimeVars) #This is kinda gross, need to clean
+	
 
 ## Functions called:
 # When function is called, passes a terminate message to all the children threads.
@@ -70,3 +49,22 @@ def terminate():
 # To be replaced with argparse library
 if __name__ == "__main__":
 		main()
+		
+		
+		
+#Old main thread
+'''
+	while Run:
+		Logger.log("DEBUG", "Empty Log")
+		while not Queues.Queues["Main"].empty():
+			Logger.log("DEBUG", "Entries in Log")
+			currentMessage = Queues.Queues["Main"].get()
+			if "Terminate" in currentMessage.content:
+				Logger.log("DEBUG", "Terminating")
+				terminate()
+				Run = False
+				break;
+			else:
+			 	Logger.log("ERROR", "Runaway Message: " + message)
+		sleep(10)
+'''

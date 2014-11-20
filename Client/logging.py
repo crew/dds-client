@@ -1,4 +1,4 @@
-
+import threading
 
 # Takes a dict input and logs its contents to the syslog
 '''def logging_thread(input_queue, Queues, runtimeVars):

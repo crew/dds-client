@@ -4,21 +4,20 @@ import socket, select, string, sys, time, json
 from Classes.message import Message
 from Classes.sockClass import sockClass
 from logging import Logger
-import Queue , thread
 
-def socket_out(Queues, socket):
+def socket_out(outMessageQueue, socket):
 	Run = True
     while Run:
-        if not Queues["Socket"].empty():
+        if not outMessageQueue.empty():
+			currentMessage = outMessageQueue.get()
             Logger.log("DEBUG", "Outbound Message: "+currentMessage.toJSON())
-            currentMessage = Queues["Socket"].get()
             if currentMessage.dest == "Grandma":
                 socket.send(currentMessage.toJSON())
 			else:
 				Logger.log("WARNING", "Message not addressed to grandma")
 
 
-def socket_in(s, Queues, runtimeVars):
+def socket_in(s, runtimeVars, route):
     run = True
     while run:      
         socket_list = [s.sock,]
@@ -31,29 +30,46 @@ def socket_in(s, Queues, runtimeVars):
                     s.connect(runtimeVars)
                 else :
                     currentMessage = json.loads(data)
-                    Queues[currentMessage["pluginDest"]].put(Message.fromJSON(currentMessage))
+					if currentMessage["pluginDest"] == "Main":
+						#TODO terminate program
+						continue
+					messageDestination = currentMessage["pluginDest"]
+					
+					route[messageDestination](Message.fromJSON(currentMessage))
+                    #Queues[currentMessage["pluginDest"]].put(Message.fromJSON(currentMessage))
             else :
                 print "Something Goofed"
 				
-def runSocketIO(inQ, queues, runtimeVars):
-	sock = sockClass(runtimeVars)
 	
-	
-	Logger.log("DEBUG", "Starting Socket Listener")
-    thread.start_new_thread(socket_thread, (sockClass(runtimeVars), Queues, runtimeVars))
-	
-	
-	Logger.log("DEBUG", "Starting Socket Writer")
-	socket_out(queues, sock)
-	
-	
-#TODO seperate in and out threads, this is non-specific		
-class IOPlugin(Plugin):
+class IPlugin(Plugin):
+	def __init__(self):
+		self.queue = Queue.Queue(100)
+		self.msgRoute = None
 	def needsThread(self):
 		return True;
-	def startThread(self, inQ, queues, runtimeVars):
-		runSocketIO(inQ, queues, runtimeVars)
-	def getName():
-		return "IOPlugin"
+	def setup(self, messageDict, runtimeVars):
+		self.msgRoute = messageDict
+		
+	def run(self, runtimeVars):
+		if self.msgRoute == None:
+			raise Exception("Can't distribute info, message route is None")
+		socket_in(sockClass(runtimeVars), runtimeVars, self.msgRoute)
+	def getName(self):
+		return "IPlugin"
+	def addMessage(self, message):
+		raise Exception("WTF? what are you trying to do?")
+		
+class OPlugin(Plugin):
+	def __init__(self):
+		self.queue = Queue.Queue(100)
+	def needsThread(self):
+		return True;
+	def run(self, runtimeVars):
+		socket_out(self.queue, sockClass(runtimeVars))
+	def getName(self):
+		return "OPlugin"
+	def addMessage(self, message):
+		self.queue.put(message)
+
 
 
