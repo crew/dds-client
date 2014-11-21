@@ -13,7 +13,7 @@
 # Copyright (C) 2014 Northeastern University CCIS Crew
 
 
-import sys
+import sys, thread, time
 import gobject
 import gtk
 #import glib
@@ -31,44 +31,44 @@ import time
 #   the URL provided to it
 # Note: URL must begin with prefix (e.g. "http://")
 class WebBrowser(gtk.Window):
-    def __init__(self, url, width, height):
-        gtk.Window.__init__(self)
-        self.fullscreen()
+	def __init__(self, url, width, height):
+		gtk.Window.__init__(self)
+		self.fullscreen()
 
-        self._browser= webkit.WebView()
-        settings = webkit.WebSettings()
-        settings.set_property('enable-page-cache', True)
-        settings.set_property('enable-accelerated-compositing', True)
-        
-        self._browser.set_settings(settings)
-        self.connect('destroy', gtk.main_quit)
-        self.add(self._browser)
+		self._browser= webkit.WebView()
+		settings = webkit.WebSettings()
+		settings.set_property('enable-page-cache', True)
+		settings.set_property('enable-accelerated-compositing', True)
+		
+		self._browser.set_settings(settings)
+		self.connect('destroy', gtk.main_quit)
+		self.add(self._browser)
 
-        self._browser.load_uri(url)
-        self._browser.set_size_request(int(width), int(height))
-        self.show_all()
+		self._browser.load_uri(url)
+		self._browser.set_size_request(int(width), int(height))
+		self.show_all()
 
-        gobject.threads_init()
-        
-        
+		gobject.threads_init()
+		
+		
 
-    def updatePage(self,url):
-        print "updatePage"
-        # self.connect("destroy", gtk.main_quit)
-        self._browser.load_uri(url)
-        #while (self._browser.get_load_status() < 2):
-        #   continue
-        try:
-           self.fullscreen()
-        except:
-           pass
-        print "showing"
-        self.show_all()
+	def updatePage(self,url):
+		print "updatePage"
+		# self.connect("destroy", gtk.main_quit)
+		self._browser.load_uri(url)
+		#while (self._browser.get_load_status() < 2):
+		#   continue
+		try:
+		   self.fullscreen()
+		except:
+		   pass
+		print "showing"
+		self.show_all()
 
 #test
 def openPageTest():
-    time.sleep(5)
-    openPage("http://dds-wp.ccs.neu.edu/?slide=test-ccis-tutoring&pie_name=chocolate")
+	time.sleep(5)
+	openPage("http://dds-wp.ccs.neu.edu/?slide=test-ccis-tutoring&pie_name=chocolate")
 
 
 
@@ -89,7 +89,8 @@ testQueue.put(Slide("http:\/\/dds-wp.ccs.neu.edu\/?slide=welcome-to-the-ccis-mai
 def getUpdateHandle(runtimeVars):
 	browser = WebBrowser("", runtimeVars["width"], runtimeVars["height"])
 	def updatePage(url):
-		gobject.timeout_add(100,browser.updatePage, url)
+
+		gobject.timeout_add(1000,browser.updatePage, url)
 	return updatePage
 	
 
@@ -98,6 +99,10 @@ class GTKPlugin(Plugin):
 		return True;
 	def run(self, runtimeVars):
 		gtk.main()
+		#thread.start_new_thread(gtk.main, ())
+		while True:
+			print "Main loop"
+			time.sleep(15)
 	def getName(self):
 		return "Gtk Plugin"
 	def addMessage(self, message):

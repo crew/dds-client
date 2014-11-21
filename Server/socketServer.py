@@ -4,7 +4,7 @@
 # Tcp Chat server
 
 
-import socket, select, json, thread, string
+import socket, select, json, thread, string, time
 
 from Classes.socketlist import socketList
 from Classes.message import Message
@@ -18,6 +18,7 @@ def connect(**kwargs):
     #print "wooho"
     pie = kwargs["currentMessage"]["src"] 
     kwargs["connection"].mapPie(kwargs["sock"],pie)
+    time.sleep(.5)
     return kwargs
 
 def main_socketServer_thread(inputQueue, Queues, runtimeVars):

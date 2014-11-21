@@ -27,7 +27,8 @@ class SlideShowPlugin(Plugin):
 	def getName(self):
 		return "slideShow"
 	def addMessage(self, message):
-		self.inQ.put(message)
+		print "Adding : "+str(message)
+		self.inQ.put(message,True)
 	
 	
 
@@ -39,7 +40,7 @@ def runShow(inputQueue, runtimeVars, setPage, writeOut):
 
 	slides = []
 	# Replace with loading slide
-	slides.append(Slide("http://mrwgifs.com/wp-content/uploads/2013/08/Success-Kid-Meme-Gif.gif", 10)) 
+	slides.append(Slide("http://mrwgifs.com/wp-content/uploads/2013/08/Success-Kid-Meme-Gif.gif", 5)) 
 	
 	x = 0
 	Run = True
@@ -59,7 +60,8 @@ def runShow(inputQueue, runtimeVars, setPage, writeOut):
 					Logger.log("DEBUG", "Recieved new slide: "+currentMessage["content"])
 					tempSlides = json.loads(currentMessage["content"])
 					for slide in tempSlides["actions"]:
-						slides.append(Slide(slide["location"], slide["duration"]))
+						if "weather" not in slide["location"]:
+							slides.append(Slide(slide["location"], slide["duration"]))
 				elif currentMessage["content"] == "removeSlide":
 					slides.remove(currentMessage.content)
 				elif currentMessage["content"] == "Terminate":

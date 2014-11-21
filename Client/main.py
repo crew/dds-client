@@ -48,7 +48,11 @@ def main():
 		plugin.setup(messageDict, runtimeVars)
 		if plugin.needsThread():
 			thread.start_new_thread(plugin.run, (runtimeVars,))
+	#thread.start_new_thread(GTKPlugin().run, (runtimeVars,))
+	#while True:
+	#	sleep(10)
 	GTKPlugin().run(runtimeVars) #This is kinda gross, need to clean
+
 	
 
 ## Functions called:
