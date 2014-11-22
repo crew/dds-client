@@ -17,7 +17,7 @@ def socket_out(outMessageQueue, socket):
 				socket.send(currentMessage.toJSON())
 			else:
 				Logger.log("WARNING", "Message not addressed to grandma")
-	time.sleep(.25)
+	time.sleep(.75)
 
 
 def socket_in(s, runtimeVars, route):
@@ -34,8 +34,7 @@ def socket_in(s, runtimeVars, route):
 				else :
 					currentMessage = json.loads(data)
 					if currentMessage["pluginDest"] == "Main":
-						#TODO terminate program
-						continue
+						sys.exit(0)
 					print "Got message : "+str(currentMessage)
 					messageDestination = currentMessage["pluginDest"]
 					print "Recieved message sending it too : "+str(messageDestination)
@@ -43,6 +42,7 @@ def socket_in(s, runtimeVars, route):
 					#Queues[currentMessage["pluginDest"]].put(Message.fromJSON(currentMessage))
 			else :
 				print "Something Goofed"
+
 
 
 class IPlugin(Plugin):

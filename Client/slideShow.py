@@ -19,7 +19,7 @@ class SlideShowPlugin(Plugin):
 		return True;
 	def run(self, runtimeVars):
 		if self.updateHandle == None or self.outHandle == None:
-			raise Exception("Something got fucked")
+			raise Exception("Something went wrong...")
 		runShow(self.inQ, runtimeVars, self.updateHandle, self.outHandle)
 	def setup(self, messageDict, runtimeVars):
 		self.updateHandle = gtkDisplay.getUpdateHandle(runtimeVars)
