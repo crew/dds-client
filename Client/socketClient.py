@@ -43,8 +43,8 @@ def socket_in(s, runtimeVars, route):
 					#Queues[currentMessage["pluginDest"]].put(Message.fromJSON(currentMessage))
 			else :
 				print "Something Goofed"
-				
-socketCon = None
+
+
 class IPlugin(Plugin):
 	def __init__(self):
 		self.queue = Queue.Queue(100)
@@ -55,12 +55,9 @@ class IPlugin(Plugin):
 		self.msgRoute = messageDict
 		
 	def run(self, runtimeVars):
-		global socketCon
-		if socketCon == None:
-			socketCon = sockClass(runtimeVars)
 		if self.msgRoute == None:
 			raise Exception("Can't distribute info, message route is None")
-		socket_in(socketCon, runtimeVars, self.msgRoute)
+		socket_in(runtimeVars["socket"], runtimeVars, self.msgRoute)
 	def getName(self):
 		return "IPlugin"
 	def addMessage(self, message):
@@ -72,10 +69,7 @@ class OPlugin(Plugin):
 	def needsThread(self):
 		return True
 	def run(self, runtimeVars):
-		global socketCon
-		if socketCon == None:
-			socketCon = sockClass(runtimeVars)
-		socket_out(self.queue, socketCon)
+		socket_out(self.queue, runtimeVars["socket"])
 	def getName(self):
 		return "OPlugin"
 	def addMessage(self, message):

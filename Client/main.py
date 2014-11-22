@@ -8,6 +8,8 @@ from Classes.message import Message
 from Classes.ConfigParser import ConfigParser
 
 
+from Classes.sockClass import sockClass
+
 
 # Import functions
 from logging import Logger
@@ -16,17 +18,17 @@ from logging import Logger
 #We can dynamically load plugins from the directory
 #we wouldn't need to import and add everything by hand.
 from slideShow import SlideShowPlugin
-from socketClient import IPlugin, OPlugin
+import socketClient
 from gtkDisplay import GTKPlugin
 
 #TODO dynamically create
 def getPlugins():
-	return [SlideShowPlugin(), IPlugin(), OPlugin()]
+	return [SlideShowPlugin(), socketClient.IPlugin(), socketClient.OPlugin()]
 	
 
 def main():
 	runtimeVars = ConfigParser.readConfig()
-	
+	runtimeVars["socket"] = sockClass(runtimeVars)
 		
 
 	

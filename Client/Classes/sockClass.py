@@ -15,6 +15,7 @@ class sockClass:
 		self.sock.send(msg)
 
 	def connect(self, runtimeVars):
+		print "Im conected: "+runtimeVars["name"]
 		while True:
 			# connect to remote host
 			#s = socket.socket(socket.AF_INET, socket.SOCK_STREAM)

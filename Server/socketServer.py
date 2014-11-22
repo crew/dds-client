@@ -68,7 +68,7 @@ def socketServer(connection, Queues, server_socket, RECV_BUFFER):
                 # Handle the case in which there is a new connections    recieved through server_socket
                 sockfd, addr = server_socket.accept()
                 connection.addSocket(sockfd)
-                print "Client Connected"  
+                print "Client Connected " + str(addr)  
             else:
                 data = sock.recv(RECV_BUFFER)
                 print data

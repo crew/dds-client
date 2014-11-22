@@ -7,6 +7,7 @@ class socketList:
 		self.serverSocket = serverSocket
 
 	def addSocket(self, sock):
+		#print "Adding Socket: " + str(sock.getpeername())
 		self.sockList.append(sock)
 
 	def mapPie(self, sock, pieName):
