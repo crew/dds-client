@@ -15,9 +15,9 @@ class socketList:
 
 	def removeSocket(self, sock):
 		print "Good bye!"
+		print(self.getPie(sock))
  		sock.close()
 		self.sockList.remove(sock)
-		print(self.getPie(sock))
 		self.pieMap.pop(self.getPie(sock))
 
 	def broadcast(self, sock, msg):

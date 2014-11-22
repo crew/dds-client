@@ -56,7 +56,9 @@ def socketServer(connection, Queues, server_socket, RECV_BUFFER):
         print("WHILE")
         # Get the list sockets which are ready to be read through select
         print("PRE ")
+        print "PIEMAP:"
         print(connection.pieMap)
+        print "sockList:"
         print(connection.sockList)
         read_sockets,write_sockets,error_sockets = select.select(connection.sockList,[],[])
         for sock in read_sockets:
@@ -71,6 +73,8 @@ def socketServer(connection, Queues, server_socket, RECV_BUFFER):
                 data = sock.recv(RECV_BUFFER)
                 print data
                 if data == "":
+                    print data
+                    print sock
                     connection.removeSocket(sock)
                 else:
                     print "incoming Message"
@@ -84,6 +88,7 @@ def socketServer(connection, Queues, server_socket, RECV_BUFFER):
                         nextSplit = string.find(data, "}{", previousSplit)+1
                         if nextSplit == 0:
                             jsonList.append(data[previousSplit:])
+
                     if jsonList == []:
                         jsonList.append(data)
 

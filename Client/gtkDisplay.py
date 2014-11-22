@@ -39,7 +39,10 @@ class WebBrowser(gtk.Window):
 		settings = webkit.WebSettings()
 		settings.set_property('enable-page-cache', True)
 		settings.set_property('enable-accelerated-compositing', True)
-		
+		"""pixmap = gtk.gdk.Pixmap(None, 1, 1, 1)
+		color = gtk.gdk.Color()
+		cursor = gtk.gdk.Cursor(pixmap, pixmap, color, color, 0, 0)"""
+
 		self._browser.set_settings(settings)
 		self.connect('destroy', gtk.main_quit)
 		self.add(self._browser)
