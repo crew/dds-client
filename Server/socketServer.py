@@ -15,10 +15,11 @@ from Classes.slide import Slide
 
 
 def connect(**kwargs):
-    #print "wooho"
+    print "wooho"
     pie = kwargs["currentMessage"]["src"] 
     kwargs["connection"].mapPie(kwargs["sock"],pie)
-    time.sleep(.5)
+    print "Done mapping pie"
+    #time.sleep(.5)
     return kwargs
 
 def main_socketServer_thread(inputQueue, Queues, runtimeVars):
@@ -95,6 +96,7 @@ def socketServer(connection, Queues, server_socket, RECV_BUFFER):
                         else:
                             print "Connecting"
                             connect(connection = connection, currentMessage = currentMessage, pieMap = connection.pieMap, sock = sock)
+                            print "Finished connection..."
 
 def log(queue,mes):
     newLog = Message("Socket", "Logging", "Logger" ,"log", {})

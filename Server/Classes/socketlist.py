@@ -34,6 +34,7 @@ class socketList:
 		try :
 			sock.sendall(msg)
 			print "Message sent!"
+			#stops here when slide doesn't make it?
 		except Exception as e:
 			print str(e)
 			self.removeSocket(sock)

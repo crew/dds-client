@@ -16,7 +16,7 @@
 import sys, thread, time
 import gobject
 import gtk
-#import glib
+import glib
 import webkit
 import threading
 from Classes.slide import Slide
@@ -53,6 +53,7 @@ class WebBrowser(gtk.Window):
 		
 
 	def updatePage(self,url):
+		print "Update page running in : "+threading.currentThread().getName()
 		print "updatePage"
 		# self.connect("destroy", gtk.main_quit)
 		self._browser.load_uri(url)
@@ -89,12 +90,11 @@ testQueue.put(Slide("http:\/\/dds-wp.ccs.neu.edu\/?slide=welcome-to-the-ccis-mai
 def getUpdateHandle(runtimeVars):
 	browser = WebBrowser("", runtimeVars["width"], runtimeVars["height"])
 	def updatePage(url):
-
-		gobject.timeout_add(1000,browser.updatePage, url)
+		gobject.timeout_add(100,browser.updatePage, url)
 	return updatePage
 	
 
-class GTKPlugin(Plugin):
+class GTKPlugin(threading.Thread):
 	def needsThread(self):
 		return True;
 	def run(self, runtimeVars):

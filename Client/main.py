@@ -61,7 +61,7 @@ def terminate():
 	terminateMes = Message("Main", "All", "All", "Terminate",{})
 	terminateMes.add_content("Terminate",True)
 	for queue in Queues.Queues:
-	    queue.put(terminateMes)
+	    queue.put(terminateMes, True)
 
 # Allow for command line args: At the moment only can handle one (DEBUG). Order specific
 # To be replaced with argparse library
