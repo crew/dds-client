@@ -11,8 +11,9 @@ def socket_out(currentMessage, socket):
 	Logger.log("DEBUG", "Outbound Message: "+currentMessage.toJSON())
 	if currentMessage.dest == "Grandma":
 		try:
-			socket.sendAll(currentMessage.toJSON())
+			socket.send(currentMessage.toJSON())
 		except Exception, e:
+			print str(e)
 			Logger.log("ERROR", "Socket raised exception on send - exception : "+str(e))
 			raise Exception("Can't send message. Socekt = " + str(socket))
 	else:
