@@ -42,12 +42,12 @@ def getAdditionalPlugins(runtimeVars):
 def main():
 	runtimeVars = ConfigParser.readConfig()
 	plugins = [IOPlugin(), SlideShowPlugin()] + getAdditionalPlugins(runtimeVars)
-	
+	runtimeVars["plugins"]+=["IOPlugin", "SlideShowPlugin"]
+
 	def addPluginToDict(dict, p):
 		dict[p.getName()] = p.addMessage
 		return dict
 	messageDict = reduce(addPluginToDict, plugins, {})
-	print "All Plugins : "+str(plugins)
 
 	for plugin in plugins:
 		plugin.setup(messageDict, runtimeVars)
