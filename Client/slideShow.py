@@ -23,7 +23,7 @@ class SlideShowPlugin(Plugin):
 		runShow(self.inQ, runtimeVars, self.updateHandle, self.outHandle)
 	def setup(self, messageDict, runtimeVars):
 		self.updateHandle = gtkDisplay.getUpdateHandle(runtimeVars)
-		self.outHandle = messageDict["socketPlugin"]
+		self.outHandle = messageDict["IOPlugin"]
 	def getName(self):
 		return "slideShow"
 	def addMessage(self, message):
@@ -50,7 +50,7 @@ def runShow(inputQueue, runtimeVars, setPage, writeOut):
 		#todo print slides, why are they not in the list
 		print str(slides)
 		currentSlide = slides[x]
-		target_time = datetime.datetime.now() + datetime.timedelta(seconds = currentSlide.duration * 5)
+		target_time = datetime.datetime.now() + datetime.timedelta(seconds = currentSlide.duration)
 		setPage(currentSlide.url)
 		print "Just set page : "+currentSlide.url
 		while(datetime.datetime.now() < target_time):
@@ -72,7 +72,7 @@ def runShow(inputQueue, runtimeVars, setPage, writeOut):
 					#in order to terminate immediately
 					break
 			#Should sleep, we need only support slide durations with precision .1 seconds (we could lesson this to 1 second
-			time.sleep(.1)
+			time.sleep(.2)
 		# Move on
 
 		x  = (x+1) % len(slides)

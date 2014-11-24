@@ -11,8 +11,9 @@ def socket_out(currentMessage, socket):
 	Logger.log("DEBUG", "Outbound Message: "+currentMessage.toJSON())
 	if currentMessage.dest == "Grandma":
 		try:
-			socket.send(currentMessage.toJSON())
+			socket.sendAll(currentMessage.toJSON())
 		except Exception, e:
+			Logger.log("ERROR", "Socket raised exception on send - exception : "+str(e))
 			raise Exception("Can't send message. Socekt = " + str(socket))
 	else:
 		Logger.log("WARNING", "Message not addressed to grandma")
@@ -41,10 +42,12 @@ def socket_in(s, runtimeVars, route):
 					#Queues[currentMessage["pluginDest"]].put(Message.fromJSON(currentMessage))
 			else :
 				print "Something Goofed"
+	#We can afford to only write messages every 500 millis, don't need instantaneus message passing
+	time.sleep(.5)
 
 
 
-class socketPlugin(Plugin):
+class IOPlugin(Plugin):
 	def __init__(self):
 		self.queue = Queue.Queue(100)
 		self.msgRoute = None
@@ -59,27 +62,20 @@ class socketPlugin(Plugin):
 			raise Exception("Can't distribute info, message route is None")
 		socket_in(self.socket, runtimeVars, self.msgRoute)
 	def getName(self):
-		return "socketPlugin"
+		return "IOPlugin"
 	def addMessage(self, message):
 		print "Attempting to send Message"
-		if self.socket == None:
-			print "Socket connection not yet set or broken. Trying again."
-			time.sleep(.1)
-			self.addMessage(message)
-		else:
-			socket_out(message, self.socket)
+		triesLeft = 10
+		while triesLeft >=0:
+			if self.socket == None:
+				Logger.log("WARNING", "No socket connection, waiting 1/2 sec "+triesLeft + "tries left")
+				time.sleep(.5)
+			else:
+				socket_out(message, self.socket)
+				self.addMessage(message)
+		
 
-"""class OPlugin(Plugin):
-	def __init__(self):
-		self.queue = Queue.Queue(100)
-	def needsThread(self):
-		return True
-	def run(self, runtimeVars):
-		socket_out(self.queue, runtimeVars["socket"])
-	def getName(self):
-		return "OPlugin"
-	def addMessage(self, message):
-		self.queue.put(message)"""
+
 
 
 

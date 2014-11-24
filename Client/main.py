@@ -1,6 +1,6 @@
 #!/usr/bin/python
 # General Imports
-import sys, Queue, thread, os
+import sys, Queue, thread, os, types
 from time import sleep
 
 # Import Classes
@@ -11,33 +11,38 @@ from Classes.ConfigParser import ConfigParser
 from Classes.sockClass import sockClass
 
 
+
 # Import functions
 from logging import Logger
 
 #In the future we should house these in a file of there own
 #We can dynamically load plugins from the directory
 #we wouldn't need to import and add everything by hand.
+from Plugins.plugin import Plugin
 from slideShow import SlideShowPlugin
-from socketClient import socketPlugin
+from socketClient import IOPlugin
 from gtkDisplay import GTKPlugin
-
-#TODO dynamically create
-def getPlugins():
-	return [SlideShowPlugin(), socketPlugin()]
-	
+#Loads all the plugins in ./Plugins (that were placed in the config)
+def getAdditionalPlugins(runtimeVars):
+	plugins = []
+	for plugin in runtimeVars["plugins"]:
+		try:
+			exec "from Plugins."+plugin+" import "+plugin
+			instance = eval(plugin+"()")
+			if isinstance(instance, Plugin):
+				print instance
+				plugins.append(instance)
+			else:
+				print "Huh? what did i get? : "+str(instance)
+		except Exception, e:
+			print "Couldn't create an instance of a plugin in the config"
+			print str(e)
+	return plugins
 
 def main():
 	runtimeVars = ConfigParser.readConfig()
-	#runtimeVars["socket"] = sockClass(runtimeVars)
-		
-
+	plugins = [IOPlugin(), SlideShowPlugin()] + getAdditionalPlugins(runtimeVars)
 	
-	
-	plugins = getPlugins()
-	#reduce == foldl, just mapping each plugin to an entry in a dict, where the name of
-	#the plugin is the key, and the value is that plugins addMessage function
-	#also preserves safety of each plugin from the others
-	#they only have access to the addMessage function, and nothing else
 	def addPluginToDict(dict, p):
 		dict[p.getName()] = p.addMessage
 		return dict
@@ -50,9 +55,6 @@ def main():
 		plugin.setup(messageDict, runtimeVars)
 		if plugin.needsThread():
 			thread.start_new_thread(plugin.run, (runtimeVars,))
-	#thread.start_new_thread(GTKPlugin().run, (runtimeVars,))
-	#while True:
-	#	sleep(10)
 	GTKPlugin().run(runtimeVars) #This is kinda gross, need to clean
 
 	
@@ -63,7 +65,7 @@ def terminate():
 	terminateMes = Message("Main", "All", "All", "Terminate",{})
 	terminateMes.add_content("Terminate",True)
 	for queue in Queues.Queues:
-	    queue.put(terminateMes, True)
+		queue.put(terminateMes, True)
 
 # Allow for command line args: At the moment only can handle one (DEBUG). Order specific
 # To be replaced with argparse library
@@ -85,6 +87,6 @@ if __name__ == "__main__":
 				Run = False
 				break;
 			else:
-			 	Logger.log("ERROR", "Runaway Message: " + message)
+				Logger.log("ERROR", "Runaway Message: " + message)
 		sleep(10)
 '''
