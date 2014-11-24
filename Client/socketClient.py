@@ -5,7 +5,7 @@ from Classes.message import Message
 from Classes.sockClass import sockClass
 from logging import Logger
 
-from plugin import Plugin
+from Plugins.plugin import Plugin
 
 def socket_out(currentMessage, socket):
 	Logger.log("DEBUG", "Outbound Message: "+currentMessage.toJSON())

@@ -5,7 +5,7 @@ from Classes.slide import Slide
 
 
 from logging import Logger
-from plugin import Plugin
+from Plugins.plugin import Plugin
 import gtkDisplay
 
 
