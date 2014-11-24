@@ -48,11 +48,11 @@ def main():
 		return dict
 	messageDict = reduce(addPluginToDict, plugins, {})
 	print "All Plugins : "+str(plugins)
-	#Main thread now runs gtk.main() before it was busy waiting
+
+	for plugin in plugins:
+		plugin.setup(messageDict, runtimeVars)
 	for plugin in plugins:
 		print "Starting "+plugin.getName()
-		Logger.log("DEBUG","Starting plugin: "+plugin.getName())
-		plugin.setup(messageDict, runtimeVars)
 		if plugin.needsThread():
 			thread.start_new_thread(plugin.run, (runtimeVars,))
 	GTKPlugin().run(runtimeVars) #This is kinda gross, need to clean
