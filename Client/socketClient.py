@@ -73,6 +73,8 @@ class IOPlugin(Plugin):
 			else:
 				socket_out(message, self.socket)
 				self.addMessage(message)
+			triesLeft-=1
+		raise Exception("Write out failed...")
 		
 
 
