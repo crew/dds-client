@@ -75,7 +75,7 @@ class Logger:
 			instance.addErrorMessage(msg)
 		
 		
-instance = Logger(5)
+instance = Logger(15)
 	
 
 #	newLog = Message("Main", "Logging", "Logger" , "log", {})

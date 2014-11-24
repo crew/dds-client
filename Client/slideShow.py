@@ -71,7 +71,7 @@ def runShow(inputQueue, runtimeVars, setPage, writeOut):
 					#in order to terminate immediately
 					break
 			#Should sleep, we need only support slide durations with precision .1 seconds (we could lesson this to 1 second
-			time.sleep(.2)
+			time.sleep(1)
 		# Move on
 
 		x  = (x+1) % len(slides)

@@ -43,8 +43,8 @@ def socket_in(s, runtimeVars, route):
 					#Queues[currentMessage["pluginDest"]].put(Message.fromJSON(currentMessage))
 			else :
 				print "Something Goofed"
-	#We can afford to only write messages every 500 millis, don't need instantaneus message passing
-	time.sleep(.5)
+		#We all program updates will be in multiples of 1sec, as this is the slide time accuracy
+		time.sleep(1)
 
 
 
@@ -67,7 +67,7 @@ class IOPlugin(Plugin):
 	def addMessage(self, message):
 		print "Attempting to send Message"
 		if self.socket == None:
-			Logger.log("WARNING", "No socket connection, waiting 1/2 sec "+triesLeft + "tries left")
+			Logger.log("WARNING", "No socket connection, trying again...")
 			time.sleep(.5)
 			self.addMessage(message)
 		else:
