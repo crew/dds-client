@@ -21,7 +21,7 @@ import webkit
 import threading
 from Classes.slide import Slide
 import Queue
-from plugin import Plugin
+from Plugins.plugin import Plugin
 
 #for testing
 import time
