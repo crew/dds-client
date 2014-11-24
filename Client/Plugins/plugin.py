@@ -12,6 +12,7 @@ class Plugin:
 		raise Exception("Abstract Plugin does not have a name")
 	def addMessage(self, message):
 		raise Exception("Not implemented for Plugin")
-#TODO load dynamically
+	def __str__(self):
+		return self.getName()
 
 
