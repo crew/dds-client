@@ -41,12 +41,12 @@ class Logger:
 		
 	def addWarningMessage(self, msg):
 		self.warning.append(msg)
-		if len(self.warning) > self.threshhold:
+		if len(self.warning) > self.threshold:
 			self.writeAllAndClear(self.warning, open("./warning.txt", "a+"), self.warningLock)
 	
 	def addErrorMessage(self, msg):
 		self.error.append(msg)
-		if len(self.error) > self.threshhold:
+		if len(self.error) > self.threshold:
 			self.writeAllAndClear(self.error, open("./error.txt", "a+"), self.errorLock)
 	
 	def writeAllAndClear(self,list, file, lock):

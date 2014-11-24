@@ -62,8 +62,7 @@ def runShow(inputQueue, runtimeVars, setPage, writeOut):
 					Logger.log("DEBUG", "Recieved new slide: "+currentMessage["content"])
 					tempSlides = json.loads(currentMessage["content"])
 					for slide in tempSlides["actions"]:
-						if "weather" not in slide["location"]:
-							slides.append(Slide(slide["location"], slide["duration"]))
+						slides.append(Slide(slide["location"], slide["duration"]))
 				elif currentMessage["content"] == "removeSlide":
 					slides.remove(currentMessage.content)
 				elif currentMessage["content"] == "Terminate":

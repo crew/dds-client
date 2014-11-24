@@ -65,17 +65,12 @@ class IOPlugin(Plugin):
 		return "IOPlugin"
 	def addMessage(self, message):
 		print "Attempting to send Message"
-		triesLeft = 10
-		while triesLeft >=0:
-			if self.socket == None:
-				Logger.log("WARNING", "No socket connection, waiting 1/2 sec "+triesLeft + "tries left")
-				time.sleep(.5)
-			else:
-				socket_out(message, self.socket)
-				self.addMessage(message)
-			triesLeft-=1
-		raise Exception("Write out failed...")
-		
+		if self.socket == None:
+			Logger.log("WARNING", "No socket connection, waiting 1/2 sec "+triesLeft + "tries left")
+			time.sleep(.5)
+			self.addMessage(message)
+		else:
+			socket_out(message, self.socket)		
 
 
 
