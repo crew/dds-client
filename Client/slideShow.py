@@ -23,7 +23,7 @@ class SlideShowPlugin(Plugin):
 		runShow(self.inQ, runtimeVars, self.updateHandle, self.outHandle)
 	def setup(self, messageDict, runtimeVars):
 		self.updateHandle = gtkDisplay.getUpdateHandle(runtimeVars)
-		self.outHandle = messageDict["OPlugin"]
+		self.outHandle = messageDict["socketPlugin"]
 	def getName(self):
 		return "slideShow"
 	def addMessage(self, message):
@@ -40,8 +40,9 @@ def runShow(inputQueue, runtimeVars, setPage, writeOut):
 
 	slides = []
 	# Replace with loading slide
-	slides.append(Slide("http://mrwgifs.com/wp-content/uploads/2013/08/Success-Kid-Meme-Gif.gif", 5)) 
-	
+	#slides.append(Slide("http://mrwgifs.com/wp-content/uploads/2013/08/Success-Kid-Meme-Gif.gif", 5)) 
+	slides.append(Slide("http://104.131.73.58", 10))
+
 	x = 0
 	Run = True
 	while Run:

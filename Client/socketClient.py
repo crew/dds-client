@@ -7,17 +7,16 @@ from logging import Logger
 
 from plugin import Plugin
 
-def socket_out(outMessageQueue, socket):
-	Run = True
-	while Run:
-		if not outMessageQueue.empty():
-			currentMessage = outMessageQueue.get()
-			Logger.log("DEBUG", "Outbound Message: "+currentMessage.toJSON())
-			if currentMessage.dest == "Grandma":
-				socket.send(currentMessage.toJSON())
-			else:
-				Logger.log("WARNING", "Message not addressed to grandma")
-	time.sleep(.75)
+def socket_out(currentMessage, socket):
+	Logger.log("DEBUG", "Outbound Message: "+currentMessage.toJSON())
+	if currentMessage.dest == "Grandma":
+		try:
+			socket.send(currentMessage.toJSON())
+		except Exception, e:
+			raise Exception("Can't send message. Socekt = " + str(socket))
+	else:
+		Logger.log("WARNING", "Message not addressed to grandma")
+	print "Socket Message Sent!"
 
 
 def socket_in(s, runtimeVars, route):
@@ -45,25 +44,32 @@ def socket_in(s, runtimeVars, route):
 
 
 
-class IPlugin(Plugin):
+class socketPlugin(Plugin):
 	def __init__(self):
 		self.queue = Queue.Queue(100)
 		self.msgRoute = None
+		self.socket = None
 	def needsThread(self):
 		return True;
 	def setup(self, messageDict, runtimeVars):
 		self.msgRoute = messageDict
-		
+		self.socket = sockClass(runtimeVars)
 	def run(self, runtimeVars):
 		if self.msgRoute == None:
 			raise Exception("Can't distribute info, message route is None")
-		socket_in(runtimeVars["socket"], runtimeVars, self.msgRoute)
+		socket_in(self.socket, runtimeVars, self.msgRoute)
 	def getName(self):
-		return "IPlugin"
+		return "socketPlugin"
 	def addMessage(self, message):
-		raise Exception("WTF? what are you trying to do?")
-		
-class OPlugin(Plugin):
+		print "Attempting to send Message"
+		if self.socket == None:
+			print "Socket connection not yet set or broken. Trying again."
+			time.sleep(.1)
+			self.addMessage(message)
+		else:
+			socket_out(message, self.socket)
+
+"""class OPlugin(Plugin):
 	def __init__(self):
 		self.queue = Queue.Queue(100)
 	def needsThread(self):
@@ -73,7 +79,7 @@ class OPlugin(Plugin):
 	def getName(self):
 		return "OPlugin"
 	def addMessage(self, message):
-		self.queue.put(message)
+		self.queue.put(message)"""
 
 
 
