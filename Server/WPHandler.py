@@ -1,12 +1,12 @@
 import urllib2
 
 from Classes.message import Message
+from wpPush import RequestHandler
 
 #inputQueue is info for this plugin
 #queues are queues for every plugin
 #runtimeVars is a dictionary containing all important information for this program
 def main_WPHandler_thread(inputQueue, queues, runtimeVars):
-	wpListenerStart()
 	while True:
 		if not inputQueue.empty():
 			print "WPListener recieved a message"
@@ -23,10 +23,9 @@ def handle(message, outputQueue, runtime):
 		outputQueue.put(message)
 	#TODO more to come...
 
-def wpListenerStart():
-	print("I'm listening...")
-	#do some wp wizard stoof here
-
+def wpListenerStart(outboundMessageQueue):
+	print "Starting http POST server for wp updates"
+	RequestHandler(outboundMessageQueue)
 
 
 def querySlidesFor(pieName, url):

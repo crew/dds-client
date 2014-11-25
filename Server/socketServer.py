@@ -9,7 +9,7 @@ import socket, select, json, thread, string, time
 from Classes.socketlist import socketList
 from Classes.message import Message
 from Classes.slide import Slide
-
+from WPHandler import wpListenerStart
 
 #Function to broadcast chat messages to all connected clients
 
@@ -36,7 +36,7 @@ def main_socketServer_thread(inputQueue, Queues, runtimeVars):
     # Add server socket to the list of readable connections
     connection = socketList({}, [], server_socket)
     connection.addSocket(server_socket)
-
+	wpListenerStart(Queues["socketServer"])
     # Map of the Pies
     pieMap = {}
 

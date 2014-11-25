@@ -57,21 +57,22 @@ def runShow(inputQueue, runtimeVars, setPage, writeOut):
 			if not inputQueue.empty():
 				print "The show got a message"
 				currentMessage = inputQueue.get()
-				if currentMessage["action"] == "loadSlides":
+				if currentMessage["action"] == "add-slide":
 					print "Loading slides: "+currentMessage["content"]
 					Logger.log("DEBUG", "Recieved new slide: "+currentMessage["content"])
 					tempSlides = json.loads(currentMessage["content"])
 					for slide in tempSlides["actions"]:
 						slides.append(Slide(slide["location"], slide["duration"]))
-				elif currentMessage["content"] == "removeSlide":
-					slides.remove(currentMessage.content)
-				elif currentMessage["content"] == "Terminate":
+				elif currentMessage["action"] == "delete-slide":
+					slides.remove(currentMessage.content) #dunno if this will work?
+				elif currentMessage["action"] == "edit-slide":
+					slides.remove(currentMessage["content"]["old"])#Possible?
+					slides.append(currentMessage["content"]["new"])
+				elif currentMessage["action"] == "Terminate":
 					Run = False
-					#this inner loop will still run even if we set Run = false, we need to break
-					#in order to terminate immediately
 					break
 			#Should sleep, we need only support slide durations with precision .1 seconds (we could lesson this to 1 second
-			time.sleep(.2)
+			time.sleep(.75)
 		# Move on
 
 		x  = (x+1) % len(slides)
