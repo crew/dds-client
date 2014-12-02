@@ -25,18 +25,38 @@ class RequestHandler(BaseHTTPRequestHandler):
 	
     info = json.loads(data)
 	'''
-	We must have recieved an input of JSON object with fields, pies, action, and content
-	pies = a list of all the pies that have had a change
-	action = add-slide || delete-slide || edit-slide (self explanatory)
-	content = whatever is needed for the pies to process this request
-	if action is add-slide => content = new slide
-	if action is delete-slide => content = slide to delete
-	if action is edit-slide => content = {"old" : [old slide], "new" : [new slide]}
+	Expecting to receive something of the form
+	{
+		"datetime" : "2014-11-30T22:04:15+00:00", # ISO 8601, Timestamp of this push
+		"action" : "add-slide",
+		"pies" : [ 
+			{ "name" : "shepard" }, 
+			{ "name" : "blueberry" }, # allows adding of new fields later on down the road
+		],
+		"content"  : { # should definitely be an object for flex and forward compat
+			"ID" : 14, # WordPress Post ID
+			"Permalink" : "http://dds-wp..." #The URL to the Post... does not append ?pie=name or anything fancy... just the permalink
+			# ... All other WordPress Post Fields... basically json_encode( get_post( $post_id ) )
+
+			# ... and then the post meta for plugins and other cool add-ons
+			"meta" : { 
+				"key1" : [ "value" ],
+				"key2" : [ 
+					"value1", 
+					"value2", 
+					3, 
+					{ 
+						"meta can be weird" : "remember that" 
+					} 
+				]
+			}
+		} 
+	}
 	'''
 	for pie in info["pies"]:
-		self.writeOut.put(Message("wpPush", pie, "slideShow" , info["action"], info["content"]))
+		self.writeOut.put(Message("wpPush", pie["name"], "slideShow" , info["action"], info["content"], info["datetime"]))
 	
-	#Could do some safety checks but I see them ass unnecessary
+	#Could do some safety checks but I see them as unnecessary
 	# if info["action"] == "add-slide":
 		# action = "loadSlides"
 		# self.writeOut.put( 

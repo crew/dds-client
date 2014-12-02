@@ -74,19 +74,4 @@ if __name__ == "__main__":
 		
 		
 		
-#Old main thread
-'''
-	while Run:
-		Logger.log("DEBUG", "Empty Log")
-		while not Queues.Queues["Main"].empty():
-			Logger.log("DEBUG", "Entries in Log")
-			currentMessage = Queues.Queues["Main"].get()
-			if "Terminate" in currentMessage.content:
-				Logger.log("DEBUG", "Terminating")
-				terminate()
-				Run = False
-				break;
-			else:
-				Logger.log("ERROR", "Runaway Message: " + message)
-		sleep(10)
-'''
+

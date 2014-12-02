@@ -18,7 +18,8 @@ def handle(message, outputQueue, runtime):
 	if message["action"] == "querySlides":
 		pieName = message["src"]
 		jsonToSend = querySlidesFor(pieName, runtime["server"])
-		message = Message("WPHandler", pieName, "slideShow", "loadSlides", jsonToSend)
+		#TODO setup DT
+		message = Message("WPHandler", pieName, "slideShow", "load-slides", jsonToSend)
 		print "Wp sending message"
 		outputQueue.put(message)
 	#TODO more to come...

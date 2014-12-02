@@ -77,7 +77,7 @@ def openPageTest():
 
 
 
-testQueue = Queue.Queue(100)
+'''testQueue = Queue.Queue(100)
 testQueue.put(Slide("http://facebook.com", 5))
 testQueue.put(Slide("http://dds-wp.ccs.neu.edu/?slide=test-ccis-tutoring&pie_name=chocolate", 10))
 testQueue.put(Slide("http:\/\/m.weather.com\/weather\/tenday\/USMA0046", 10))
@@ -86,7 +86,7 @@ testQueue.put(Slide("http:\/\/dds-wp.ccs.neu.edu\/?slide=test-ccis-tutoring&pie_
 testQueue.put(Slide("http:\/\/dds-wp.ccs.neu.edu\/?slide=cisters&pie_name=chocolate", 10))
 testQueue.put(Slide("http:\/\/dds-wp.ccs.neu.edu\/?slide=welcome-to-the-ccis-main-office&pie_name=chocolate", 10))
 
-
+'''
 	
 
 #Initializes the browser and returns a function used to update the page
@@ -102,7 +102,6 @@ class GTKPlugin(threading.Thread):
 		return True;
 	def run(self, runtimeVars):
 		gtk.main()
-		#thread.start_new_thread(gtk.main, ())
 		while True:
 			print "Main loop"
 			time.sleep(15)
