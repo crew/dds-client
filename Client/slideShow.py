@@ -49,25 +49,27 @@ def runShow(inputQueue, runtimeVars, setPage, writeOut):
 	#Helper to get the slide out of the slide list with the given ID, also insures uniqueness if ID's
 	def getSlideById(slideList, id):
 		matches = filter(lambda x : x.sameID(currentMessage["ID"]), slides)
-		if len(matches) != 1:
+		if len(matches) > 1:
 			raise Exception("Why are there 2 slides with the same ID?")
-		return matches[0]
+		return None if len(matches) == 0 else matches[0]
 		
 	def deleteSlide(slideList, id):
 		print "Deleting slide..."
 		temp = getSlideById(slides, id)
 		Logger.log("DEBUG", "Removing slide: "+str(temp))
-		slides.remove(temp)
+		if temp:
+			slides.remove(temp)
 		
 	def editSlide(slideList, id, newSlide):
 		print "Editing slide..."
 		old = getSlideById(slides, id)
 		Logger.log("DEBUG", "Changing slide :"+str(old)+" to "+ str(newSlide))
-		slideList.remove(old)
+		if old:
+			slideList.remove(old)
 		slideList.add(new)
 		
 	def addSlide(slideList, slide):
-		print "Deleteing slide..."
+		print "Adding slide..."
 		Logger.log("DEBUG", "Adding slide :"+str(slide))
 		slideList.append(slide)
 	x = 0
