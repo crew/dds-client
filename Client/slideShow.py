@@ -54,17 +54,20 @@ def runShow(inputQueue, runtimeVars, setPage, writeOut):
 		return matches[0]
 		
 	def deleteSlide(slideList, id):
+		print "Deleting slide..."
 		temp = getSlideById(slides, id)
 		Logger.log("DEBUG", "Removing slide: "+str(temp))
 		slides.remove(temp)
 		
 	def editSlide(slideList, id, newSlide):
+		print "Editing slide..."
 		old = getSlideById(slides, id)
 		Logger.log("DEBUG", "Changing slide :"+str(old)+" to "+ str(newSlide))
 		slideList.remove(old)
 		slideList.add(new)
 		
 	def addSlide(slideList, slide):
+		print "Deleteing slide..."
 		Logger.log("DEBUG", "Adding slide :"+str(slide))
 		slideList.append(slide)
 	x = 0
@@ -80,7 +83,7 @@ def runShow(inputQueue, runtimeVars, setPage, writeOut):
 			if not inputQueue.empty():
 				currentMessage = inputQueue.get()
 				infoForAddition = json.loads(currentMessage["content"])
-				if currentMessage["action"] == "load-slides":
+				if currentMessage["action"] == "loadSlides":
 					for slideJSON in infoForAddition["actions"]:
 						#TODO fields in dds-api call need to be changed to standard, they also need ID and meta added @Eddie
 						addSlide(slides, Slide(slideJSON["location"], slideJSON["duration"], slideJSON["ID"], slideJSON["meta"]))
