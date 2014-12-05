@@ -7,14 +7,11 @@ import json
 
 # (c) Northeastern University Crew 2014
 class Slide():
-	def __init__(self, url, duration, id, meta = None):
-		self.__type__ = "slide"
-		self.url = url
-		self.duration = duration
-		self.id = id
-		self.meta = meta
+	@staticmethod
+	def makeSlide(url, duration, id, meta):
+		return Slide({"permalink" : url, "duration" : duration, "ID" : id, "meta" : meta})
 		
-	def __init__(self, infoDict):
+	def __init__ (self, infoDict):
 		self.__type__ = "slide"
 		self.url = infoDict["permalink"]
 		self.duration = infoDict["duration"]

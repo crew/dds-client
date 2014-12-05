@@ -41,7 +41,7 @@ def runShow(inputQueue, runtimeVars, setPage, writeOut):
 
 	slides = []
 	# Replace with loading slide
-	slides.append(Slide("http://mrwgifs.com/wp-content/uploads/2013/08/Success-Kid-Meme-Gif.gif", 5, -1)) 
+	slides.append(Slide.makeSlide("http://mrwgifs.com/wp-content/uploads/2013/08/Success-Kid-Meme-Gif.gif", 5, -1, "")) 
 	# Temp Weather slide for testing purposes. Uncomment as needed.
 	#slides.append(Slide("http://104.131.73.58", 10))
 	
