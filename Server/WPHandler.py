@@ -1,7 +1,7 @@
 import urllib2
 
 from Classes.message import Message
-from wpPush import RequestHandler
+import wpPush
 
 #inputQueue is info for this plugin
 #queues are queues for every plugin
@@ -26,8 +26,7 @@ def handle(message, outputQueue, runtime):
 
 def wpListenerStart(outboundMessageQueue):
 	print "Starting http POST server for wp updates"
-	RequestHandler(outboundMessageQueue)
-
+        wpPush.writeOut = outboundMessageQueue
 
 def querySlidesFor(pieName, url):
 	url = "http://"+url+"/wp-admin/admin-ajax.php?action=dds_api&pie_name="+pieName

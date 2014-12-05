@@ -2,18 +2,21 @@ from BaseHTTPServer import BaseHTTPRequestHandler,HTTPServer
 import cgi
 import json
 import thread
+from Classes.message import Message
 
 ADDR = "0.0.0.0"
 PORT = 12345
+writeOut = None
 
 class RequestHandler(BaseHTTPRequestHandler):
-  def __init__(self, outboundMsgQueue):
-	self.writeOut = outboundMsgQueue
-	httpd = HTTPServer((ADDR, PORT), RequestHandler)
-	thread.start_new_thread(httpd.serve_forever,())
+
+
 
   def do_POST(self):
-    
+    global writeOut
+    if writeOut == None:
+      print "writeOut is none. Returning."
+      return
     if 'content-length' not in self.headers:
       print 'ERROR:No content len in post request, exiting'
       return
@@ -55,7 +58,7 @@ class RequestHandler(BaseHTTPRequestHandler):
 	}
 	'''
     for pie in info["pies"]:
-	self.writeOut.put(Message("wpPush", pie["name"], "slideShow" , info["action"], info["content"], info["datetime"]))
+        writeOut.put(Message("wpPush", pie["name"], "slideShow" , info["action"], info["content"], info["datetime"]))
 	
 	#Could do some safety checks but I see them as unnecessary
 	# if info["action"] == "add-slide":
@@ -71,4 +74,6 @@ class RequestHandler(BaseHTTPRequestHandler):
 		# raise Exception("Recieved unknown action")
 
     
+httpd = HTTPServer((ADDR, PORT), RequestHandler)
+thread.start_new_thread(httpd.serve_forever,())
 

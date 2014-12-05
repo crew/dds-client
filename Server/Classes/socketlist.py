@@ -30,7 +30,6 @@ class socketList:
 
 	def sendMessage(self, sock, msg):
 		print "Sending"
-		print str(sock) + " Peer name : "+str(sock.getpeername())
 		print "Message "+str(msg)
 		try :
 			sock.sendall(msg)
@@ -38,10 +37,13 @@ class socketList:
 			#stops here when slide doesn't make it?
 		except Exception as e:
 			print str(e)
-			self.removeSocket(sock)
+			if sock: self.removeSocket(sock)
 
 	def getSock(self, pie):
-		return self.pieMap[pie]
+		try:
+                  return self.pieMap[pie]
+                except:
+                  print "Missing Pie:",pie
 
 	def getPie(self, sock):
 		print(len(self.pieMap))
