@@ -16,8 +16,8 @@ class Slide():
 		
 	def __init__(self, infoDict):
 		self.__type__ = "slide"
-		self.url = infoDict["Permalink"]
-		self.duration = infoDict["Duration"]
+		self.url = infoDict["permalink"]
+		self.duration = infoDict["duration"]
 		self.id = infoDict["ID"]
 		self.meta = infoDict["meta"]
 
