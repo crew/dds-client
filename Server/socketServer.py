@@ -36,7 +36,7 @@ def main_socketServer_thread(inputQueue, Queues, runtimeVars):
     # Add server socket to the list of readable connections
     connection = socketList({}, [], server_socket)
     connection.addSocket(server_socket)
-	wpListenerStart(Queues["socketServer"])
+    wpListenerStart(Queues["socketServer"])
     # Map of the Pies
     pieMap = {}
 

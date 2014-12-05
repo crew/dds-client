@@ -14,7 +14,7 @@ class Message:
         self.pluginDest = pluginDest
         self.action = action
         self.content = content
-		self.datetime = datetime
+	self.datetime = datetime
 
     def add_content(self, key, val):
         self.content[key] = val
@@ -32,9 +32,9 @@ class Message:
     	pluginDest = jsonObj['pluginDest']
     	action = jsonObj['action']
     	content = jsonObj['content']
-		datetime = None
-		if "datetime" in jsonObj:
-			datetime = jsonObj["datetime"]
+	datetime = None
+	if "datetime" in jsonObj:
+		datetime = jsonObj["datetime"]
     	return Message(src, dest, pluginDest, action, content, datetime)
 
     def __getitem__(self, item):
@@ -48,8 +48,8 @@ class Message:
     		return self.action
     	elif item == "content":
     		return self.content
-		elif item == "datetime":
-			return self.datetime
+	elif item == "datetime":
+		return self.datetime
     	raise Exception("Message does not have an attribute \""+item+"\"")
     	
 """ Sample Messge Usage:

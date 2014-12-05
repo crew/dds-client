@@ -1,6 +1,7 @@
 from BaseHTTPServer import BaseHTTPRequestHandler,HTTPServer
 import cgi
 import json
+import thread
 
 ADDR = "0.0.0.0"
 PORT = 12345
@@ -9,7 +10,7 @@ class RequestHandler(BaseHTTPRequestHandler):
   def __init__(self, outboundMsgQueue):
 	self.writeOut = outboundMsgQueue
 	httpd = HTTPServer((ADDR, PORT), RequestHandler)
-	httpd.serve_forever()
+	thread.start_new_thread(httpd.serve_forever,())
 
   def do_POST(self):
     
@@ -21,10 +22,10 @@ class RequestHandler(BaseHTTPRequestHandler):
     data = self.rfile.read(int(self.headers.getheader('content-length')))
     
     #print the data
-	print "Http recieved POST: "+str(data)
+    print "Http recieved POST: "+str(data)
 	
     info = json.loads(data)
-	'''
+    '''
 	Expecting to receive something of the form
 	{
 		"datetime" : "2014-11-30T22:04:15+00:00", # ISO 8601, Timestamp of this push
@@ -53,8 +54,8 @@ class RequestHandler(BaseHTTPRequestHandler):
 		} 
 	}
 	'''
-	for pie in info["pies"]:
-		self.writeOut.put(Message("wpPush", pie["name"], "slideShow" , info["action"], info["content"], info["datetime"]))
+    for pie in info["pies"]:
+	self.writeOut.put(Message("wpPush", pie["name"], "slideShow" , info["action"], info["content"], info["datetime"]))
 	
 	#Could do some safety checks but I see them as unnecessary
 	# if info["action"] == "add-slide":
