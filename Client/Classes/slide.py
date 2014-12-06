@@ -33,3 +33,7 @@ class Slide():
 		
 	def __str__(self):
 		return "Slide[url="+str(self.url)+", duration="+str(self.duration)+", id="+str(self.id)+", meta="+str(self.meta)+"]"
+
+	def __repr__(self):
+		# Simplified output (Shown when Arrays of Slides are Printed)
+		return "Slide("+str(self.url)+","+str(self.duration)+")"
