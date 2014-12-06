@@ -58,7 +58,7 @@ class RequestHandler(BaseHTTPRequestHandler):
 	}
 	'''
     for pie in info["pies"]:
-        writeOut.put(Message("wpPush", pie["name"], "slideShow" , info["action"], info["content"], info["datetime"]))
+        writeOut.put(Message("wpPush", pie["name"], "slideShow" , info["action"], json.dumps(info["content"]), info["datetime"]))
 	
 	#Could do some safety checks but I see them as unnecessary
 	# if info["action"] == "add-slide":
