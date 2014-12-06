@@ -13,7 +13,13 @@ class Slide():
 		
 	def __init__ (self, infoDict):
 		self.__type__ = "slide"
+		print "Got meta:",infoDict["meta"]
 		self.url = infoDict["permalink"]
+		if (not(isinstance(infoDict["meta"],str)) and 
+			(infoDict["meta"]["dds_external_url"][0] != "")):
+			
+			self.url = infoDict["meta"]["dds_external_url"][0]
+
 		self.duration = infoDict["duration"]
 		self.id = infoDict["ID"]
 		self.meta = infoDict["meta"]
@@ -26,4 +32,4 @@ class Slide():
 		return self.id == id
 		
 	def __str__(self):
-		return "Slide[url="+str(self.url)+", duration="+str(self.duration)+", id="+str(self.id)+", meta="+self.meta+"]"
+		return "Slide[url="+str(self.url)+", duration="+str(self.duration)+", id="+str(self.id)+", meta="+str(self.meta)+"]"
