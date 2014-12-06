@@ -48,7 +48,8 @@ def runShow(inputQueue, runtimeVars, setPage, writeOut):
 	
 	#Helper to get the slide out of the slide list with the given ID, also insures uniqueness if ID's
 	def getSlideById(slideList, id):
-		matches = filter(lambda x : x.sameID(currentMessage["ID"]), slides)
+		print "getSlideById called. currentMessage:",currentMessage
+		matches = filter(lambda x : x.sameID(currentMessage["content"]["ID"]), slides)
 		if len(matches) > 1:
 			raise Exception("Why are there 2 slides with the same ID?")
 		return None if len(matches) == 0 else matches[0]
