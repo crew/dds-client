@@ -67,7 +67,7 @@ def runShow(inputQueue, runtimeVars, setPage, writeOut):
 		Logger.log("DEBUG", "Changing slide :"+str(old)+" to "+ str(newSlide))
 		if old:
 			slideList.remove(old)
-		slideList.add(new)
+		slideList.add(newSlide)
 		
 	def addSlide(slideList, slide):
 		print "Adding slide..."
