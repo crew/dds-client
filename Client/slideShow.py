@@ -85,10 +85,10 @@ def runShow(inputQueue, runtimeVars, setPage, writeOut):
 			if not inputQueue.empty():
 				currentMessage = inputQueue.get()
 				infoForAddition = json.loads(currentMessage["content"])
-				if currentMessage["action"] == "loadSlides":
+				if currentMessage["action"] == "load-slides":
 					for slideJSON in infoForAddition["actions"]:
 						#TODO fields in dds-api call need to be changed to standard, they also need ID and meta added @Eddie
-						addSlide(slides, Slide(slideJSON["location"], slideJSON["duration"], slideJSON["ID"], slideJSON["meta"]))
+						addSlide(slides, Slide.makeSlide(slideJSON["location"], slideJSON["duration"], slideJSON["ID"],""))
 				elif currentMessage["action"] == "add-slide":
 					addSlide(slides, Slide(infoForAddition))
 				elif currentMessage["action"] == "delete-slide":
