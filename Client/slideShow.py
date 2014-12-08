@@ -34,16 +34,45 @@ class SlideShowPlugin(Plugin):
 
 ## Functions
 def runShow(inputQueue, runtimeVars, setPage, writeOut):
-	slideRequest = Message(runtimeVars["name"], "Grandma", 'WPHandler', "querySlides", "placeHolder")
+	#TODO get DT 
+	slideRequest = Message(runtimeVars["name"], "Grandma", 'WPHandler', "querySlides", "Maor slidez")
 	print "slideReuqest " + slideRequest.toJSON()
 	writeOut(slideRequest)
 
 	slides = []
 	# Replace with loading slide
-	slides.append(Slide("http://mrwgifs.com/wp-content/uploads/2013/08/Success-Kid-Meme-Gif.gif", 5)) 
+	slides.append(Slide.makeSlide("http://mrwgifs.com/wp-content/uploads/2013/08/Success-Kid-Meme-Gif.gif", 5, -1, "")) 
 	# Temp Weather slide for testing purposes. Uncomment as needed.
 	#slides.append(Slide("http://104.131.73.58", 10))
-
+	
+	
+	#Helper to get the slide out of the slide list with the given ID, also insures uniqueness if ID's
+	def getSlideById(slideList, id):
+		print "getSlideById called. currentMessage("+str(type(currentMessage))+"):",currentMessage
+		matches = filter(lambda x : x.sameID(id), slides)
+		if len(matches) > 1:
+			raise Exception("Why are there two slides with the same ID?")
+		return None if len(matches) == 0 else matches[0]
+		
+	def deleteSlide(slideList, id):
+		print "Deleting slide..."
+		temp = getSlideById(slides, id)
+		Logger.log("DEBUG", "Removing slide: "+str(temp))
+		if temp:
+			slideList.remove(temp)
+		
+	def editSlide(slideList, id, newSlide):
+		print "Editing slide..."
+		old = getSlideById(slides, id)
+		Logger.log("DEBUG", "Changing slide :"+str(old)+" to "+ str(newSlide))
+		if old:
+			slideList.remove(old)
+		slideList.append(newSlide)
+		
+	def addSlide(slideList, slide):
+		print "Adding slide..."
+		Logger.log("DEBUG", "Adding slide :"+str(slide))
+		slideList.append(slide)
 	x = 0
 	Run = True
 	while Run:
@@ -55,22 +84,21 @@ def runShow(inputQueue, runtimeVars, setPage, writeOut):
 		print "Just set page : "+currentSlide.url
 		while(datetime.datetime.now() < target_time):
 			if not inputQueue.empty():
-				print "The show got a message"
 				currentMessage = inputQueue.get()
-				if currentMessage["action"] == "loadSlides":
-					print "Loading slides: "+currentMessage["content"]
-					Logger.log("DEBUG", "Recieved new slide: "+currentMessage["content"])
-					tempSlides = json.loads(currentMessage["content"])
-					for slide in tempSlides["actions"]:
-						slides.append(Slide(slide["location"], slide["duration"]))
-				elif currentMessage["content"] == "removeSlide":
-					slides.remove(currentMessage.content)
-				elif currentMessage["content"] == "Terminate":
+				infoForAddition = json.loads(currentMessage["content"])
+				if currentMessage["action"] == "load-slides":
+					for slideJSON in infoForAddition["actions"]:
+						#TODO fields in dds-api call need to be changed to standard, they also need ID and meta added @Eddie
+						addSlide(slides, Slide.makeSlide(slideJSON["location"], slideJSON["duration"], slideJSON["ID"],""))
+				elif currentMessage["action"] == "add-slide":
+					addSlide(slides, Slide(infoForAddition))
+				elif currentMessage["action"] == "delete-slide":
+					deleteSlide(slides, infoForAddition["ID"])
+				elif currentMessage["action"] == "edit-slide":
+					editSlide(slides, infoForAddition["ID"], Slide(infoForAddition))
+				elif currentMessage["action"] == "Terminate":
 					Run = False
-					#this inner loop will still run even if we set Run = false, we need to break
-					#in order to terminate immediately
 					break
-			#Should sleep, we need only support slide durations with precision .1 seconds (we could lesson this to 1 second
 			time.sleep(1)
 		# Move on
 

@@ -69,7 +69,6 @@ class WebBrowser(gtk.Window):
 		print "showing"
 		self.show_all()
 
-
 	
 
 #Initializes the browser and returns a function used to update the page
@@ -85,6 +84,12 @@ class GTKPlugin(threading.Thread):
 		return True;
 	def run(self, runtimeVars):
 		gtk.main()
+<<<<<<< HEAD
+=======
+		while True:
+			print "Main loop"
+			time.sleep(15)
+>>>>>>> WPUpdates
 	def getName(self):
 		return "Gtk Plugin"
 	def addMessage(self, message):

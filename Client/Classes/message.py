@@ -7,13 +7,14 @@ class Message:
 #pluginDest is the name of the plugin that this message should be distributed to
 #action is the function that the destPlugin should run
 #content is the payload of this message, the plugin should know how to interpret the content of this message
-    def __init__(self, src, dest, pluginDest, action, content):
+    def __init__(self, src, dest, pluginDest, action, content, datetime = None):
         """src is the name of the thread, dest is the goal thread, action is a string that can run a function, content is a dictionary"""
         self.src = src
         self.dest = dest
         self.pluginDest = pluginDest
         self.action = action
         self.content = content
+	self.datetime = datetime
 
     def add_content(self, key, val):
         self.content[key] = val
@@ -21,6 +22,10 @@ class Message:
     def toJSON(self):
     	text = json.dumps(self.__dict__)
     	return text
+
+    def __str__(self):
+        return "Src = "+self.src+" dest = "+self.dest+" pluginDest = "+self.pluginDest+" action = "+self.action+" content = "+self.content
+#" datetime = "+self.datetime
     @staticmethod
     def fromJSON(jsonObj):
     	src = jsonObj['src']
@@ -28,7 +33,10 @@ class Message:
     	pluginDest = jsonObj['pluginDest']
     	action = jsonObj['action']
     	content = jsonObj['content']
-    	return Message(src, dest, pluginDest, action, content)
+	datetime = None
+	if "datetime" in jsonObj:
+		datetime = jsonObj["datetime"]
+    	return Message(src, dest, pluginDest, action, content, datetime)
 
     def __getitem__(self, item):
     	if item == "src":
@@ -41,6 +49,8 @@ class Message:
     		return self.action
     	elif item == "content":
     		return self.content
+	elif item == "datetime":
+		return self.datetime
     	raise Exception("Message does not have an attribute \""+item+"\"")
     	
 """ Sample Messge Usage:
