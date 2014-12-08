@@ -84,12 +84,9 @@ class GTKPlugin(threading.Thread):
 		return True;
 	def run(self, runtimeVars):
 		gtk.main()
-<<<<<<< HEAD
-=======
 		while True:
 			print "Main loop"
-			time.sleep(15)
->>>>>>> WPUpdates
+			time.sleep(5)
 	def getName(self):
 		return "Gtk Plugin"
 	def addMessage(self, message):
