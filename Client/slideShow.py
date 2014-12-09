@@ -73,6 +73,8 @@ def runShow(inputQueue, runtimeVars, setPage, writeOut):
 		print "Adding slide..."
 		Logger.log("DEBUG", "Adding slide :"+str(slide))
 		slideList.append(slide)
+	
+
 	x = 0
 	Run = True
 	while Run:
@@ -96,6 +98,9 @@ def runShow(inputQueue, runtimeVars, setPage, writeOut):
 					deleteSlide(slides, infoForAddition["ID"])
 				elif currentMessage["action"] == "edit-slide":
 					editSlide(slides, infoForAddition["ID"], Slide(infoForAddition))
+				elif currentMessage["action"] == "overwrite-with":
+					slides = []
+					slides.append(Slide.makeSlide(infoForAddition["url"], 30, -1, "")) 
 				elif currentMessage["action"] == "Terminate":
 					Run = False
 					break

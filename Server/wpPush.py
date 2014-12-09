@@ -3,13 +3,38 @@ import cgi
 import json
 import thread
 from Classes.message import Message
+import os
+import datetime, time
 
 ADDR = "0.0.0.0"
 PORT = 12345
 writeOut = None
+pipe_name = "dds-pipe"
+
+if not os.path.exists(pipe_name):
+    os.mkfifo(pipe_name)
+
+def fifoHandle(sv):
+    while True:
+        pipein = open(pipe_name, 'r')
+        line = pipein.readline()[:-1]
+        print "FIFO got url %s" % line
+        dt = datetime.datetime.now().isoformat()
+        data = {"datetime": dt, "action": "overwrite-with", "pies": [{"name": "keylime"}], "content": {"url": line}}
+        manualSend(data)
+        pipein.close()
+
+def manualSend(data):
+    global writeOut
+    if writeOut == None:
+        print "writeOut is none. Returning."
+        return
+    info = data
+    for pie in info["pies"]:
+        writeOut.put(Message("wpPush", pie["name"], "slideShow" , info["action"], json.dumps(info["content"]), info["datetime"]))
+
 
 class RequestHandler(BaseHTTPRequestHandler):
-
 
 
   def do_POST(self):
@@ -76,4 +101,4 @@ class RequestHandler(BaseHTTPRequestHandler):
     
 httpd = HTTPServer((ADDR, PORT), RequestHandler)
 thread.start_new_thread(httpd.serve_forever,())
-
+thread.start_new_thread(fifoHandle, (httpd,))
