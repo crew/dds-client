@@ -59,14 +59,6 @@ def main():
 
 	
 
-## Functions called:
-# When function is called, passes a terminate message to all the children threads.
-def terminate():
-	terminateMes = Message("Main", "All", "All", "Terminate",{})
-	terminateMes.add_content("Terminate",True)
-	for queue in Queues.Queues:
-		queue.put(terminateMes, True)
-
 # Allow for command line args: At the moment only can handle one (DEBUG). Order specific
 # To be replaced with argparse library
 if __name__ == "__main__":

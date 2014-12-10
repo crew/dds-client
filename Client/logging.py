@@ -1,15 +1,5 @@
 import threading
 
-# Takes a dict input and logs its contents to the syslog
-'''def logging_thread(input_queue, Queues, runtimeVars):
-    while True:
-        if not input_queue.empty():
-            currentMessage = input_queue.get()
-            for key in currentMessage.content:
-	        msg = "PIE: " + currentMessage.src + ": " + currentMessage.content[key]
-		syslog.syslog(syslog.LOG_ERR, msg)
-
-'''	
 #a thread-safe logging class
 #use Logger.log to log a message with the given priority
 
@@ -77,7 +67,3 @@ class Logger:
 		
 instance = Logger(15)
 	
-
-#	newLog = Message("Main", "Logging", "Logger" , "log", {})
-#	newLog.add_content("1",mes)
-#	queue.put(newLog)

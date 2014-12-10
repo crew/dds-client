@@ -32,5 +32,5 @@ class sockClass:
 		# Needs to be abstracted to allow config setting of these parameters
 		identify = Message(runtimeVars["name"], "Grandma","socketServer" , "connect",{})
 		identify.add_content("name",runtimeVars["name"])
-		identify.add_content("item2","bob")
+		#identify.add_content("item2","bob")
 		self.sock.send(identify.toJSON())
