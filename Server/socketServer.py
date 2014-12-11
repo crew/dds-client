@@ -48,7 +48,7 @@ def main_socketServer_thread(inputQueue, Queues, runtimeVars):
         if not Queues["socketServer"].empty():
             log(Queues["Logging"], "Message in Queue")
             currentMessage = Queues["socketServer"].get()
-            connection.sendMessage(connection.getSock(currentMessage.dest), currentMessage.toJSON())
+            connection.sendMessage(connection.getSock(currentMessage.dest), currentMessage.toJSON()+"\v")
             
 
 def socketServer(connection, Queues, server_socket, RECV_BUFFER):
