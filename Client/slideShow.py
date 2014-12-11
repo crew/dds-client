@@ -1,4 +1,4 @@
-import Queue, thread, json, datetime, time
+import Queue, thread, json, datetime, time, sys
 
 from Classes.message import Message
 from Classes.slide import Slide
@@ -80,12 +80,14 @@ def runShow(inputQueue, runtimeVars, setPage, writeOut):
 		print str(slides)
 		if len(slides) > 1 and type(getSlideById(slides, -1)) != type(None):
 			print "Slides have loaded removing loading slide..."
+			x=0
 			slides.remove(getSlideById(slides, -1))
 		if len(slides) == 0:
 			print "I Have no slides, stopping slide show..."
 			Logger.log("ERROR", "Ran out of slides...")
 			sys.exit(0)
 			Run = False
+		print "x:",x
 		currentSlide = slides[x]
 		target_time = datetime.datetime.now() + datetime.timedelta(seconds = currentSlide.duration)
 		setPage(currentSlide.url)
@@ -109,8 +111,8 @@ def runShow(inputQueue, runtimeVars, setPage, writeOut):
 					break
 			time.sleep(1)
 		# Move on
-
-		x  = (x+1) % len(slides)
+		if len(slides):
+			x  = (x+1) % len(slides)
 
 
 
