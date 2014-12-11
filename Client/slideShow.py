@@ -1,92 +1,119 @@
-import Queue, thread, json, datetime
+import Queue, thread, json, datetime, time, sys
 
 from Classes.message import Message
 from Classes.slide import Slide
 
-#from logging import log
+
+from logging import Logger
+from Plugins.plugin import Plugin
+import gtkDisplay
 
 
-# Proably not needed anymore
-# def main_display_thread(inputQueue, Queues, runtimeVars):
-
-#     # logs for debugging purposes
-#     log(Queues.Queues["Logging"],"display running")
-
-#     ## Setps up child thread queue and Spawn child thread
-#     displayQueue = Queue.Queue(100)
-#     thread.start_new_thread(imageLoop,(displayQueue,))
-
-#     ## loop var
-#     Run = True
-
-#     ## Child sub threads manager
-#     while Run:
-#         if not input_queue.empty():
-#             currentMessage = input_queue.get()
-#             ## Terminate functionality (when it recieves the die message terminates child threads and then terminates self)
-#             if "Terminate" in currentMessage.content and currentMessage.content["Terminate"] is True:
-#                 sendMessage = Message("display", "displaychild", {})
-#                 sendMessage.add_content("Terminate", True)
-#                 output_queue.put(sendMessage)
-#                 run = False
-#         ## Can add additional logic here/spawn threads as needed
+		
+class SlideShowPlugin(Plugin):
+	def __init__(self):
+		self.updateHandle = None
+		self.inQ = Queue.Queue(100)
+		self.outHandle = None
+	def needsThread(self):
+		return True;
+	def run(self, runtimeVars):
+		if self.updateHandle == None or self.outHandle == None:
+			raise Exception("Something went wrong...")
+		runShow(self.inQ, runtimeVars, self.updateHandle, self.outHandle)
+	def setup(self, messageDict, runtimeVars):
+		self.updateHandle = gtkDisplay.getUpdateHandle(runtimeVars)
+		self.outHandle = messageDict["IOPlugin"]
+	def getName(self):
+		return "slideShow"
+	def addMessage(self, message):
+		print "Adding : "+str(message)
+		self.inQ.put(message,True)
+	
+	
 
 ## Functions
-def main_display_thread(inputQueue, Queues, runtimeVars):
-    slideRequest = Message(runtimeVars["name"], "Grandma", 'WPHandler', "querySlides", "placeHolder")
-    print "slideReuqest " + slideRequest.toJSON()
-    Queues["Socket"].put(slideRequest)
+def runShow(inputQueue, runtimeVars, setPage, writeOut):
+	#TODO get DT 
+	slideRequest = Message(runtimeVars["name"], "Grandma", 'WPHandler', "querySlides", "Maor slidez")
+	print "slideReuqest " + slideRequest.toJSON()
+	writeOut(slideRequest)
 
-    slides = []
-    # Replace with loading slide
-    slides.append(Slide("http://mrwgifs.com/wp-content/uploads/2013/08/Success-Kid-Meme-Gif.gif", 10)) 
+	slides = []
+	# Replace with loading slide
+	slides.append(Slide.makeSlide("file:///home/pi/dds-client/Client/resources/loading_screen/index.html", 5, -1, "")) 
+	# Temp Weather slide for testing purposes. Uncomment as needed.
+	#slides.append(Slide("http://104.131.73.58", 10))
+	
+	
+	#Helper to get the slide out of the slide list with the given ID, also insures uniqueness if ID's
+	def getSlideById(slideList, id):
+		print "getSlideById called. currentMessage("+str(type(currentMessage))+"):",currentMessage
+		matches = filter(lambda x : x.sameID(id), slides)
+		if len(matches) > 1:
+			raise Exception("Why are there two slides with the same ID?")
+		return None if len(matches) == 0 else matches[0]
+		
+	def deleteSlide(slideList, id):
+		print "Deleting slide..."
+		temp = getSlideById(slides, id)
+		Logger.log("DEBUG", "Removing slide: "+str(temp))
+		if temp:
+			slideList.remove(temp)
+		
+	def editSlide(slideList, id, newSlide):
+		print "Editing slide..."
+		old = getSlideById(slides, id)
+		Logger.log("DEBUG", "Changing slide :"+str(old)+" to "+ str(newSlide))
+		if old:
+			slideList.remove(old)
+		slideList.append(newSlide)
+		
+	def addSlide(slideList, slide):
+		print "Adding slide..."
+		Logger.log("DEBUG", "Adding slide :"+str(slide))
+		slideList.append(slide)
+	x = 0
+	Run = True
+	while Run:
+		#todo print slides, why are they not in the list
+		print str(slides)
+		if len(slides) > 1 and type(getSlideById(slides, -1)) != type(None):
+			print "Slides have loaded removing loading slide..."
+			x=0
+			slides.remove(getSlideById(slides, -1))
+		if len(slides) == 0:
+			print "I Have no slides, stopping slide show..."
+			Logger.log("ERROR", "Ran out of slides...")
+			sys.exit(0)
+			Run = False
+		print "x:",x
+		currentSlide = slides[x]
+		target_time = datetime.datetime.now() + datetime.timedelta(seconds = currentSlide.duration)
+		setPage(currentSlide.url)
+		print "Just set page : "+currentSlide.url
+		while(datetime.datetime.now() < target_time):
+			if not inputQueue.empty():
+				currentMessage = inputQueue.get()
+				infoForAddition = json.loads(currentMessage["content"])
+				if currentMessage["action"] == "load-slides":
+					for slideJSON in infoForAddition["actions"]:
+						#TODO fields in dds-api call need to be changed to standard, they also need ID and meta added @Eddie
+						addSlide(slides, Slide.makeSlide(slideJSON["location"], slideJSON["duration"], slideJSON["ID"],""))
+				elif currentMessage["action"] == "add-slide":
+					addSlide(slides, Slide(infoForAddition))
+				elif currentMessage["action"] == "delete-slide":
+					deleteSlide(slides, infoForAddition["ID"])
+				elif currentMessage["action"] == "edit-slide":
+					editSlide(slides, infoForAddition["ID"], Slide(infoForAddition))
+				elif currentMessage["action"] == "Terminate":
+					Run = False
+					break
+			time.sleep(1)
+		# Move on
+		if len(slides):
+			x  = (x+1) % len(slides)
 
-    # all of the information to be sent to be displayed
-    #Loops through the Json and outputs the data
-    #Once it reaches the end of the data it resets
-    #If "a" key is pressed, then it adds the next slide in the queue to the JSON
-    #if "r" key is pressed, puts fram back into queue, then it removes the last slide in the JSON
-    #prints "at last frame!" if you press r to the last frame
-    x = 0
-    Run = True
-    while Run:
-        currentSlide = slides[x]
-        print currentSlide.duration
-        target_time = datetime.datetime.now() + datetime.timedelta(seconds = currentSlide.duration)
-        Queues["Gtk"].put(currentSlide)
-        while(datetime.datetime.now() < target_time):
-            pass
-            if not inputQueue.empty():
-                currentMessage = inputQueue.get()
-                if currentMessage["action"] == "loadSlides":
-                    print "New Slide!!!!"
-                    print currentMessage["content"]
-                    tempSlides = json.loads(currentMessage["content"])
-                    for slide in tempSlides["actions"]:
-                        print slide
-#                        if  '__type__' in tempSlide and tempSlide["__type__"] == "slide":
-                        slides.append(Slide(slide["location"], slide["duration"]))
-                elif currentMessage["content"] == "removeSlide":
-                    slides.remove(currentMessage.content)
-                elif currentMessage["content"] == "Terminate":
-                    Run = False
-            else:
-                pass
-        # Load Slide
-        if x < (len(slides) - 1):
-            x+=1
-        else:            
-            x=0
 
-def updateBrowser(slide):
-    # Insert Websocket code here
-    print "Place holder"
-
-## Logging
-# Passes a message to the logging thread to log.
-def log(queue,mes):
-        newLog = Message("Display", "Logging", "Logger", "log", {})
-        newLog.add_content("1",mes)
-        queue.put(newLog)
 
 

@@ -7,18 +7,33 @@ import json
 
 # (c) Northeastern University Crew 2014
 class Slide():
-	def __init__(self, url, duration, action="None"):
-		"""
-
-		:param url: String
-		:param duration: Integer
-		:param action: Function
-		"""
+	@staticmethod
+	def makeSlide(url, duration, id, meta):
+		return Slide({"permalink" : url, "duration" : duration, "ID" : id, "meta" : meta})
+		
+	def __init__ (self, infoDict):
 		self.__type__ = "slide"
-		self.url = url
-		self.duration = duration
-		self.action = action
+		print "Got meta:",infoDict["meta"]
+		self.url = infoDict["permalink"]
+		if (not(isinstance(infoDict["meta"],str)) and 
+			(infoDict["meta"]["dds_external_url"][0] != "")):
+			
+			self.url = infoDict["meta"]["dds_external_url"][0]
+
+		self.duration = infoDict["duration"]
+		self.id = infoDict["ID"]
+		self.meta = infoDict["meta"]
 
 	def toJSON(self):
 		text = json.dumps(self.__dict__)
 		return text
+		
+	def sameID(self, id):
+		return self.id == id
+		
+	def __str__(self):
+		return "Slide[url="+str(self.url)+", duration="+str(self.duration)+", id="+str(self.id)+", meta="+str(self.meta)+"]"
+
+	def __repr__(self):
+		# Simplified output (Shown when Arrays of Slides are Printed)
+		return "Slide("+str(self.url)+","+str(self.duration)+")"

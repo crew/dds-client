@@ -14,4 +14,12 @@ class ConfigParser:
 		split = line.replace(" ","").split("=")
 		if len(split) != 2:
 			raise Exception("Bad config file...")
+		if split[1].find("[") != -1:
+			if split[1] != "[]":
+				temp = []
+				for string in split[1][1:-1].split(","):
+					temp.append(string)
+				split[1] = temp
+			else:
+				split[1] = []
 		return (split[0], split[1])

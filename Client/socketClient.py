@@ -1,53 +1,81 @@
 #!/usr/bin/python
-import socket, select, string, sys, time, json
+import socket, select, string, sys, time, json, Queue
 
 from Classes.message import Message
 from Classes.sockClass import sockClass
-import Queue , thread
+from logging import Logger
 
-def main_socket_thread(inputQueue, Queues, runtimeVars):
-    log(Queues["Logging"], "Starting Main Socket")
-    # Will be replaced with settings from config
-    s = sockClass(runtimeVars)
+from Plugins.plugin import Plugin
 
-    log(Queues["Logging"], "Starting Socket Listener")
-    thread.start_new_thread(socket_thread, (s, Queues, runtimeVars))
+def socket_out(currentMessage, socket):
+	Logger.log("DEBUG", "Outbound Message: "+currentMessage.toJSON())
+	if currentMessage.dest == "Grandma":
+		try:
+			socket.send(currentMessage.toJSON())
+		except Exception, e:
+			print str(e)
+			Logger.log("ERROR", "Socket raised exception on send - exception : "+str(e))
+			raise Exception("Can't send message. Socekt = " + str(socket))
+	else:
+		Logger.log("WARNING", "Message not addressed to grandma")
+	print "Socket Message Sent!"
 
-    time.sleep(1)
 
-    Run = True
-    while Run:
-        if not Queues["Socket"].empty():
-            log(Queues["Logging"], "Message in Queue")
-            currentMessage = Queues["Socket"].get()
-            print currentMessage.toJSON()
-            if currentMessage.dest == "Grandma":
-                s.send(currentMessage.toJSON())
+def socket_in(s, runtimeVars, route):
+	run = True
+	while run:      
+		socket_list = [s.sock,]
+		# Get the list sockets which are readable
+		read_sockets, write_sockets, error_sockets = select.select(socket_list , [], [])
+		for sock in read_sockets:
+			if sock == s.sock:
+				data = sock.recv(4096)
+				if not data:
+					s.connect(runtimeVars)
+				else :
+					messages = filter(lambda s: s != "", data.split('\v')) #[:-1] would also work, but you never know...
+					for currentMessage in messages:
+						currentMessage = json.loads(currentMessage)
+						if currentMessage["pluginDest"] == "Main":
+							sys.exit(0)
+						print "Got message : "+str(currentMessage)
+						messageDestination = currentMessage["pluginDest"]
+						print "Recieved message sending it too : "+str(messageDestination)
+						route[messageDestination](Message.fromJSON(currentMessage))
+						#Queues[currentMessage["pluginDest"]].put(Message.fromJSON(currentMessage))
+			else :
+				print "Something Goofed"
+		#We all program updates will be in multiples of 1sec, as this is the slide time accuracy
+		time.sleep(1)
 
-#main function
-def socket_thread(s, Queues, runtimeVars):
-    run = True
-    print("blueberry")
-    while run:      
-        socket_list = [s.sock,]
-        # Get the list sockets which are readable
-        print "Hang"
-        read_sockets, write_sockets, error_sockets = select.select(socket_list , [], [])
-        print "Incoming Socket"
-        for sock in read_sockets:
-            print sock
-            if sock == s.sock:
-                data = sock.recv(4096)
-                print data
-                if not data:
-                    s.connect(runtimeVars)
-                else :
-                    currentMessage = json.loads(data)
-                    Queues[currentMessage["pluginDest"]].put(Message.fromJSON(currentMessage))
-            else :
-                print "Something Goofed"
 
-def log(queue,mes):
-    newLog = Message("Socket", "Logging", "Logger" ,"log", {})
-    newLog.add_content("1",mes)
-    queue.put(newLog)
+
+class IOPlugin(Plugin):
+	def __init__(self):
+		self.queue = Queue.Queue(100)
+		self.msgRoute = None
+		self.socket = None
+	def needsThread(self):
+		return True;
+	def setup(self, messageDict, runtimeVars):
+		self.msgRoute = messageDict
+		self.socket = sockClass(runtimeVars)
+	def run(self, runtimeVars):
+		if self.msgRoute == None:
+			raise Exception("Can't distribute info, message route is None")
+		socket_in(self.socket, runtimeVars, self.msgRoute)
+	def getName(self):
+		return "IOPlugin"
+	def addMessage(self, message):
+		print "Attempting to send Message"
+		if self.socket == None:
+			Logger.log("WARNING", "No socket connection, trying again...")
+			time.sleep(.5)
+			self.addMessage(message)
+		else:
+			socket_out(message, self.socket)		
+
+
+
+
+

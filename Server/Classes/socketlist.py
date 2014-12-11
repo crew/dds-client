@@ -7,6 +7,7 @@ class socketList:
 		self.serverSocket = serverSocket
 
 	def addSocket(self, sock):
+		#print "Adding Socket: " + str(sock.getpeername())
 		self.sockList.append(sock)
 
 	def mapPie(self, sock, pieName):
@@ -15,9 +16,9 @@ class socketList:
 
 	def removeSocket(self, sock):
 		print "Good bye!"
+		print(self.getPie(sock))
  		sock.close()
 		self.sockList.remove(sock)
-		print(self.getPie(sock))
 		self.pieMap.pop(self.getPie(sock))
 
 	def broadcast(self, sock, msg):
@@ -29,15 +30,20 @@ class socketList:
 
 	def sendMessage(self, sock, msg):
 		print "Sending"
-		print sock
+		print "Message "+str(msg)
 		try :
-			sock.send(msg)
-		except :
-			print "Failed"
-			self.removeSocket(sock)
+			sock.sendall(msg)
+			print "Message sent!"
+			#stops here when slide doesn't make it?
+		except Exception as e:
+			print str(e)
+			if sock: self.removeSocket(sock)
 
 	def getSock(self, pie):
-		return self.pieMap[pie]
+		try:
+                  return self.pieMap[pie]
+                except:
+                  print "Missing Pie:",pie
 
 	def getPie(self, sock):
 		print(len(self.pieMap))

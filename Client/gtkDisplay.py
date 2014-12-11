@@ -13,14 +13,15 @@
 # Copyright (C) 2014 Northeastern University CCIS Crew
 
 
-import sys
+import sys, thread, time
 import gobject
 import gtk
-#import glib
+import glib
 import webkit
 import threading
 from Classes.slide import Slide
 import Queue
+from Plugins.plugin import Plugin
 
 #for testing
 import time
@@ -30,98 +31,63 @@ import time
 #   the URL provided to it
 # Note: URL must begin with prefix (e.g. "http://")
 class WebBrowser(gtk.Window):
-    def __init__(self, url, width, height):
-        gtk.Window.__init__(self)
-        self.fullscreen()
+	def __init__(self, url, width, height):
+		gtk.Window.__init__(self)
+		self.fullscreen()
 
-        self._browser= webkit.WebView()
-        settings = webkit.WebSettings()
-        settings.set_property('enable-page-cache', True)
-        #Hopefully stopping page lag
-        #settings.set_property('enable-smooth-scrolling', True)
-        settings.set_property('enable-accelerated-compositing', True)
-        
-        self._browser.set_settings(settings)
-        self.connect('destroy', gtk.main_quit)
-        self.add(self._browser)
+		self._browser= webkit.WebView()
+		settings = webkit.WebSettings()
+		settings.set_property('enable-page-cache', True)
+		settings.set_property('enable-accelerated-compositing', True)
+		"""pixmap = gtk.gdk.Pixmap(None, 1, 1, 1)
+		color = gtk.gdk.Color()
+		cursor = gtk.gdk.Cursor(pixmap, pixmap, color, color, 0, 0)"""
 
-        self._browser.load_uri(url)
-        self._browser.set_size_request(int(width), int(height))
-        self.show_all()
+		self._browser.set_settings(settings)
+		self.connect('destroy', gtk.main_quit)
+		self.add(self._browser)
 
-        gobject.threads_init()
-        
-        
+		self._browser.load_uri(url)
+		self._browser.set_size_request(int(width), int(height))
+		self.show_all()
 
-    def updatePage(self,url):
-        print "updatePage"
-        # self.connect("destroy", gtk.main_quit)
-        self._browser.load_uri(url)
-        #while (self._browser.get_load_status() < 2):
-        #   continue
-        try:
-           self.fullscreen()
-        except:
-           pass
-        print "showing"
-        self.show_all()
+		gobject.threads_init()
+		
+		
 
-#test
-def openPageTest():
-    time.sleep(5)
-    openPage("http://dds-wp.ccs.neu.edu/?slide=test-ccis-tutoring&pie_name=chocolate")
+	def updatePage(self,url):
+		print "Update page running in : "+threading.currentThread().getName()
+		print "updatePage"
+		# self.connect("destroy", gtk.main_quit)
+		self._browser.load_uri(url)
+		#while (self._browser.get_load_status() < 2):
+		#   continue
+		try:
+		   self.fullscreen()
+		except:
+		   pass
+		print "showing"
+		self.show_all()
 
-# Class Definition of Page-Updating Thread
+	
 
-# TODO: Integrate with existing queues
-class PageUpdateThread (threading.Thread):
-    def __init__(self, width, height, queue=None):
-        threading.Thread.__init__(self)
-        self.threadID = 1
-        self.name = "Page Update"
-        self.queue = queue
-        self.webBrowser = WebBrowser("", width, height)
-    def run(self):
-        while 1:
-            currentSlide = self.queue.get()
-            gobject.timeout_add(100,self.webBrowser.updatePage, currentSlide.url)
-            time.sleep(currentSlide.duration)
-            #self.queue.put(currentSlide)
+#Initializes the browser and returns a function used to update the page
+def getUpdateHandle(runtimeVars):
+	browser = WebBrowser("", runtimeVars["width"], runtimeVars["height"])
+	def updatePage(url):
+		gobject.timeout_add(100,browser.updatePage, url)
+	return updatePage
+	
 
-
-# Allows initial bash invocation to load
-#      webpage passed as argument
-#if __name__ == "__main__":
-    #if len(sys.argv) <= 1 :
-    #    print("Usage:", sys.argv[0], "url")
-    #    sys.exit(0)
-
-testQueue = Queue.Queue(100)
-testQueue.put(Slide("http://facebook.com", 5))
-testQueue.put(Slide("http://dds-wp.ccs.neu.edu/?slide=test-ccis-tutoring&pie_name=chocolate", 10))
-testQueue.put(Slide("http:\/\/m.weather.com\/weather\/tenday\/USMA0046", 10))
-testQueue.put(Slide("http:\/\/dds-wp.ccs.neu.edu\/?slide=cisters-welcome-dinner&pie_name=chocolate", 10))
-testQueue.put(Slide("http:\/\/dds-wp.ccs.neu.edu\/?slide=test-ccis-tutoring&pie_name=chocolate", 10))
-testQueue.put(Slide("http:\/\/dds-wp.ccs.neu.edu\/?slide=cisters&pie_name=chocolate", 10))
-testQueue.put(Slide("http:\/\/dds-wp.ccs.neu.edu\/?slide=welcome-to-the-ccis-main-office&pie_name=chocolate", 10))
-
-def main_gtk_thread(inputQueue, Queues, runtimeVars):
-    pageUpdateThread = PageUpdateThread(runtimeVars["width"], runtimeVars["height"],inputQueue)
-
-    pageUpdateThread.start()
-
-    gtk.main()
-
-# Called on program start and contains
-#   gtk.main() (Runs until gtk.main_quit()...
-#   i.e. for the program's duration)
-#def mainThread(url):
-#    gobject.threads_init()
-#    webbrowser = WebBrowser(sys.argv[1])
-#   gtk.main()
-
-
-
-# Refreshing:
-# while True:
-#   time.sleep(10)
+class GTKPlugin(threading.Thread):
+	def needsThread(self):
+		return True;
+	def run(self, runtimeVars):
+		gtk.main()
+		while True:
+			print "Main loop"
+			time.sleep(5)
+	def getName(self):
+		return "Gtk Plugin"
+	def addMessage(self, message):
+		raise Exception("GTKPlugin does not take any messages")
