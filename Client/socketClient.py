@@ -33,14 +33,16 @@ def socket_in(s, runtimeVars, route):
 				if not data:
 					s.connect(runtimeVars)
 				else :
-					currentMessage = json.loads(data)
-					if currentMessage["pluginDest"] == "Main":
-						sys.exit(0)
-					print "Got message : "+str(currentMessage)
-					messageDestination = currentMessage["pluginDest"]
-					print "Recieved message sending it too : "+str(messageDestination)
-					route[messageDestination](Message.fromJSON(currentMessage))
-					#Queues[currentMessage["pluginDest"]].put(Message.fromJSON(currentMessage))
+					messages = filter(lambda s: s != "", data.split('\v')) #[:-1] would also work, but you never know...
+					for currentMessage in messages:
+						currentMessage = json.loads(currentMessage)
+						if currentMessage["pluginDest"] == "Main":
+							sys.exit(0)
+						print "Got message : "+str(currentMessage)
+						messageDestination = currentMessage["pluginDest"]
+						print "Recieved message sending it too : "+str(messageDestination)
+						route[messageDestination](Message.fromJSON(currentMessage))
+						#Queues[currentMessage["pluginDest"]].put(Message.fromJSON(currentMessage))
 			else :
 				print "Something Goofed"
 		#We all program updates will be in multiples of 1sec, as this is the slide time accuracy
