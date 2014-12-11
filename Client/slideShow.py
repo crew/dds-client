@@ -41,7 +41,7 @@ def runShow(inputQueue, runtimeVars, setPage, writeOut):
 
 	slides = []
 	# Replace with loading slide
-	slides.append(Slide.makeSlide("http://mrwgifs.com/wp-content/uploads/2013/08/Success-Kid-Meme-Gif.gif", 5, -1, "")) 
+	slides.append(Slide.makeSlide("file:///home/pi/dds-client/Client/resources/loading_screen/index.html", 5, -1, "")) 
 	# Temp Weather slide for testing purposes. Uncomment as needed.
 	#slides.append(Slide("http://104.131.73.58", 10))
 	
@@ -78,6 +78,14 @@ def runShow(inputQueue, runtimeVars, setPage, writeOut):
 	while Run:
 		#todo print slides, why are they not in the list
 		print str(slides)
+		if len(slides) > 1 and type(getSlideById(slides, -1)) != type(None):
+			print "Slides have loaded removing loading slide..."
+			slides.remove(getSlideById(slides, -1))
+		if len(slides) == 0:
+			print "I Have no slides, stopping slide show..."
+			Logger.log("ERROR", "Ran out of slides...")
+			sys.exit(0)
+			Run = False
 		currentSlide = slides[x]
 		target_time = datetime.datetime.now() + datetime.timedelta(seconds = currentSlide.duration)
 		setPage(currentSlide.url)
