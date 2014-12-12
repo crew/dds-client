@@ -8,11 +8,11 @@ class Message:
         Sample Usage:
             Making a new message that will send terminate from main to display:
 
-            C{newMessage = Message("Main", "Display", "Terminate", {})}
+            C{newMessage = Message("Main", "Display", "Terminate", \{\})}
 
             Making a slide that will update Display with a new slide:
 
-            C{newMessage = Message("Main", "Display", "Update", {})}
+            C{newMessage = Message("Main", "Display", "Update", \{\})}
             C{newMessage.add_content("slide1", "http://google.com")}
 
     @attention: It is good practice to use dict accessors as opposed to object attributes
