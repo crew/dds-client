@@ -10,36 +10,36 @@ ADDR = "0.0.0.0"
 PORT = 12345
 writeOut = None
 
-'''
-Expecting to receive something of the form
-{
-    "datetime" : "2014-11-30T22:04:15+00:00", # ISO 8601, Timestamp of this push
-    "action" : "add-slide",
-    "pies" : [
-        { "name" : "shepard" },
-        { "name" : "blueberry" }, # allows adding of new fields later on down the road
-    ],
-    "content"  : { # should definitely be an object for flex and forward compatibility
-        "ID" : 14, # WordPress Post ID
-        "Permalink" : "http://dds-wp..." # The URL to the Post; does not append
-                                         # ?pie=name or anything fancy, just the permalink
-        # ... All other WordPress Post Fields... basically json_encode( get_post( $post_id ) )
 
-        # ... and then the post meta for plugins and other cool add-ons
-        "meta" : {
-            "key1" : [ "value" ],
-            "key2" : [
-                "value1",
-                "value2",
-                3,
-                {
-                    "meta can be weird" : "remember that"
-                }
-            ]
-        }
-    }
-}
-'''
+#Expecting to receive something of the form
+#{
+#    "datetime" : "2014-11-30T22:04:15+00:00", # ISO 8601, Timestamp of this push
+#    "action" : "add-slide",
+#    "pies" : [
+#        { "name" : "shepard" },
+#        { "name" : "blueberry" }, # allows adding of new fields later on down the road
+#    ],
+#    "content"  : { # should definitely be an object for flex and forward compatibility
+#        "ID" : 14, # WordPress Post ID
+#        "Permalink" : "http://dds-wp..." # The URL to the Post; does not append
+#                                         # ?pie=name or anything fancy, just the permalink
+#        # ... All other WordPress Post Fields... basically json_encode( get_post( $post_id ) )
+#
+#        # ... and then the post meta for plugins and other cool add-ons
+#        "meta" : {
+#            "key1" : [ "value" ],
+#            "key2" : [
+#                "value1",
+#                "value2",
+#                3,
+#                {
+#                    "meta can be weird" : "remember that"
+#                }
+#            ]
+#        }
+#    }
+#}
+
 
 
 class RequestHandler(BaseHTTPRequestHandler):
@@ -57,7 +57,7 @@ class RequestHandler(BaseHTTPRequestHandler):
         # writeOut is set externally to be the
         # socketServer Message Queue
         global writeOut
-        if writeOut is None:
+        if writeOut == None:
             # Receiving Queue has not been set
             print "(RequestHandler): writeOut is none. Returning."
             return

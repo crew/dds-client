@@ -4,7 +4,7 @@ class ThreadDict:
     start all the persistent Threads in a consistent
     and simple fashion. See plugins.py for more details.
 
-    @var Threads: The threads contained in the object.
+    @ivar Threads: The threads contained in the object.
     @type Threads: Dictionary
     @copyright: Northeastern University Crew 2014
     """

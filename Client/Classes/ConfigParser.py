@@ -24,7 +24,7 @@ class ConfigParser:
     def getPair(line):
         """
         Parses the given configuration file
-            line into a tuple.
+        line into a tuple.
         @param line: The line to parse
         @type line: String
         @return: Tuple of the form (key, value)

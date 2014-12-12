@@ -2,15 +2,15 @@ class socketList:
     """
     Object responsible for keeping track of all socket connections
 
-    @var pieMap: A dictionary mapping each connected Raspberry Pi to its socket
+    @ivar pieMap: A dictionary mapping each connected Raspberry Pi to its socket
     @type pieMap: Dictionary
-    @var sockList: List of live Socket Connections
+    @ivar sockList: List of live Socket Connections
     @type sockList: Array
-    @var serverSocket: Represents the Server's Listening Socket
+    @ivar serverSocket: Represents the Server's Listening Socket
     @type serverSocket: Socket
     @see: Python C{socket} Documentation for socket info
     @warning: If you're writing a plugin, you I{probably} don't need
-                to mess with this.
+    to mess with this.
     @copyright: Northeastern University Crew 2014
     """
 
@@ -65,12 +65,12 @@ class socketList:
     def broadcast(self, msg, sock=None):
         """
         Broadcasts the given message to every socket
-            except the serverSocket and the socket provided
+        except the serverSocket and the socket provided
         @param msg: The message to broadcast
         @type msg: String
         @param sock: (Optional) The socket to exclude (e.g.
-                        the socket from which the broadcast
-                        originated)
+        the socket from which the broadcast
+        originated)
         @type sock: Socket
         @return: None
         @rtype: NoneType
@@ -106,7 +106,7 @@ class socketList:
     def getSock(self, pie):
         """
         Returns the socket associated with the given
-            Raspberry Pi name
+        Raspberry Pi name
         @param pie: The name of the Raspberry Pi whose socket to retrieve
         @type pie: String
         @return: The socket for the given Raspberry Pi

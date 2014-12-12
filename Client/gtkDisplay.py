@@ -13,10 +13,10 @@ class WebBrowser(gtk.Window):
     """
     Web Page Display Window Class
     Represents a full screen GTK Web Browser (no UI)
-        displaying a given URL.
+    displaying a given URL.
     @note: URL must begin with a prefix (e.g. "http://")
-    @note: Extension of the python-gtk-webkit presentation program
-                    Copyright (C) 2009 by Akkana Peck
+    @note: Extension of the python-gtk-webkit presentation program,
+    Copyright (C) 2009 by Akkana Peck
     @license: GNU Public License, version 2
     @copyright: Northeastern University Crew 2014
     """
@@ -73,7 +73,7 @@ class WebBrowser(gtk.Window):
 def getUpdateHandle(runtimeVars):
     """
     Initializes the browser and returns the
-        function used to update its page
+    function used to update its page
     @param runtimeVars: User-defined Configuration
     @type runtimeVars: Dictionary
     @return: Function

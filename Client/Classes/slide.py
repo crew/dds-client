@@ -5,13 +5,13 @@ import json
 class Slide():
     """
     Class for Slide Show Slide Objects
-    @var url: The Slide's URL
+    @ivar url: The Slide's URL
     @type url: String
-    @var duration: The Duration to show the slide (in seconds)
+    @ivar duration: The Duration to show the slide (in seconds)
     @type duration: Integer
-    @var id: The Slide's ID
+    @ivar id: The Slide's ID
     @type id: Integer
-    @var meta: The Slide's meta content
+    @ivar meta: The Slide's meta content
     @type meta: Dictionary
     @copyright: Northeastern University Crew 2014
     """

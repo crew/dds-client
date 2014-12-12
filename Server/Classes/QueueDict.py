@@ -4,13 +4,13 @@ import Queue
 class QueueDict:
     """
     A wrapper around the Queue Object, which is
-        simply a dictionary of Queues that can be
-        passed into a plugin, thereby allowing all
-        plugins to communicate with other plugins.
-        (i.e. A String to Queue dictionary)
-    @var Queues: Dictionary of queues
+    simply a dictionary of Queues that can be
+    passed into a plugin, thereby allowing all
+    plugins to communicate with other plugins.
+    (i.e. A String to Queue dictionary)
+    @ivar Queues: Dictionary of queues
     @type Queues: Dictionary
-    @var queueSize : Queue size in _Queues
+    @ivar queueSize : Queue size in _Queues
     @type queueSize: Integer
     @copyright: Northeastern University Crew 2014
     """
@@ -28,7 +28,7 @@ class QueueDict:
     def __getitem__(self, name):
         """
         Retrieves the desired queue using dictionary syntax
-            (e.g. C{queues[name]})
+        (e.g. C{queues[name]})
         @param name: The name of the desired queue
         @type name: String
         @return: The queue corresponding to the given name

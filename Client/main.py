@@ -18,7 +18,7 @@ from gtkDisplay import GTKPlugin
 def getAdditionalPlugins(runtimeVars):
     """
     Gets any User-Defined Plugins specified in the Configuration
-        from ./Plugins
+    from ./Plugins
     @param runtimeVars: User-Defined Configuration
     @type runtimeVars: Dictionary
     @return: User-Define Plugins

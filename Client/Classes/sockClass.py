@@ -7,11 +7,11 @@ from message import Message
 class sockClass:
     """
     Client Socket class
-    @var sock: The Socket's I/O socket
+    @ivar sock: The Socket's I/O socket
     @type sock: Socket
-    @var hostIP: The Server's IP Address
+    @ivar hostIP: The Server's IP Address
     @type hostIP: String
-    @var hostPort: The Server's Port
+    @ivar hostPort: The Server's Port
     @type hostPort: Integer
     @copyright: Northeastern University Crew 2014
     """

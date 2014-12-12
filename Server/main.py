@@ -61,16 +61,16 @@ def main():
 def terminate(queues):
     """
     Sends a terminate message to the threads
-        listening to the given queues
+    listening to the given queues
     @param queues: The list of queues to terminate
     @type queues: Dictionary
     @return: None
     @rtype: NoneType
     @note: I added this 'queues' parameter since, as it was written,
-             Queues.Queues was out of scope for this function. I *believe*
-             the way I added its call above replicates the desired
-             behavior. If not, please fix. If so, please remove this
-             message. -<Philip (11 Dec 2014)>
+    Queues.Queues was out of scope for this function. I *believe*
+    the way I added its call above replicates the desired
+    behavior. If not, please fix. If so, please remove this
+    message. -<Philip (11 Dec 2014)>
     """
     terminateMes = Message("Main", "All", "All", "Terminate", {})
     terminateMes.add_content("Terminate", True)

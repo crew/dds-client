@@ -5,29 +5,26 @@ import json
 class Message:
     """"
     A message object to be passed between threads via Queue
-        Sample Usage:
-            Making a new message that will send terminate from main to display:
-
-            C{newMessage = Message("Main", "Display", "Terminate", \{\})}
-
-            Making a slide that will update Display with a new slide:
-
-            C{newMessage = Message("Main", "Display", "Update", \{\})}
-            C{newMessage.add_content("slide1", "http://google.com")}
+    I{Sample Usage}:
+    Making a new message that will send terminate from main to display:
+    C{newMessage = Message("Main", "Display", "Terminate", \{\})}
+    Making a slide that will update Display with a new slide:
+    C{newMessage = Message("Main", "Display", "Update", \{\})}
+    C{newMessage.add_content("slide1", "http://google.com")}
 
     @attention: It is good practice to use dict accessors as opposed to object attributes
     @todo: Un-expose attributes
-    @var src: Name of the thread who sent the message
+    @ivar src: Name of the thread who sent the message
     @type src: String
-    @var dest: Intended message destination
+    @ivar dest: Intended message destination
     @type dest: String
-    @var pluginDest: Client-side plugin to receive the message
+    @ivar pluginDest: Client-side plugin to receive the message
     @type pluginDest: String
-    @var action: Action for the client-side plugin to perform
+    @ivar action: Action for the client-side plugin to perform
     @type action: String
-    @var content: Message payload (destination plugin should be able to interpret content)
+    @ivar content: Message payload (destination plugin should be able to interpret content)
     @type content: Dictionary
-    @var datetime: Message timestamp
+    @ivar datetime: Message timestamp
     @type datetime: String
     @copyright: Northeastern University Crew 2014
     """

@@ -6,7 +6,7 @@ class Plugin:
     def needsThread(self):
         """
         Predicate method which asks whether the plugin's
-            run() function requires threading
+        run() function requires threading
         @return: Whether the plugin needs a thread
         @rtype: Boolean
         """
@@ -15,7 +15,7 @@ class Plugin:
     def run(self, runtimeVars):
         """
         The main function of the plugin. This is called
-            after setup() by the main client function
+        after setup() by the main client function
         @param runtimeVars: Configuration provided in Configs/PIE.conf
         @return: None
         @rtype: NoneType

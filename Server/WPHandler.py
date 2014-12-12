@@ -47,7 +47,7 @@ def handle(message, outputQueue, runtime):
 def wpListenerStart(outboundMessageQueue):
     """
     Sets the given queue as the receiver for any processed POST
-        Requests sent out from the WordPress Server
+    Requests sent out from the WordPress Server
     @param outboundMessageQueue: The queue to receive WordPress Messages
     @type outboundMessageQueue: Queue.Queue
     @return: None
@@ -60,7 +60,7 @@ def wpListenerStart(outboundMessageQueue):
 def querySlidesFor(pieName, url):
     """
     Retrieves a JSON string containing the slides for the
-        given Raspberry Pi
+    given Raspberry Pi
     @param pieName: The name of the Raspberry Pi whose slides to retrieve
     @type pieName: String
     @param url: The Base URL of the WordPress Site
