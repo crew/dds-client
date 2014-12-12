@@ -80,7 +80,7 @@ class Message:
         @todo: This looks horrendous. We should pretty it up.
         """
         return "Src = " + self.src + " dest = " + self.dest + " pluginDest = " + self.pluginDest + \
-               " action = " + self.action + " content = " + self.content + " datetime = " + self.datetime
+               " action = " + self.action + " content = " + self.content
 
     @staticmethod
     def fromJSON(jsonObj):
