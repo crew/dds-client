@@ -1,69 +1,75 @@
 #!/usr/bin/python
 # General Imports
-import sys, Queue, thread, os, types
-from time import sleep
+import thread
 
-# Import Classes
-from Classes.message import Message
 from Classes.ConfigParser import ConfigParser
 
-
-from Classes.sockClass import sockClass
-
-
-
 # Import functions
-from logging import Logger
 
-#In the future we should house these in a file of there own
-#We can dynamically load plugins from the directory
-#we wouldn't need to import and add everything by hand.
+# In the future we should house these in a file of there own
+# We can dynamically load plugins from the directory
+# we wouldn't need to import and add everything by hand.
 from Plugins.plugin import Plugin
 from slideShow import SlideShowPlugin
 from socketClient import IOPlugin
 from gtkDisplay import GTKPlugin
-#Loads all the plugins in ./Plugins (that were placed in the config)
+
+
 def getAdditionalPlugins(runtimeVars):
-	plugins = []
-	for plugin in runtimeVars["plugins"]:
-		try:
-			exec "from Plugins."+plugin+" import "+plugin
-			instance = eval(plugin+"()")
-			if isinstance(instance, Plugin):
-				print instance
-				plugins.append(instance)
-			else:
-				print "Huh? what did i get? : "+str(instance)
-		except Exception, e:
-			print "Couldn't create an instance of a plugin in the config"
-			print str(e)
-	return plugins
+    """
+    Gets any User-Defined Plugins specified in the Configuration
+        from ./Plugins
+    @param runtimeVars: User-Defined Configuration
+    @type runtimeVars: Dictionary
+    @return: User-Define Plugins
+    @rtype: Array
+    """
+    plugins = []
+    for plugin in runtimeVars["plugins"]:
+        try:
+            exec "from Plugins." + plugin + " import " + plugin
+            instance = eval(plugin + "()")
+            if isinstance(instance, Plugin):
+                print instance
+                plugins.append(instance)
+            else:
+                print "Huh? what did i get? : " + str(instance)
+        except Exception, e:
+            print "Couldn't create an instance of a plugin in the config"
+            print str(e)
+    return plugins
+
 
 def main():
-	runtimeVars = ConfigParser.readConfig()
-	plugins = [SlideShowPlugin(), IOPlugin()] + getAdditionalPlugins(runtimeVars)
-	runtimeVars["plugins"]+=["SlideShowPlugin","IOPlugin"]
+    """
+    The main function of the client
+    @return: None
+    @rtype: None
+    """
+    runtimeVars = ConfigParser.readConfig()
+    plugins = [SlideShowPlugin(), IOPlugin()] + getAdditionalPlugins(runtimeVars)
+    runtimeVars["plugins"] += ["SlideShowPlugin", "IOPlugin"]
 
-	def addPluginToDict(dict, p):
-		dict[p.getName()] = p.addMessage
-		return dict
-	messageDict = reduce(addPluginToDict, plugins, {})
+    def addPluginToDict(dict, p):
+        dict[p.getName()] = p.addMessage
+        return dict
 
-	for plugin in plugins:
-		plugin.setup(messageDict, runtimeVars)
-	for plugin in plugins:
-		print "Starting "+plugin.getName()
-		if plugin.needsThread():
-			thread.start_new_thread(plugin.run, (runtimeVars,))
-	GTKPlugin().run(runtimeVars) #This is kinda gross, need to clean
+    # messageDict = Message-handling functions for each plugin
+    messageDict = reduce(addPluginToDict, plugins, {})
 
-	
+    for plugin in plugins:
+        plugin.setup(messageDict, runtimeVars)
+    for plugin in plugins:
+        print "Starting " + plugin.getName()
+        if plugin.needsThread():
+            thread.start_new_thread(plugin.run, (runtimeVars,))
+    # Instead of having main() be in a busy wait doing nothing,
+    # we denote GTKPlugin() to be the "main" plugin, so its
+    # behavior drives any looping done on the main thread
+    GTKPlugin().run(runtimeVars)
 
-# Allow for command line args: At the moment only can handle one (DEBUG). Order specific
-# To be replaced with argparse library
+
+# TODO: Replace with argparse library
 if __name__ == "__main__":
-		main()
-		
-		
-		
+    main()
 

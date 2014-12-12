@@ -1,14 +1,33 @@
-from QueueDict import QueueDict
-
 class ThreadDict:
-	"""Warpper around thread object, allows us to start all the persistant
-	Threads in a consistent simple fashion. See plugins.py for more details."""
+    """
+    Wrapper around thread object, allows us to
+    start all the persistent Threads in a consistent
+    and simple fashion. See plugins.py for more details.
 
-	def __init__(self):
-		self.Threads = {}
+    @var Threads: The threads contained in the object.
+    @type Threads: Dictionary
+    @copyright: Northeastern University Crew 2014
+    """
 
-	def addThread(self, name, function, queue):
-		queue.addQueue(name)
-		self.Threads[name] = function
-		#self.Threads[thread]["Queue"] = queue
-		
+    def __init__(self):
+        """
+        ThreadDict Constructor
+        @return: An empty ThreadDict
+        @rtype: ThreadDict
+        """
+        self.Threads = {}
+
+    def addThread(self, name, function, queueDict):
+        """
+        Adds a thread with the given parameters to the ThreadDict
+        @param name: The name of the thread
+        @type name: String
+        @param function: The function associated with the thread to add
+        @type function: Function
+        @param queueDict: The QueueDict to add the thread's message queue to
+        @type queueDict: QueueDict
+        @return: None
+        @rtype: NoneType
+        """
+        queueDict.addQueue(name)
+        self.Threads[name] = function

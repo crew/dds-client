@@ -1,5 +1,5 @@
+# TODO: Figure out if this is even being used...
 class logging(object):
-	"""docstring for logging"""
-	def __init__(self, arg):
-		super(logging, self).__init__()
-		self.arg = arg
+    def __init__(self, arg):
+        super(logging, self).__init__()
+        self.arg = arg

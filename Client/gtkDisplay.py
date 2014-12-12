@@ -1,93 +1,110 @@
 #!/usr/bin/env python
 
-# GTK-Based Fullscreen Web Display Client
-#    Description: Client accepting pushes
-#    from server to load webpages. Intended
-#    for use in DDS System
+import threading
+import time
 
-# Extension of python-gtk-webkit presentation program
-#                   Copyright (C) 2009 by Akkana Peck.
-# (Out of compliance with Peck's copyright, the following
-#       is released under GPL v2)
-
-# Copyright (C) 2014 Northeastern University CCIS Crew
-
-
-import sys, thread, time
 import gobject
 import gtk
-import glib
 import webkit
-import threading
-from Classes.slide import Slide
-import Queue
 from Plugins.plugin import Plugin
 
-#for testing
-import time
-#sys.settrace
 
-# Represents fullscreen gtk window displaying
-#   the URL provided to it
-# Note: URL must begin with prefix (e.g. "http://")
 class WebBrowser(gtk.Window):
-	def __init__(self, url, width, height):
-		gtk.Window.__init__(self)
-		self.fullscreen()
+    """
+    Web Page Display Window Class
+    Represents a full screen GTK Web Browser (no UI)
+        displaying a given URL.
+    @note: URL must begin with a prefix (e.g. "http://")
+    @note: Extension of the python-gtk-webkit presentation program
+                    Copyright (C) 2009 by Akkana Peck
+    @license: GNU Public License, version 2
+    @copyright: Northeastern University Crew 2014
+    """
 
-		self._browser= webkit.WebView()
-		settings = webkit.WebSettings()
-		settings.set_property('enable-page-cache', True)
-		settings.set_property('enable-accelerated-compositing', True)
-		"""pixmap = gtk.gdk.Pixmap(None, 1, 1, 1)
-		color = gtk.gdk.Color()
-		cursor = gtk.gdk.Cursor(pixmap, pixmap, color, color, 0, 0)"""
+    def __init__(self, url, width, height):
+        """
+        GTK Window Constructor
+        @param url: The initial URL to show
+        @type url: String
+        @param width: The Screen's Width
+        @type width: Integer
+        @param height: The Screen's Height
+        @type height: Integer
+        @return: The Constructed WebBrowser
+        @rtype: WebBrowser
+        """
+        gtk.Window.__init__(self)
+        self.fullscreen()
 
-		self._browser.set_settings(settings)
-		self.connect('destroy', gtk.main_quit)
-		self.add(self._browser)
+        self._browser = webkit.WebView()
+        settings = webkit.WebSettings()
+        settings.set_property('enable-page-cache', True)
+        settings.set_property('enable-accelerated-compositing', True)
 
-		self._browser.load_uri(url)
-		self._browser.set_size_request(int(width), int(height))
-		self.show_all()
+        self._browser.set_settings(settings)
+        self.connect('destroy', gtk.main_quit)
+        self.add(self._browser)
 
-		gobject.threads_init()
-		
-		
+        self._browser.load_uri(url)
+        self._browser.set_size_request(int(width), int(height))
+        self.show_all()
 
-	def updatePage(self,url):
-		print "Update page running in : "+threading.currentThread().getName()
-		print "updatePage"
-		# self.connect("destroy", gtk.main_quit)
-		self._browser.load_uri(url)
-		#while (self._browser.get_load_status() < 2):
-		#   continue
-		try:
-		   self.fullscreen()
-		except:
-		   pass
-		print "showing"
-		self.show_all()
+        gobject.threads_init()
 
-	
+    def updatePage(self, url):
+        """
+        Updates the browser to show the given URL
+        @param url: The new URL to show
+        @type url: String
+        @return: None
+        @rtype: NoneType
+        """
+        print "Update page running in : " + threading.currentThread().getName()
+        print "updatePage"
+        self._browser.load_uri(url)
+        try:
+            self.fullscreen()
+        except:
+            pass
+        print "showing"
+        self.show_all()
 
-#Initializes the browser and returns a function used to update the page
+
 def getUpdateHandle(runtimeVars):
-	browser = WebBrowser("", runtimeVars["width"], runtimeVars["height"])
-	def updatePage(url):
-		gobject.timeout_add(100,browser.updatePage, url)
-	return updatePage
-	
+    """
+    Initializes the browser and returns the
+        function used to update its page
+    @param runtimeVars: User-defined Configuration
+    @type runtimeVars: Dictionary
+    @return: Function
+    """
+    browser = WebBrowser("", runtimeVars["width"], runtimeVars["height"])
 
-class GTKPlugin(threading.Thread):
-	def needsThread(self):
-		return True;
-	def run(self, runtimeVars):
-		gtk.main()
-		while True:
-			print "Main loop"
-			time.sleep(5)
-	def getName(self):
-		return "Gtk Plugin"
-	def addMessage(self, message):
-		raise Exception("GTKPlugin does not take any messages")
+    # GTK Thread-Safe Wrapper for updatePage() method
+    def updatePage(url):
+        gobject.timeout_add(100, browser.updatePage, url)
+
+    return updatePage
+
+
+class GTKPlugin(Plugin):
+    """
+    GTK Web Display Plugin Class
+    @see: Plugins/plugin.py for more information
+    @copyright: Northeastern University Crew 2014
+    """
+
+    def needsThread(self):
+        return True
+
+    def run(self, runtimeVars):
+        gtk.main()
+        while True:
+            print "Main loop"
+            time.sleep(5)
+
+    def getName(self):
+        return "Gtk Plugin"
+
+    def addMessage(self, message):
+        raise Exception("GTKPlugin does not take any messages")

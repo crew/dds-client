@@ -2,10 +2,8 @@ DDS-Client -- Project Bakesale
 ================================
 Todo:
 Note: This is a working todo list. Will add things as they come up
-** Server **
-1. 1WP to Server communication (JSON parsing and then acting upon that information)
 
-Moar functionality
+Mostly little things. If you have some time, just look for the `todo` tags sprinkled throughout the codebase
 
 DDS is a NU Crew project.
 The MIT License (MIT)
