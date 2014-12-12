@@ -1,2 +1,1 @@
-# This file is needed to allow us to move classes into this folder
-# and call them using Classes.____
+./Client/Classes/__init__.py
