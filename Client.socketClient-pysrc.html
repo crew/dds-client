@@ -1,0 +1,261 @@
+<?xml version="1.0" encoding="ascii"?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+          "DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
+<head>
+  <title>Client.socketClient</title>
+  <link rel="stylesheet" href="epydoc.css" type="text/css" />
+  <script type="text/javascript" src="epydoc.js"></script>
+</head>
+
+<body bgcolor="white" text="black" link="blue" vlink="#204080"
+      alink="#204080">
+<!-- ==================== NAVIGATION BAR ==================== -->
+<table class="navbar" border="0" width="100%" cellpadding="0"
+       bgcolor="#a0c0ff" cellspacing="0">
+  <tr valign="middle">
+
+  <!-- Tree link -->
+      <th>&nbsp;&nbsp;&nbsp;<a
+        href="module-tree.html">Trees</a>&nbsp;&nbsp;&nbsp;</th>
+
+  <!-- Index link -->
+      <th>&nbsp;&nbsp;&nbsp;<a
+        href="identifier-index.html">Indices</a>&nbsp;&nbsp;&nbsp;</th>
+
+  <!-- Help link -->
+      <th>&nbsp;&nbsp;&nbsp;<a
+        href="help.html">Help</a>&nbsp;&nbsp;&nbsp;</th>
+
+      <th class="navbar" width="100%"></th>
+  </tr>
+</table>
+<table width="100%" cellpadding="0" cellspacing="0">
+  <tr valign="top">
+    <td width="100%">
+      <span class="breadcrumbs">
+        <a href="Client-module.html">Package&nbsp;Client</a> ::
+        Module&nbsp;socketClient
+      </span>
+    </td>
+    <td>
+      <table cellpadding="0" cellspacing="0">
+        <!-- hide/show private -->
+        <tr><td align="right"><span class="options">[<a href="javascript:void(0);" class="privatelink"
+    onclick="toggle_private();">hide&nbsp;private</a>]</span></td></tr>
+        <tr><td align="right"><span class="options"
+            >[<a href="frames.html" target="_top">frames</a
+            >]&nbsp;|&nbsp;<a href="Client.socketClient-pysrc.html"
+            target="_top">no&nbsp;frames</a>]</span></td></tr>
+      </table>
+    </td>
+  </tr>
+</table>
+<h1 class="epydoc">Source Code for <a href="Client.socketClient-module.html">Module Client.socketClient</a></h1>
+<pre class="py-src">
+<a name="L1"></a><tt class="py-lineno">  1</tt>  <tt class="py-line"><tt class="py-comment">#!/usr/bin/python</tt> </tt>
+<a name="L2"></a><tt class="py-lineno">  2</tt>  <tt class="py-line"><tt class="py-keyword">import</tt> <tt class="py-name">select</tt> </tt>
+<a name="L3"></a><tt class="py-lineno">  3</tt>  <tt class="py-line"><tt class="py-keyword">import</tt> <tt class="py-name">sys</tt> </tt>
+<a name="L4"></a><tt class="py-lineno">  4</tt>  <tt class="py-line"><tt class="py-keyword">import</tt> <tt class="py-name">time</tt> </tt>
+<a name="L5"></a><tt class="py-lineno">  5</tt>  <tt class="py-line"><tt class="py-keyword">import</tt> <tt class="py-name">json</tt> </tt>
+<a name="L6"></a><tt class="py-lineno">  6</tt>  <tt class="py-line"><tt class="py-keyword">import</tt> <tt class="py-name">Queue</tt> </tt>
+<a name="L7"></a><tt class="py-lineno">  7</tt>  <tt class="py-line"> </tt>
+<a name="L8"></a><tt class="py-lineno">  8</tt>  <tt class="py-line"><tt class="py-keyword">from</tt> <tt id="link-0" class="py-name" targets="Package Client.Classes=Client.Classes-module.html,Package Server.Classes=Server.Classes-module.html"><a title="Client.Classes
+Server.Classes" class="py-name" href="#" onclick="return doclink('link-0', 'Classes', 'link-0');">Classes</a></tt><tt class="py-op">.</tt><tt id="link-1" class="py-name" targets="Module Client.Classes.message=Client.Classes.message-module.html,Module Server.Classes.message=Server.Classes.message-module.html"><a title="Client.Classes.message
+Server.Classes.message" class="py-name" href="#" onclick="return doclink('link-1', 'message', 'link-1');">message</a></tt> <tt class="py-keyword">import</tt> <tt id="link-2" class="py-name" targets="Class Client.Classes.message.Message=Client.Classes.message.Message-class.html,Class Server.Classes.message.Message=Server.Classes.message.Message-class.html,Class mimetools.Message=mimetools.Message-class.html"><a title="Client.Classes.message.Message
+Server.Classes.message.Message
+mimetools.Message" class="py-name" href="#" onclick="return doclink('link-2', 'Message', 'link-2');">Message</a></tt> </tt>
+<a name="L9"></a><tt class="py-lineno">  9</tt>  <tt class="py-line"><tt class="py-keyword">from</tt> <tt id="link-3" class="py-name"><a title="Client.Classes
+Server.Classes" class="py-name" href="#" onclick="return doclink('link-3', 'Classes', 'link-0');">Classes</a></tt><tt class="py-op">.</tt><tt id="link-4" class="py-name" targets="Module Client.Classes.sockClass=Client.Classes.sockClass-module.html,Class Client.Classes.sockClass.sockClass=Client.Classes.sockClass.sockClass-class.html"><a title="Client.Classes.sockClass
+Client.Classes.sockClass.sockClass" class="py-name" href="#" onclick="return doclink('link-4', 'sockClass', 'link-4');">sockClass</a></tt> <tt class="py-keyword">import</tt> <tt id="link-5" class="py-name"><a title="Client.Classes.sockClass
+Client.Classes.sockClass.sockClass" class="py-name" href="#" onclick="return doclink('link-5', 'sockClass', 'link-4');">sockClass</a></tt> </tt>
+<a name="L10"></a><tt class="py-lineno"> 10</tt>  <tt class="py-line"><tt class="py-keyword">from</tt> <tt id="link-6" class="py-name" targets="Module Client.logging=Client.logging-module.html,Class Server.Classes.log.logging=Server.Classes.log.logging-class.html,Module Server.logging=Server.logging-module.html"><a title="Client.logging
+Server.Classes.log.logging
+Server.logging" class="py-name" href="#" onclick="return doclink('link-6', 'logging', 'link-6');">logging</a></tt> <tt class="py-keyword">import</tt> <tt id="link-7" class="py-name" targets="Class Client.logging.Logger=Client.logging.Logger-class.html"><a title="Client.logging.Logger" class="py-name" href="#" onclick="return doclink('link-7', 'Logger', 'link-7');">Logger</a></tt> </tt>
+<a name="L11"></a><tt class="py-lineno"> 11</tt>  <tt class="py-line"><tt class="py-keyword">from</tt> <tt id="link-8" class="py-name" targets="Package Client.Plugins=Client.Plugins-module.html"><a title="Client.Plugins" class="py-name" href="#" onclick="return doclink('link-8', 'Plugins', 'link-8');">Plugins</a></tt><tt class="py-op">.</tt><tt id="link-9" class="py-name" targets="Module Client.Plugins.plugin=Client.Plugins.plugin-module.html,Module Server.plugin=Server.plugin-module.html,Function Server.plugin.plugin()=Server.plugin-module.html#plugin"><a title="Client.Plugins.plugin
+Server.plugin
+Server.plugin.plugin" class="py-name" href="#" onclick="return doclink('link-9', 'plugin', 'link-9');">plugin</a></tt> <tt class="py-keyword">import</tt> <tt id="link-10" class="py-name" targets="Class Client.Plugins.plugin.Plugin=Client.Plugins.plugin.Plugin-class.html"><a title="Client.Plugins.plugin.Plugin" class="py-name" href="#" onclick="return doclink('link-10', 'Plugin', 'link-10');">Plugin</a></tt> </tt>
+<a name="L12"></a><tt class="py-lineno"> 12</tt>  <tt class="py-line"> </tt>
+<a name="L13"></a><tt class="py-lineno"> 13</tt>  <tt class="py-line"> </tt>
+<a name="socket_out"></a><div id="socket_out-def"><a name="L14"></a><tt class="py-lineno"> 14</tt> <a class="py-toggle" href="#" id="socket_out-toggle" onclick="return toggle('socket_out');">-</a><tt class="py-line"><tt class="py-keyword">def</tt> <a class="py-def-name" href="Client.socketClient-module.html#socket_out">socket_out</a><tt class="py-op">(</tt><tt class="py-param">currentMessage</tt><tt class="py-op">,</tt> <tt class="py-param">socket</tt><tt class="py-op">)</tt><tt class="py-op">:</tt> </tt>
+</div><div id="socket_out-collapsed" style="display:none;" pad="+++" indent="++++"></div><div id="socket_out-expanded"><a name="L15"></a><tt class="py-lineno"> 15</tt>  <tt class="py-line">    <tt class="py-docstring">"""</tt> </tt>
+<a name="L16"></a><tt class="py-lineno"> 16</tt>  <tt class="py-line"><tt class="py-docstring">    Writes the given Message to the given socket</tt> </tt>
+<a name="L17"></a><tt class="py-lineno"> 17</tt>  <tt class="py-line"><tt class="py-docstring">    @param currentMessage: The Message to write</tt> </tt>
+<a name="L18"></a><tt class="py-lineno"> 18</tt>  <tt class="py-line"><tt class="py-docstring">    @type currentMessage: Message</tt> </tt>
+<a name="L19"></a><tt class="py-lineno"> 19</tt>  <tt class="py-line"><tt class="py-docstring">    @param socket: The socket to write to</tt> </tt>
+<a name="L20"></a><tt class="py-lineno"> 20</tt>  <tt class="py-line"><tt class="py-docstring">    @type socket: Socket</tt> </tt>
+<a name="L21"></a><tt class="py-lineno"> 21</tt>  <tt class="py-line"><tt class="py-docstring">    @return: None</tt> </tt>
+<a name="L22"></a><tt class="py-lineno"> 22</tt>  <tt class="py-line"><tt class="py-docstring">    @rtype: NoneType</tt> </tt>
+<a name="L23"></a><tt class="py-lineno"> 23</tt>  <tt class="py-line"><tt class="py-docstring">    """</tt> </tt>
+<a name="L24"></a><tt class="py-lineno"> 24</tt>  <tt class="py-line">    <tt id="link-11" class="py-name"><a title="Client.logging.Logger" class="py-name" href="#" onclick="return doclink('link-11', 'Logger', 'link-7');">Logger</a></tt><tt class="py-op">.</tt><tt id="link-12" class="py-name" targets="Static Method Client.logging.Logger.log()=Client.logging.Logger-class.html#log,Module Server.Classes.log=Server.Classes.log-module.html,Function Server.logging.log()=Server.logging-module.html#log,Function Server.socketServer.log()=Server.socketServer-module.html#log"><a title="Client.logging.Logger.log
+Server.Classes.log
+Server.logging.log
+Server.socketServer.log" class="py-name" href="#" onclick="return doclink('link-12', 'log', 'link-12');">log</a></tt><tt class="py-op">(</tt><tt class="py-string">"DEBUG"</tt><tt class="py-op">,</tt> <tt class="py-string">"Outbound Message: "</tt> <tt class="py-op">+</tt> <tt class="py-name">currentMessage</tt><tt class="py-op">.</tt><tt id="link-13" class="py-name" targets="Method Client.Classes.message.Message.toJSON()=Client.Classes.message.Message-class.html#toJSON,Method Client.Classes.slide.Slide.toJSON()=Client.Classes.slide.Slide-class.html#toJSON,Method Server.Classes.message.Message.toJSON()=Server.Classes.message.Message-class.html#toJSON,Method Server.Classes.slide.Slide.toJSON()=Server.Classes.slide.Slide-class.html#toJSON"><a title="Client.Classes.message.Message.toJSON
+Client.Classes.slide.Slide.toJSON
+Server.Classes.message.Message.toJSON
+Server.Classes.slide.Slide.toJSON" class="py-name" href="#" onclick="return doclink('link-13', 'toJSON', 'link-13');">toJSON</a></tt><tt class="py-op">(</tt><tt class="py-op">)</tt><tt class="py-op">)</tt> </tt>
+<a name="L25"></a><tt class="py-lineno"> 25</tt>  <tt class="py-line">    <tt class="py-keyword">if</tt> <tt class="py-name">currentMessage</tt><tt class="py-op">.</tt><tt class="py-name">dest</tt> <tt class="py-op">==</tt> <tt class="py-string">"Grandma"</tt><tt class="py-op">:</tt> </tt>
+<a name="L26"></a><tt class="py-lineno"> 26</tt>  <tt class="py-line">        <tt class="py-keyword">try</tt><tt class="py-op">:</tt> </tt>
+<a name="L27"></a><tt class="py-lineno"> 27</tt>  <tt class="py-line">            <tt class="py-name">socket</tt><tt class="py-op">.</tt><tt id="link-14" class="py-name" targets="Method Client.Classes.sockClass.sockClass.send()=Client.Classes.sockClass.sockClass-class.html#send"><a title="Client.Classes.sockClass.sockClass.send" class="py-name" href="#" onclick="return doclink('link-14', 'send', 'link-14');">send</a></tt><tt class="py-op">(</tt><tt class="py-name">currentMessage</tt><tt class="py-op">.</tt><tt id="link-15" class="py-name"><a title="Client.Classes.message.Message.toJSON
+Client.Classes.slide.Slide.toJSON
+Server.Classes.message.Message.toJSON
+Server.Classes.slide.Slide.toJSON" class="py-name" href="#" onclick="return doclink('link-15', 'toJSON', 'link-13');">toJSON</a></tt><tt class="py-op">(</tt><tt class="py-op">)</tt><tt class="py-op">)</tt> </tt>
+<a name="L28"></a><tt class="py-lineno"> 28</tt>  <tt class="py-line">        <tt class="py-keyword">except</tt> <tt class="py-name">Exception</tt><tt class="py-op">,</tt> <tt class="py-name">e</tt><tt class="py-op">:</tt> </tt>
+<a name="L29"></a><tt class="py-lineno"> 29</tt>  <tt class="py-line">            <tt class="py-keyword">print</tt> <tt class="py-name">str</tt><tt class="py-op">(</tt><tt class="py-name">e</tt><tt class="py-op">)</tt> </tt>
+<a name="L30"></a><tt class="py-lineno"> 30</tt>  <tt class="py-line">            <tt id="link-16" class="py-name"><a title="Client.logging.Logger" class="py-name" href="#" onclick="return doclink('link-16', 'Logger', 'link-7');">Logger</a></tt><tt class="py-op">.</tt><tt id="link-17" class="py-name"><a title="Client.logging.Logger.log
+Server.Classes.log
+Server.logging.log
+Server.socketServer.log" class="py-name" href="#" onclick="return doclink('link-17', 'log', 'link-12');">log</a></tt><tt class="py-op">(</tt><tt class="py-string">"ERROR"</tt><tt class="py-op">,</tt> <tt class="py-string">"Socket raised exception on send - exception : "</tt> <tt class="py-op">+</tt> <tt class="py-name">str</tt><tt class="py-op">(</tt><tt class="py-name">e</tt><tt class="py-op">)</tt><tt class="py-op">)</tt> </tt>
+<a name="L31"></a><tt class="py-lineno"> 31</tt>  <tt class="py-line">            <tt class="py-keyword">raise</tt> <tt class="py-name">Exception</tt><tt class="py-op">(</tt><tt class="py-string">"Can't send message. Socket = "</tt> <tt class="py-op">+</tt> <tt class="py-name">str</tt><tt class="py-op">(</tt><tt class="py-name">socket</tt><tt class="py-op">)</tt><tt class="py-op">)</tt> </tt>
+<a name="L32"></a><tt class="py-lineno"> 32</tt>  <tt class="py-line">    <tt class="py-keyword">else</tt><tt class="py-op">:</tt> </tt>
+<a name="L33"></a><tt class="py-lineno"> 33</tt>  <tt class="py-line">        <tt id="link-18" class="py-name"><a title="Client.logging.Logger" class="py-name" href="#" onclick="return doclink('link-18', 'Logger', 'link-7');">Logger</a></tt><tt class="py-op">.</tt><tt id="link-19" class="py-name"><a title="Client.logging.Logger.log
+Server.Classes.log
+Server.logging.log
+Server.socketServer.log" class="py-name" href="#" onclick="return doclink('link-19', 'log', 'link-12');">log</a></tt><tt class="py-op">(</tt><tt class="py-string">"WARNING"</tt><tt class="py-op">,</tt> <tt class="py-string">"Message not addressed to grandma"</tt><tt class="py-op">)</tt> </tt>
+<a name="L34"></a><tt class="py-lineno"> 34</tt>  <tt class="py-line">    <tt class="py-keyword">print</tt> <tt class="py-string">"Socket Message Sent!"</tt> </tt>
+</div><a name="L35"></a><tt class="py-lineno"> 35</tt>  <tt class="py-line"> </tt>
+<a name="L36"></a><tt class="py-lineno"> 36</tt>  <tt class="py-line"> </tt>
+<a name="socket_in"></a><div id="socket_in-def"><a name="L37"></a><tt class="py-lineno"> 37</tt> <a class="py-toggle" href="#" id="socket_in-toggle" onclick="return toggle('socket_in');">-</a><tt class="py-line"><tt class="py-keyword">def</tt> <a class="py-def-name" href="Client.socketClient-module.html#socket_in">socket_in</a><tt class="py-op">(</tt><tt class="py-param">s</tt><tt class="py-op">,</tt> <tt class="py-param">runtimeVars</tt><tt class="py-op">,</tt> <tt class="py-param">route</tt><tt class="py-op">)</tt><tt class="py-op">:</tt> </tt>
+</div><div id="socket_in-collapsed" style="display:none;" pad="+++" indent="++++"></div><div id="socket_in-expanded"><a name="L38"></a><tt class="py-lineno"> 38</tt>  <tt class="py-line">    <tt class="py-docstring">"""</tt> </tt>
+<a name="L39"></a><tt class="py-lineno"> 39</tt>  <tt class="py-line"><tt class="py-docstring">    Reads and redirects messages received by the client</tt> </tt>
+<a name="L40"></a><tt class="py-lineno"> 40</tt>  <tt class="py-line"><tt class="py-docstring">    @param s: The Client Socket</tt> </tt>
+<a name="L41"></a><tt class="py-lineno"> 41</tt>  <tt class="py-line"><tt class="py-docstring">    @type s: sockClass</tt> </tt>
+<a name="L42"></a><tt class="py-lineno"> 42</tt>  <tt class="py-line"><tt class="py-docstring">    @param runtimeVars: User-defined Configuration</tt> </tt>
+<a name="L43"></a><tt class="py-lineno"> 43</tt>  <tt class="py-line"><tt class="py-docstring">    @type runtimeVars: Dictionary</tt> </tt>
+<a name="L44"></a><tt class="py-lineno"> 44</tt>  <tt class="py-line"><tt class="py-docstring">    @param route: The message handlers for the client plugins</tt> </tt>
+<a name="L45"></a><tt class="py-lineno"> 45</tt>  <tt class="py-line"><tt class="py-docstring">    @type route: Dictionary</tt> </tt>
+<a name="L46"></a><tt class="py-lineno"> 46</tt>  <tt class="py-line"><tt class="py-docstring">    @return: None</tt> </tt>
+<a name="L47"></a><tt class="py-lineno"> 47</tt>  <tt class="py-line"><tt class="py-docstring">    @rtype: NoneType</tt> </tt>
+<a name="L48"></a><tt class="py-lineno"> 48</tt>  <tt class="py-line"><tt class="py-docstring">    """</tt> </tt>
+<a name="L49"></a><tt class="py-lineno"> 49</tt>  <tt class="py-line">    <tt id="link-20" class="py-name" targets="Method Client.Plugins.plugin.Plugin.run()=Client.Plugins.plugin.Plugin-class.html#run,Method Client.gtkDisplay.GTKPlugin.run()=Client.gtkDisplay.GTKPlugin-class.html#run,Method Client.slideShow.SlideShowPlugin.run()=Client.slideShow.SlideShowPlugin-class.html#run,Method Client.socketClient.IOPlugin.run()=Client.socketClient.IOPlugin-class.html#run"><a title="Client.Plugins.plugin.Plugin.run
+Client.gtkDisplay.GTKPlugin.run
+Client.slideShow.SlideShowPlugin.run
+Client.socketClient.IOPlugin.run" class="py-name" href="#" onclick="return doclink('link-20', 'run', 'link-20');">run</a></tt> <tt class="py-op">=</tt> <tt class="py-name">True</tt> </tt>
+<a name="L50"></a><tt class="py-lineno"> 50</tt>  <tt class="py-line">    <tt class="py-keyword">while</tt> <tt id="link-21" class="py-name"><a title="Client.Plugins.plugin.Plugin.run
+Client.gtkDisplay.GTKPlugin.run
+Client.slideShow.SlideShowPlugin.run
+Client.socketClient.IOPlugin.run" class="py-name" href="#" onclick="return doclink('link-21', 'run', 'link-20');">run</a></tt><tt class="py-op">:</tt> </tt>
+<a name="L51"></a><tt class="py-lineno"> 51</tt>  <tt class="py-line">        <tt class="py-name">socket_list</tt> <tt class="py-op">=</tt> <tt class="py-op">[</tt><tt class="py-name">s</tt><tt class="py-op">.</tt><tt class="py-name">sock</tt><tt class="py-op">,</tt> <tt class="py-op">]</tt> </tt>
+<a name="L52"></a><tt class="py-lineno"> 52</tt>  <tt class="py-line">        <tt class="py-comment"># Get the list of sockets which are readable</tt> </tt>
+<a name="L53"></a><tt class="py-lineno"> 53</tt>  <tt class="py-line">        <tt class="py-name">read_sockets</tt><tt class="py-op">,</tt> <tt class="py-name">write_sockets</tt><tt class="py-op">,</tt> <tt class="py-name">error_sockets</tt> <tt class="py-op">=</tt> <tt class="py-name">select</tt><tt class="py-op">.</tt><tt class="py-name">select</tt><tt class="py-op">(</tt><tt class="py-name">socket_list</tt><tt class="py-op">,</tt> <tt class="py-op">[</tt><tt class="py-op">]</tt><tt class="py-op">,</tt> <tt class="py-op">[</tt><tt class="py-op">]</tt><tt class="py-op">)</tt> </tt>
+<a name="L54"></a><tt class="py-lineno"> 54</tt>  <tt class="py-line">        <tt class="py-keyword">for</tt> <tt class="py-name">sock</tt> <tt class="py-keyword">in</tt> <tt class="py-name">read_sockets</tt><tt class="py-op">:</tt> </tt>
+<a name="L55"></a><tt class="py-lineno"> 55</tt>  <tt class="py-line">            <tt class="py-keyword">if</tt> <tt class="py-name">sock</tt> <tt class="py-op">==</tt> <tt class="py-name">s</tt><tt class="py-op">.</tt><tt class="py-name">sock</tt><tt class="py-op">:</tt> </tt>
+<a name="L56"></a><tt class="py-lineno"> 56</tt>  <tt class="py-line">                <tt class="py-name">data</tt> <tt class="py-op">=</tt> <tt class="py-name">sock</tt><tt class="py-op">.</tt><tt class="py-name">recv</tt><tt class="py-op">(</tt><tt class="py-number">4096</tt><tt class="py-op">)</tt> </tt>
+<a name="L57"></a><tt class="py-lineno"> 57</tt>  <tt class="py-line">                <tt class="py-keyword">if</tt> <tt class="py-keyword">not</tt> <tt class="py-name">data</tt><tt class="py-op">:</tt> </tt>
+<a name="L58"></a><tt class="py-lineno"> 58</tt>  <tt class="py-line">                    <tt class="py-name">s</tt><tt class="py-op">.</tt><tt id="link-22" class="py-name" targets="Method Client.Classes.sockClass.sockClass.connect()=Client.Classes.sockClass.sockClass-class.html#connect,Function Server.socketServer.connect()=Server.socketServer-module.html#connect"><a title="Client.Classes.sockClass.sockClass.connect
+Server.socketServer.connect" class="py-name" href="#" onclick="return doclink('link-22', 'connect', 'link-22');">connect</a></tt><tt class="py-op">(</tt><tt class="py-name">runtimeVars</tt><tt class="py-op">)</tt> </tt>
+<a name="L59"></a><tt class="py-lineno"> 59</tt>  <tt class="py-line">                <tt class="py-keyword">else</tt><tt class="py-op">:</tt> </tt>
+<a name="L60"></a><tt class="py-lineno"> 60</tt>  <tt class="py-line">                    <tt class="py-name">messages</tt> <tt class="py-op">=</tt> <tt class="py-name">filter</tt><tt class="py-op">(</tt><tt class="py-keyword">lambda</tt> <tt class="py-name">s</tt><tt class="py-op">:</tt> <tt class="py-name">s</tt> <tt class="py-op">!=</tt> <tt class="py-string">""</tt><tt class="py-op">,</tt> </tt>
+<a name="L61"></a><tt class="py-lineno"> 61</tt>  <tt class="py-line">                                      <tt class="py-name">data</tt><tt class="py-op">.</tt><tt class="py-name">split</tt><tt class="py-op">(</tt><tt class="py-string">'\v'</tt><tt class="py-op">)</tt><tt class="py-op">)</tt> </tt>
+<a name="L62"></a><tt class="py-lineno"> 62</tt>  <tt class="py-line">                    <tt class="py-keyword">for</tt> <tt class="py-name">currentMessage</tt> <tt class="py-keyword">in</tt> <tt class="py-name">messages</tt><tt class="py-op">:</tt> </tt>
+<a name="L63"></a><tt class="py-lineno"> 63</tt>  <tt class="py-line">                        <tt class="py-name">currentMessage</tt> <tt class="py-op">=</tt> <tt class="py-name">json</tt><tt class="py-op">.</tt><tt class="py-name">loads</tt><tt class="py-op">(</tt><tt class="py-name">currentMessage</tt><tt class="py-op">)</tt> </tt>
+<a name="L64"></a><tt class="py-lineno"> 64</tt>  <tt class="py-line">                        <tt class="py-keyword">if</tt> <tt class="py-name">currentMessage</tt><tt class="py-op">[</tt><tt class="py-string">"pluginDest"</tt><tt class="py-op">]</tt> <tt class="py-op">==</tt> <tt class="py-string">"Main"</tt><tt class="py-op">:</tt> </tt>
+<a name="L65"></a><tt class="py-lineno"> 65</tt>  <tt class="py-line">                            <tt class="py-name">sys</tt><tt class="py-op">.</tt><tt class="py-name">exit</tt><tt class="py-op">(</tt><tt class="py-number">0</tt><tt class="py-op">)</tt> </tt>
+<a name="L66"></a><tt class="py-lineno"> 66</tt>  <tt class="py-line">                        <tt class="py-keyword">print</tt> <tt class="py-string">"Got message : "</tt> <tt class="py-op">+</tt> <tt class="py-name">str</tt><tt class="py-op">(</tt><tt class="py-name">currentMessage</tt><tt class="py-op">)</tt> </tt>
+<a name="L67"></a><tt class="py-lineno"> 67</tt>  <tt class="py-line">                        <tt class="py-name">messageDestination</tt> <tt class="py-op">=</tt> <tt class="py-name">currentMessage</tt><tt class="py-op">[</tt><tt class="py-string">"pluginDest"</tt><tt class="py-op">]</tt> </tt>
+<a name="L68"></a><tt class="py-lineno"> 68</tt>  <tt class="py-line">                        <tt class="py-keyword">print</tt> <tt class="py-string">"Received message sending it too : "</tt> <tt class="py-op">+</tt> <tt class="py-name">str</tt><tt class="py-op">(</tt><tt class="py-name">messageDestination</tt><tt class="py-op">)</tt> </tt>
+<a name="L69"></a><tt class="py-lineno"> 69</tt>  <tt class="py-line">                        <tt class="py-name">route</tt><tt class="py-op">[</tt><tt class="py-name">messageDestination</tt><tt class="py-op">]</tt><tt class="py-op">(</tt><tt id="link-23" class="py-name"><a title="Client.Classes.message.Message
+Server.Classes.message.Message
+mimetools.Message" class="py-name" href="#" onclick="return doclink('link-23', 'Message', 'link-2');">Message</a></tt><tt class="py-op">.</tt><tt id="link-24" class="py-name" targets="Static Method Client.Classes.message.Message.fromJSON()=Client.Classes.message.Message-class.html#fromJSON,Static Method Server.Classes.message.Message.fromJSON()=Server.Classes.message.Message-class.html#fromJSON"><a title="Client.Classes.message.Message.fromJSON
+Server.Classes.message.Message.fromJSON" class="py-name" href="#" onclick="return doclink('link-24', 'fromJSON', 'link-24');">fromJSON</a></tt><tt class="py-op">(</tt><tt class="py-name">currentMessage</tt><tt class="py-op">)</tt><tt class="py-op">)</tt> </tt>
+<a name="L70"></a><tt class="py-lineno"> 70</tt>  <tt class="py-line">            <tt class="py-keyword">else</tt><tt class="py-op">:</tt> </tt>
+<a name="L71"></a><tt class="py-lineno"> 71</tt>  <tt class="py-line">                <tt class="py-keyword">print</tt> <tt class="py-string">"Something Goofed"</tt> </tt>
+<a name="L72"></a><tt class="py-lineno"> 72</tt>  <tt class="py-line">        <tt class="py-comment"># We all program updates will be in multiples of 1 sec,</tt> </tt>
+<a name="L73"></a><tt class="py-lineno"> 73</tt>  <tt class="py-line">        <tt class="py-comment"># as this is the slide time accuracy</tt> </tt>
+<a name="L74"></a><tt class="py-lineno"> 74</tt>  <tt class="py-line">        <tt class="py-name">time</tt><tt class="py-op">.</tt><tt class="py-name">sleep</tt><tt class="py-op">(</tt><tt class="py-number">1</tt><tt class="py-op">)</tt> </tt>
+</div><a name="L75"></a><tt class="py-lineno"> 75</tt>  <tt class="py-line"> </tt>
+<a name="L76"></a><tt class="py-lineno"> 76</tt>  <tt class="py-line"> </tt>
+<a name="IOPlugin"></a><div id="IOPlugin-def"><a name="L77"></a><tt class="py-lineno"> 77</tt> <a class="py-toggle" href="#" id="IOPlugin-toggle" onclick="return toggle('IOPlugin');">-</a><tt class="py-line"><tt class="py-keyword">class</tt> <a class="py-def-name" href="Client.socketClient.IOPlugin-class.html">IOPlugin</a><tt class="py-op">(</tt><tt class="py-base-class">Plugin</tt><tt class="py-op">)</tt><tt class="py-op">:</tt> </tt>
+</div><div id="IOPlugin-collapsed" style="display:none;" pad="+++" indent="++++"></div><div id="IOPlugin-expanded"><a name="L78"></a><tt class="py-lineno"> 78</tt>  <tt class="py-line">    <tt class="py-docstring">"""</tt> </tt>
+<a name="L79"></a><tt class="py-lineno"> 79</tt>  <tt class="py-line"><tt class="py-docstring">    Socket I/O Plugin Class</tt> </tt>
+<a name="L80"></a><tt class="py-lineno"> 80</tt>  <tt class="py-line"><tt class="py-docstring">    @see: Plugins/plugin.py for more information</tt> </tt>
+<a name="L81"></a><tt class="py-lineno"> 81</tt>  <tt class="py-line"><tt class="py-docstring">    @copyright: Northeastern University Crew 2014</tt> </tt>
+<a name="L82"></a><tt class="py-lineno"> 82</tt>  <tt class="py-line"><tt class="py-docstring">    """</tt> </tt>
+<a name="L83"></a><tt class="py-lineno"> 83</tt>  <tt class="py-line"> </tt>
+<a name="IOPlugin.__init__"></a><div id="IOPlugin.__init__-def"><a name="L84"></a><tt class="py-lineno"> 84</tt> <a class="py-toggle" href="#" id="IOPlugin.__init__-toggle" onclick="return toggle('IOPlugin.__init__');">-</a><tt class="py-line">    <tt class="py-keyword">def</tt> <a class="py-def-name" href="Client.socketClient.IOPlugin-class.html#__init__">__init__</a><tt class="py-op">(</tt><tt class="py-param">self</tt><tt class="py-op">)</tt><tt class="py-op">:</tt> </tt>
+</div><div id="IOPlugin.__init__-collapsed" style="display:none;" pad="+++" indent="++++++++"></div><div id="IOPlugin.__init__-expanded"><a name="L85"></a><tt class="py-lineno"> 85</tt>  <tt class="py-line">        <tt class="py-name">self</tt><tt class="py-op">.</tt><tt class="py-name">queue</tt> <tt class="py-op">=</tt> <tt class="py-name">Queue</tt><tt class="py-op">.</tt><tt class="py-name">Queue</tt><tt class="py-op">(</tt><tt class="py-number">100</tt><tt class="py-op">)</tt> </tt>
+<a name="L86"></a><tt class="py-lineno"> 86</tt>  <tt class="py-line">        <tt class="py-name">self</tt><tt class="py-op">.</tt><tt class="py-name">msgRoute</tt> <tt class="py-op">=</tt> <tt class="py-name">None</tt> </tt>
+<a name="L87"></a><tt class="py-lineno"> 87</tt>  <tt class="py-line">        <tt class="py-name">self</tt><tt class="py-op">.</tt><tt class="py-name">socket</tt> <tt class="py-op">=</tt> <tt class="py-name">None</tt> </tt>
+</div><a name="L88"></a><tt class="py-lineno"> 88</tt>  <tt class="py-line"> </tt>
+<a name="IOPlugin.needsThread"></a><div id="IOPlugin.needsThread-def"><a name="L89"></a><tt class="py-lineno"> 89</tt> <a class="py-toggle" href="#" id="IOPlugin.needsThread-toggle" onclick="return toggle('IOPlugin.needsThread');">-</a><tt class="py-line">    <tt class="py-keyword">def</tt> <a class="py-def-name" href="Client.socketClient.IOPlugin-class.html#needsThread">needsThread</a><tt class="py-op">(</tt><tt class="py-param">self</tt><tt class="py-op">)</tt><tt class="py-op">:</tt> </tt>
+</div><div id="IOPlugin.needsThread-collapsed" style="display:none;" pad="+++" indent="++++++++"></div><div id="IOPlugin.needsThread-expanded"><a name="L90"></a><tt class="py-lineno"> 90</tt>  <tt class="py-line">        <tt class="py-keyword">return</tt> <tt class="py-name">True</tt> </tt>
+</div><a name="L91"></a><tt class="py-lineno"> 91</tt>  <tt class="py-line"> </tt>
+<a name="IOPlugin.setup"></a><div id="IOPlugin.setup-def"><a name="L92"></a><tt class="py-lineno"> 92</tt> <a class="py-toggle" href="#" id="IOPlugin.setup-toggle" onclick="return toggle('IOPlugin.setup');">-</a><tt class="py-line">    <tt class="py-keyword">def</tt> <a class="py-def-name" href="Client.socketClient.IOPlugin-class.html#setup">setup</a><tt class="py-op">(</tt><tt class="py-param">self</tt><tt class="py-op">,</tt> <tt class="py-param">messageDict</tt><tt class="py-op">,</tt> <tt class="py-param">runtimeVars</tt><tt class="py-op">)</tt><tt class="py-op">:</tt> </tt>
+</div><div id="IOPlugin.setup-collapsed" style="display:none;" pad="+++" indent="++++++++"></div><div id="IOPlugin.setup-expanded"><a name="L93"></a><tt class="py-lineno"> 93</tt>  <tt class="py-line">        <tt class="py-name">self</tt><tt class="py-op">.</tt><tt class="py-name">msgRoute</tt> <tt class="py-op">=</tt> <tt class="py-name">messageDict</tt> </tt>
+<a name="L94"></a><tt class="py-lineno"> 94</tt>  <tt class="py-line">        <tt class="py-name">self</tt><tt class="py-op">.</tt><tt class="py-name">socket</tt> <tt class="py-op">=</tt> <tt id="link-25" class="py-name"><a title="Client.Classes.sockClass
+Client.Classes.sockClass.sockClass" class="py-name" href="#" onclick="return doclink('link-25', 'sockClass', 'link-4');">sockClass</a></tt><tt class="py-op">(</tt><tt class="py-name">runtimeVars</tt><tt class="py-op">)</tt> </tt>
+</div><a name="L95"></a><tt class="py-lineno"> 95</tt>  <tt class="py-line"> </tt>
+<a name="IOPlugin.run"></a><div id="IOPlugin.run-def"><a name="L96"></a><tt class="py-lineno"> 96</tt> <a class="py-toggle" href="#" id="IOPlugin.run-toggle" onclick="return toggle('IOPlugin.run');">-</a><tt class="py-line">    <tt class="py-keyword">def</tt> <a class="py-def-name" href="Client.socketClient.IOPlugin-class.html#run">run</a><tt class="py-op">(</tt><tt class="py-param">self</tt><tt class="py-op">,</tt> <tt class="py-param">runtimeVars</tt><tt class="py-op">)</tt><tt class="py-op">:</tt> </tt>
+</div><div id="IOPlugin.run-collapsed" style="display:none;" pad="+++" indent="++++++++"></div><div id="IOPlugin.run-expanded"><a name="L97"></a><tt class="py-lineno"> 97</tt>  <tt class="py-line">        <tt class="py-keyword">if</tt> <tt class="py-name">self</tt><tt class="py-op">.</tt><tt class="py-name">msgRoute</tt> <tt class="py-keyword">is</tt> <tt class="py-name">None</tt><tt class="py-op">:</tt> </tt>
+<a name="L98"></a><tt class="py-lineno"> 98</tt>  <tt class="py-line">            <tt class="py-keyword">raise</tt> <tt class="py-name">Exception</tt><tt class="py-op">(</tt><tt class="py-string">"Can't distribute info; message route is None"</tt><tt class="py-op">)</tt> </tt>
+<a name="L99"></a><tt class="py-lineno"> 99</tt>  <tt class="py-line">        <tt id="link-26" class="py-name" targets="Function Client.socketClient.socket_in()=Client.socketClient-module.html#socket_in"><a title="Client.socketClient.socket_in" class="py-name" href="#" onclick="return doclink('link-26', 'socket_in', 'link-26');">socket_in</a></tt><tt class="py-op">(</tt><tt class="py-name">self</tt><tt class="py-op">.</tt><tt class="py-name">socket</tt><tt class="py-op">,</tt> <tt class="py-name">runtimeVars</tt><tt class="py-op">,</tt> <tt class="py-name">self</tt><tt class="py-op">.</tt><tt class="py-name">msgRoute</tt><tt class="py-op">)</tt> </tt>
+</div><a name="L100"></a><tt class="py-lineno">100</tt>  <tt class="py-line"> </tt>
+<a name="IOPlugin.getName"></a><div id="IOPlugin.getName-def"><a name="L101"></a><tt class="py-lineno">101</tt> <a class="py-toggle" href="#" id="IOPlugin.getName-toggle" onclick="return toggle('IOPlugin.getName');">-</a><tt class="py-line">    <tt class="py-keyword">def</tt> <a class="py-def-name" href="Client.socketClient.IOPlugin-class.html#getName">getName</a><tt class="py-op">(</tt><tt class="py-param">self</tt><tt class="py-op">)</tt><tt class="py-op">:</tt> </tt>
+</div><div id="IOPlugin.getName-collapsed" style="display:none;" pad="+++" indent="++++++++"></div><div id="IOPlugin.getName-expanded"><a name="L102"></a><tt class="py-lineno">102</tt>  <tt class="py-line">        <tt class="py-keyword">return</tt> <tt class="py-string">"IOPlugin"</tt> </tt>
+</div><a name="L103"></a><tt class="py-lineno">103</tt>  <tt class="py-line"> </tt>
+<a name="IOPlugin.addMessage"></a><div id="IOPlugin.addMessage-def"><a name="L104"></a><tt class="py-lineno">104</tt> <a class="py-toggle" href="#" id="IOPlugin.addMessage-toggle" onclick="return toggle('IOPlugin.addMessage');">-</a><tt class="py-line">    <tt class="py-keyword">def</tt> <a class="py-def-name" href="Client.socketClient.IOPlugin-class.html#addMessage">addMessage</a><tt class="py-op">(</tt><tt class="py-param">self</tt><tt class="py-op">,</tt> <tt class="py-param">message</tt><tt class="py-op">)</tt><tt class="py-op">:</tt> </tt>
+</div><div id="IOPlugin.addMessage-collapsed" style="display:none;" pad="+++" indent="++++++++"></div><div id="IOPlugin.addMessage-expanded"><a name="L105"></a><tt class="py-lineno">105</tt>  <tt class="py-line">        <tt class="py-keyword">print</tt> <tt class="py-string">"Attempting to send Message"</tt> </tt>
+<a name="L106"></a><tt class="py-lineno">106</tt>  <tt class="py-line">        <tt class="py-keyword">if</tt> <tt class="py-name">self</tt><tt class="py-op">.</tt><tt class="py-name">socket</tt> <tt class="py-keyword">is</tt> <tt class="py-name">None</tt><tt class="py-op">:</tt> </tt>
+<a name="L107"></a><tt class="py-lineno">107</tt>  <tt class="py-line">            <tt id="link-27" class="py-name"><a title="Client.logging.Logger" class="py-name" href="#" onclick="return doclink('link-27', 'Logger', 'link-7');">Logger</a></tt><tt class="py-op">.</tt><tt id="link-28" class="py-name"><a title="Client.logging.Logger.log
+Server.Classes.log
+Server.logging.log
+Server.socketServer.log" class="py-name" href="#" onclick="return doclink('link-28', 'log', 'link-12');">log</a></tt><tt class="py-op">(</tt><tt class="py-string">"WARNING"</tt><tt class="py-op">,</tt> <tt class="py-string">"No socket connection, trying again..."</tt><tt class="py-op">)</tt> </tt>
+<a name="L108"></a><tt class="py-lineno">108</tt>  <tt class="py-line">            <tt class="py-name">time</tt><tt class="py-op">.</tt><tt class="py-name">sleep</tt><tt class="py-op">(</tt><tt class="py-number">.5</tt><tt class="py-op">)</tt> </tt>
+<a name="L109"></a><tt class="py-lineno">109</tt>  <tt class="py-line">            <tt class="py-name">self</tt><tt class="py-op">.</tt><tt id="link-29" class="py-name" targets="Method Client.Plugins.plugin.Plugin.addMessage()=Client.Plugins.plugin.Plugin-class.html#addMessage,Method Client.gtkDisplay.GTKPlugin.addMessage()=Client.gtkDisplay.GTKPlugin-class.html#addMessage,Method Client.slideShow.SlideShowPlugin.addMessage()=Client.slideShow.SlideShowPlugin-class.html#addMessage,Method Client.socketClient.IOPlugin.addMessage()=Client.socketClient.IOPlugin-class.html#addMessage"><a title="Client.Plugins.plugin.Plugin.addMessage
+Client.gtkDisplay.GTKPlugin.addMessage
+Client.slideShow.SlideShowPlugin.addMessage
+Client.socketClient.IOPlugin.addMessage" class="py-name" href="#" onclick="return doclink('link-29', 'addMessage', 'link-29');">addMessage</a></tt><tt class="py-op">(</tt><tt id="link-30" class="py-name"><a title="Client.Classes.message
+Server.Classes.message" class="py-name" href="#" onclick="return doclink('link-30', 'message', 'link-1');">message</a></tt><tt class="py-op">)</tt> </tt>
+<a name="L110"></a><tt class="py-lineno">110</tt>  <tt class="py-line">        <tt class="py-keyword">else</tt><tt class="py-op">:</tt> </tt>
+<a name="L111"></a><tt class="py-lineno">111</tt>  <tt class="py-line">            <tt id="link-31" class="py-name" targets="Function Client.socketClient.socket_out()=Client.socketClient-module.html#socket_out"><a title="Client.socketClient.socket_out" class="py-name" href="#" onclick="return doclink('link-31', 'socket_out', 'link-31');">socket_out</a></tt><tt class="py-op">(</tt><tt id="link-32" class="py-name"><a title="Client.Classes.message
+Server.Classes.message" class="py-name" href="#" onclick="return doclink('link-32', 'message', 'link-1');">message</a></tt><tt class="py-op">,</tt> <tt class="py-name">self</tt><tt class="py-op">.</tt><tt class="py-name">socket</tt><tt class="py-op">)</tt> </tt>
+</div></div><a name="L112"></a><tt class="py-lineno">112</tt>  <tt class="py-line"> </tt><script type="text/javascript">
+<!--
+expandto(location.href);
+// -->
+</script>
+</pre>
+<br />
+<!-- ==================== NAVIGATION BAR ==================== -->
+<table class="navbar" border="0" width="100%" cellpadding="0"
+       bgcolor="#a0c0ff" cellspacing="0">
+  <tr valign="middle">
+
+  <!-- Tree link -->
+      <th>&nbsp;&nbsp;&nbsp;<a
+        href="module-tree.html">Trees</a>&nbsp;&nbsp;&nbsp;</th>
+
+  <!-- Index link -->
+      <th>&nbsp;&nbsp;&nbsp;<a
+        href="identifier-index.html">Indices</a>&nbsp;&nbsp;&nbsp;</th>
+
+  <!-- Help link -->
+      <th>&nbsp;&nbsp;&nbsp;<a
+        href="help.html">Help</a>&nbsp;&nbsp;&nbsp;</th>
+
+      <th class="navbar" width="100%"></th>
+  </tr>
+</table>
+<table border="0" cellpadding="0" cellspacing="0" width="100%%">
+  <tr>
+    <td align="left" class="footer">
+    Generated by Epydoc 3.0.1 on Thu Dec 11 19:54:58 2014
+    </td>
+    <td align="right" class="footer">
+      <a target="mainFrame" href="http://epydoc.sourceforge.net"
+        >http://epydoc.sourceforge.net</a>
+    </td>
+  </tr>
+</table>
+
+<script type="text/javascript">
+  <!--
+  // Private objects are initially displayed (because if
+  // javascript is turned off then we want them to be
+  // visible); but by default, we want to hide them.  So hide
+  // them unless we have a cookie that says to show them.
+  checkCookie();
+  // -->
+</script>
+</body>
+</html>

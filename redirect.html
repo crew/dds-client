@@ -1,0 +1,38 @@
+<html><head><title>Epydoc Redirect Page</title>
+<meta http-equiv="cache-control" content="no-cache" />
+<meta http-equiv="expires" content="0" />
+<meta http-equiv="pragma" content="no-cache" />
+  <script type="text/javascript" src="epydoc.js"></script>
+</head>
+<body>
+<script type="text/javascript">
+<!--
+var pages = ["Client.Plugins.ExamplePlugin.ExamplePlugin-c", "Client.Classes.ConfigParser.ConfigParser-c", "Server.Classes.ConfigParser.ConfigParser-c", "Server.Classes.ThreadDict.ThreadDict-c", "Server.Classes.socketlist.socketList-c", "Client.Classes.sockClass.sockClass-c", "Server.Classes.QueueDict.QueueDict-c", "Client.slideShow.SlideShowPlugin-c", "Client.Classes.message.Message-c", "Server.Classes.message.Message-c", "Client.Plugins.ExamplePlugin-m", "Client.Plugins.plugin.Plugin-c", "Client.gtkDisplay.WebBrowser-c", "Client.socketClient.IOPlugin-c", "Server.wpPush.RequestHandler-c", "Client.Classes.ConfigParser-m", "Server.Classes.ConfigParser-m", "Client.gtkDisplay.GTKPlugin-c", "Client.Classes.slide.Slide-c", "Server.Classes.log.logging-c", "Server.Classes.slide.Slide-c", "Server.Classes.ThreadDict-m", "Server.Classes.socketlist-m", "Client.Classes.sockClass-m", "Server.Classes.QueueDict-m", "Client.Classes.message-m", "Server.Classes.message-m", "Client.Plugins.plugin-m", "Client.logging.Logger-c", "Client.Classes.slide-m", "Server.Classes.slide-m", "Client.socketClient-m", "Server.socketServer-m", "Server.Classes.log-m", "Client.gtkDisplay-m", "mimetools.Message-c", "Client.slideShow-m", "Server.WPHandler-m", "Client.Classes-m", "Client.Plugins-m", "Client.logging-m", "Server.Classes-m", "Server.logging-m", "Server.plugin-m", "Server.wpPush-m", "Client.main-m", "Server.main-m", "Client-m", "Server-m"];
+var dottedName = get_anchor();
+if (dottedName) {
+    var target = redirect_url(dottedName);
+    if (target) window.location.replace(target);
+}
+// -->
+</script>
+
+<h3>Epydoc Auto-redirect page</h3>
+
+<p>When javascript is enabled, this page will redirect URLs of
+the form <tt>redirect.html#<i>dotted.name</i></tt> to the
+documentation for the object with the given fully-qualified
+dotted name.</p>
+<p><a id="message"> &nbsp; </a></p>
+
+<script type="text/javascript">
+<!--
+if (dottedName) {
+    var msg = document.getElementById("message");
+    msg.innerHTML = "No documentation found for <tt>"+
+                    dottedName+"</tt>";
+}
+// -->
+</script>
+
+</body>
+</html>

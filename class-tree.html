@@ -1,0 +1,194 @@
+<?xml version="1.0" encoding="ascii"?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+          "DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
+<head>
+  <title>Class Hierarchy</title>
+  <link rel="stylesheet" href="epydoc.css" type="text/css" />
+  <script type="text/javascript" src="epydoc.js"></script>
+</head>
+
+<body bgcolor="white" text="black" link="blue" vlink="#204080"
+      alink="#204080">
+<!-- ==================== NAVIGATION BAR ==================== -->
+<table class="navbar" border="0" width="100%" cellpadding="0"
+       bgcolor="#a0c0ff" cellspacing="0">
+  <tr valign="middle">
+
+  <!-- Tree link -->
+      <th bgcolor="#70b0f0" class="navbar-select"
+          >&nbsp;&nbsp;&nbsp;Trees&nbsp;&nbsp;&nbsp;</th>
+
+  <!-- Index link -->
+      <th>&nbsp;&nbsp;&nbsp;<a
+        href="identifier-index.html">Indices</a>&nbsp;&nbsp;&nbsp;</th>
+
+  <!-- Help link -->
+      <th>&nbsp;&nbsp;&nbsp;<a
+        href="help.html">Help</a>&nbsp;&nbsp;&nbsp;</th>
+
+      <th class="navbar" width="100%"></th>
+  </tr>
+</table>
+<table width="100%" cellpadding="0" cellspacing="0">
+  <tr valign="top">
+    <td width="100%">&nbsp;</td>
+    <td>
+      <table cellpadding="0" cellspacing="0">
+        <!-- hide/show private -->
+        <tr><td align="right"><span class="options">[<a href="javascript:void(0);" class="privatelink"
+    onclick="toggle_private();">hide&nbsp;private</a>]</span></td></tr>
+        <tr><td align="right"><span class="options"
+            >[<a href="frames.html" target="_top">frames</a
+            >]&nbsp;|&nbsp;<a href="class-tree.html"
+            target="_top">no&nbsp;frames</a>]</span></td></tr>
+      </table>
+    </td>
+  </tr>
+</table>
+<center><b>
+ [ <a href="module-tree.html">Module Hierarchy</a>
+ | <a href="class-tree.html">Class Hierarchy</a> ]
+</b></center><br />
+<h1 class="epydoc">Class Hierarchy</h1>
+<ul class="nomargin-top">
+    <li> <strong class="uidlink">SocketServer.BaseRequestHandler</strong>:
+      <em class="summary">Base class for request handler classes.</em>
+    <ul>
+    <li> <strong class="uidlink">SocketServer.StreamRequestHandler</strong>:
+      <em class="summary">Define self.rfile and self.wfile for stream sockets.</em>
+    <ul>
+    <li> <strong class="uidlink">BaseHTTPServer.BaseHTTPRequestHandler</strong>:
+      <em class="summary">HTTP request handler base class.</em>
+    <ul>
+    <li> <strong class="uidlink"><a href="Server.wpPush.RequestHandler-class.html">Server.wpPush.RequestHandler</a></strong>:
+      <em class="summary">Handler Class for any requests received from WordPress</em>
+    </li>
+    </ul>
+    </li>
+    </ul>
+    </li>
+    </ul>
+    </li>
+    <li> <strong class="uidlink"><a href="Server.Classes.ConfigParser.ConfigParser-class.html">Server.Classes.ConfigParser.ConfigParser</a></strong>:
+      <em class="summary">Configuration Parser Class</em>
+    </li>
+    <li> <strong class="uidlink"><a href="Client.Classes.ConfigParser.ConfigParser-class.html">Client.Classes.ConfigParser.ConfigParser</a></strong>:
+      <em class="summary">Configuration Parser Class</em>
+    </li>
+    <li> <strong class="uidlink"><a href="Client.logging.Logger-class.html">Client.logging.Logger</a></strong>:
+      <em class="summary">A Thread-Safe Logging Class</em>
+    </li>
+    <li> <strong class="uidlink"><a href="Server.Classes.message.Message-class.html">Server.Classes.message.Message</a></strong>:
+      <em class="summary">&quot; A message object to be passed between threads via Queue 
+        <i>Sample Usage</i>: Making a new message that will send terminate 
+        from main to display: <code>newMessage = Message(&quot;Main&quot;, 
+        &quot;Display&quot;, &quot;Terminate&quot;, \{\})</code> Making a 
+        slide that will update Display with a new slide: <code>newMessage =
+        Message(&quot;Main&quot;, &quot;Display&quot;, &quot;Update&quot;, 
+        \{\})</code> <code>newMessage.add_content(&quot;slide1&quot;, 
+        &quot;http://google.com&quot;)</code></em>
+    </li>
+    <li> <strong class="uidlink">rfc822.Message</strong>:
+      <em class="summary">Represents a single RFC 2822-compliant message.</em>
+    <ul>
+    <li> <strong class="uidlink"><a href="mimetools.Message-class.html">mimetools.Message</a></strong>:
+      <em class="summary">A derived class of rfc822.Message that knows about MIME headers and
+        contains some hooks for decoding encoded and multipart messages.</em>
+    </li>
+    </ul>
+    </li>
+    <li> <strong class="uidlink"><a href="Client.Classes.message.Message-class.html">Client.Classes.message.Message</a></strong>:
+      <em class="summary">&quot; A message object to be passed between threads via Queue 
+        <i>Sample Usage</i>: Making a new message that will send terminate 
+        from main to display: <code>newMessage = Message(&quot;Main&quot;, 
+        &quot;Display&quot;, &quot;Terminate&quot;, \{\})</code> Making a 
+        slide that will update Display with a new slide: <code>newMessage =
+        Message(&quot;Main&quot;, &quot;Display&quot;, &quot;Update&quot;, 
+        \{\})</code> <code>newMessage.add_content(&quot;slide1&quot;, 
+        &quot;http://google.com&quot;)</code></em>
+    </li>
+    <li> <strong class="uidlink"><a href="Client.Plugins.plugin.Plugin-class.html">Client.Plugins.plugin.Plugin</a></strong>:
+      <em class="summary">Plugin Base Class</em>
+    <ul>
+    <li> <strong class="uidlink"><a href="Client.Plugins.ExamplePlugin.ExamplePlugin-class.html">Client.Plugins.ExamplePlugin.ExamplePlugin</a></strong>
+    </li>
+    <li> <strong class="uidlink"><a href="Client.socketClient.IOPlugin-class.html">Client.socketClient.IOPlugin</a></strong>:
+      <em class="summary">Socket I/O Plugin Class</em>
+    </li>
+    </ul>
+    </li>
+    <li> <strong class="uidlink"><a href="Server.Classes.QueueDict.QueueDict-class.html">Server.Classes.QueueDict.QueueDict</a></strong>:
+      <em class="summary">A wrapper around the Queue Object, which is simply a dictionary of 
+        Queues that can be passed into a plugin, thereby allowing all 
+        plugins to communicate with other plugins.</em>
+    </li>
+    <li> <strong class="uidlink"><a href="Server.Classes.slide.Slide-class.html">Server.Classes.slide.Slide</a></strong>:
+      <em class="summary">Class for Slide Show Slide Objects</em>
+    </li>
+    <li> <strong class="uidlink"><a href="Client.Classes.slide.Slide-class.html">Client.Classes.slide.Slide</a></strong>:
+      <em class="summary">Class for Slide Show Slide Objects</em>
+    </li>
+    <li> <strong class="uidlink"><a href="Server.Classes.ThreadDict.ThreadDict-class.html">Server.Classes.ThreadDict.ThreadDict</a></strong>:
+      <em class="summary">Wrapper around thread object, allows us to start all the persistent
+        Threads in a consistent and simple fashion.</em>
+    </li>
+    <li> <strong class="uidlink">gtk.Window</strong>
+    </li>
+    <li> <strong class="uidlink">object</strong>:
+      <em class="summary">The most base type</em>
+    <ul>
+    <li> <strong class="uidlink"><a href="Server.Classes.log.logging-class.html">Server.Classes.log.logging</a></strong>
+    </li>
+    </ul>
+    </li>
+    <li> <strong class="uidlink"><a href="Client.Classes.sockClass.sockClass-class.html">Client.Classes.sockClass.sockClass</a></strong>:
+      <em class="summary">Client Socket class</em>
+    </li>
+    <li> <strong class="uidlink"><a href="Server.Classes.socketlist.socketList-class.html">Server.Classes.socketlist.socketList</a></strong>:
+      <em class="summary">Object responsible for keeping track of all socket connections</em>
+    </li>
+</ul>
+<!-- ==================== NAVIGATION BAR ==================== -->
+<table class="navbar" border="0" width="100%" cellpadding="0"
+       bgcolor="#a0c0ff" cellspacing="0">
+  <tr valign="middle">
+
+  <!-- Tree link -->
+      <th bgcolor="#70b0f0" class="navbar-select"
+          >&nbsp;&nbsp;&nbsp;Trees&nbsp;&nbsp;&nbsp;</th>
+
+  <!-- Index link -->
+      <th>&nbsp;&nbsp;&nbsp;<a
+        href="identifier-index.html">Indices</a>&nbsp;&nbsp;&nbsp;</th>
+
+  <!-- Help link -->
+      <th>&nbsp;&nbsp;&nbsp;<a
+        href="help.html">Help</a>&nbsp;&nbsp;&nbsp;</th>
+
+      <th class="navbar" width="100%"></th>
+  </tr>
+</table>
+<table border="0" cellpadding="0" cellspacing="0" width="100%%">
+  <tr>
+    <td align="left" class="footer">
+    Generated by Epydoc 3.0.1 on Thu Dec 11 19:54:58 2014
+    </td>
+    <td align="right" class="footer">
+      <a target="mainFrame" href="http://epydoc.sourceforge.net"
+        >http://epydoc.sourceforge.net</a>
+    </td>
+  </tr>
+</table>
+
+<script type="text/javascript">
+  <!--
+  // Private objects are initially displayed (because if
+  // javascript is turned off then we want them to be
+  // visible); but by default, we want to hide them.  So hide
+  // them unless we have a cookie that says to show them.
+  checkCookie();
+  // -->
+</script>
+</body>
+</html>

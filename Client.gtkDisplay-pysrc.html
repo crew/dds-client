@@ -1,0 +1,237 @@
+<?xml version="1.0" encoding="ascii"?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+          "DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
+<head>
+  <title>Client.gtkDisplay</title>
+  <link rel="stylesheet" href="epydoc.css" type="text/css" />
+  <script type="text/javascript" src="epydoc.js"></script>
+</head>
+
+<body bgcolor="white" text="black" link="blue" vlink="#204080"
+      alink="#204080">
+<!-- ==================== NAVIGATION BAR ==================== -->
+<table class="navbar" border="0" width="100%" cellpadding="0"
+       bgcolor="#a0c0ff" cellspacing="0">
+  <tr valign="middle">
+
+  <!-- Tree link -->
+      <th>&nbsp;&nbsp;&nbsp;<a
+        href="module-tree.html">Trees</a>&nbsp;&nbsp;&nbsp;</th>
+
+  <!-- Index link -->
+      <th>&nbsp;&nbsp;&nbsp;<a
+        href="identifier-index.html">Indices</a>&nbsp;&nbsp;&nbsp;</th>
+
+  <!-- Help link -->
+      <th>&nbsp;&nbsp;&nbsp;<a
+        href="help.html">Help</a>&nbsp;&nbsp;&nbsp;</th>
+
+      <th class="navbar" width="100%"></th>
+  </tr>
+</table>
+<table width="100%" cellpadding="0" cellspacing="0">
+  <tr valign="top">
+    <td width="100%">
+      <span class="breadcrumbs">
+        <a href="Client-module.html">Package&nbsp;Client</a> ::
+        Module&nbsp;gtkDisplay
+      </span>
+    </td>
+    <td>
+      <table cellpadding="0" cellspacing="0">
+        <!-- hide/show private -->
+        <tr><td align="right"><span class="options">[<a href="javascript:void(0);" class="privatelink"
+    onclick="toggle_private();">hide&nbsp;private</a>]</span></td></tr>
+        <tr><td align="right"><span class="options"
+            >[<a href="frames.html" target="_top">frames</a
+            >]&nbsp;|&nbsp;<a href="Client.gtkDisplay-pysrc.html"
+            target="_top">no&nbsp;frames</a>]</span></td></tr>
+      </table>
+    </td>
+  </tr>
+</table>
+<h1 class="epydoc">Source Code for <a href="Client.gtkDisplay-module.html">Module Client.gtkDisplay</a></h1>
+<pre class="py-src">
+<a name="L1"></a><tt class="py-lineno">  1</tt>  <tt class="py-line"><tt class="py-comment">#!/usr/bin/env python</tt> </tt>
+<a name="L2"></a><tt class="py-lineno">  2</tt>  <tt class="py-line"> </tt>
+<a name="L3"></a><tt class="py-lineno">  3</tt>  <tt class="py-line"><tt class="py-keyword">import</tt> <tt class="py-name">threading</tt> </tt>
+<a name="L4"></a><tt class="py-lineno">  4</tt>  <tt class="py-line"><tt class="py-keyword">import</tt> <tt class="py-name">time</tt> </tt>
+<a name="L5"></a><tt class="py-lineno">  5</tt>  <tt class="py-line"> </tt>
+<a name="L6"></a><tt class="py-lineno">  6</tt>  <tt class="py-line"><tt class="py-keyword">import</tt> <tt class="py-name">gobject</tt> </tt>
+<a name="L7"></a><tt class="py-lineno">  7</tt>  <tt class="py-line"><tt class="py-keyword">import</tt> <tt class="py-name">gtk</tt> </tt>
+<a name="L8"></a><tt class="py-lineno">  8</tt>  <tt class="py-line"><tt class="py-keyword">import</tt> <tt class="py-name">webkit</tt> </tt>
+<a name="L9"></a><tt class="py-lineno">  9</tt>  <tt class="py-line"><tt class="py-keyword">from</tt> <tt id="link-0" class="py-name" targets="Package Client.Plugins=Client.Plugins-module.html"><a title="Client.Plugins" class="py-name" href="#" onclick="return doclink('link-0', 'Plugins', 'link-0');">Plugins</a></tt><tt class="py-op">.</tt><tt id="link-1" class="py-name" targets="Module Client.Plugins.plugin=Client.Plugins.plugin-module.html,Module Server.plugin=Server.plugin-module.html,Function Server.plugin.plugin()=Server.plugin-module.html#plugin"><a title="Client.Plugins.plugin
+Server.plugin
+Server.plugin.plugin" class="py-name" href="#" onclick="return doclink('link-1', 'plugin', 'link-1');">plugin</a></tt> <tt class="py-keyword">import</tt> <tt id="link-2" class="py-name" targets="Class Client.Plugins.plugin.Plugin=Client.Plugins.plugin.Plugin-class.html"><a title="Client.Plugins.plugin.Plugin" class="py-name" href="#" onclick="return doclink('link-2', 'Plugin', 'link-2');">Plugin</a></tt> </tt>
+<a name="L10"></a><tt class="py-lineno"> 10</tt>  <tt class="py-line"> </tt>
+<a name="L11"></a><tt class="py-lineno"> 11</tt>  <tt class="py-line"> </tt>
+<a name="WebBrowser"></a><div id="WebBrowser-def"><a name="L12"></a><tt class="py-lineno"> 12</tt> <a class="py-toggle" href="#" id="WebBrowser-toggle" onclick="return toggle('WebBrowser');">-</a><tt class="py-line"><tt class="py-keyword">class</tt> <a class="py-def-name" href="Client.gtkDisplay.WebBrowser-class.html">WebBrowser</a><tt class="py-op">(</tt><tt class="py-base-class">gtk</tt><tt class="py-op">.</tt><tt class="py-base-class">Window</tt><tt class="py-op">)</tt><tt class="py-op">:</tt> </tt>
+</div><div id="WebBrowser-collapsed" style="display:none;" pad="+++" indent="++++"></div><div id="WebBrowser-expanded"><a name="L13"></a><tt class="py-lineno"> 13</tt>  <tt class="py-line">    <tt class="py-docstring">"""</tt> </tt>
+<a name="L14"></a><tt class="py-lineno"> 14</tt>  <tt class="py-line"><tt class="py-docstring">    Web Page Display Window Class</tt> </tt>
+<a name="L15"></a><tt class="py-lineno"> 15</tt>  <tt class="py-line"><tt class="py-docstring">    Represents a full screen GTK Web Browser (no UI)</tt> </tt>
+<a name="L16"></a><tt class="py-lineno"> 16</tt>  <tt class="py-line"><tt class="py-docstring">    displaying a given URL.</tt> </tt>
+<a name="L17"></a><tt class="py-lineno"> 17</tt>  <tt class="py-line"><tt class="py-docstring">    @note: URL must begin with a prefix (e.g. "http://")</tt> </tt>
+<a name="L18"></a><tt class="py-lineno"> 18</tt>  <tt class="py-line"><tt class="py-docstring">    @note: Extension of the python-gtk-webkit presentation program,</tt> </tt>
+<a name="L19"></a><tt class="py-lineno"> 19</tt>  <tt class="py-line"><tt class="py-docstring">    Copyright (C) 2009 by Akkana Peck</tt> </tt>
+<a name="L20"></a><tt class="py-lineno"> 20</tt>  <tt class="py-line"><tt class="py-docstring">    @license: GNU Public License, version 2</tt> </tt>
+<a name="L21"></a><tt class="py-lineno"> 21</tt>  <tt class="py-line"><tt class="py-docstring">    @copyright: Northeastern University Crew 2014</tt> </tt>
+<a name="L22"></a><tt class="py-lineno"> 22</tt>  <tt class="py-line"><tt class="py-docstring">    """</tt> </tt>
+<a name="L23"></a><tt class="py-lineno"> 23</tt>  <tt class="py-line"> </tt>
+<a name="WebBrowser.__init__"></a><div id="WebBrowser.__init__-def"><a name="L24"></a><tt class="py-lineno"> 24</tt> <a class="py-toggle" href="#" id="WebBrowser.__init__-toggle" onclick="return toggle('WebBrowser.__init__');">-</a><tt class="py-line">    <tt class="py-keyword">def</tt> <a class="py-def-name" href="Client.gtkDisplay.WebBrowser-class.html#__init__">__init__</a><tt class="py-op">(</tt><tt class="py-param">self</tt><tt class="py-op">,</tt> <tt class="py-param">url</tt><tt class="py-op">,</tt> <tt class="py-param">width</tt><tt class="py-op">,</tt> <tt class="py-param">height</tt><tt class="py-op">)</tt><tt class="py-op">:</tt> </tt>
+</div><div id="WebBrowser.__init__-collapsed" style="display:none;" pad="+++" indent="++++++++"></div><div id="WebBrowser.__init__-expanded"><a name="L25"></a><tt class="py-lineno"> 25</tt>  <tt class="py-line">        <tt class="py-docstring">"""</tt> </tt>
+<a name="L26"></a><tt class="py-lineno"> 26</tt>  <tt class="py-line"><tt class="py-docstring">        GTK Window Constructor</tt> </tt>
+<a name="L27"></a><tt class="py-lineno"> 27</tt>  <tt class="py-line"><tt class="py-docstring">        @param url: The initial URL to show</tt> </tt>
+<a name="L28"></a><tt class="py-lineno"> 28</tt>  <tt class="py-line"><tt class="py-docstring">        @type url: String</tt> </tt>
+<a name="L29"></a><tt class="py-lineno"> 29</tt>  <tt class="py-line"><tt class="py-docstring">        @param width: The Screen's Width</tt> </tt>
+<a name="L30"></a><tt class="py-lineno"> 30</tt>  <tt class="py-line"><tt class="py-docstring">        @type width: Integer</tt> </tt>
+<a name="L31"></a><tt class="py-lineno"> 31</tt>  <tt class="py-line"><tt class="py-docstring">        @param height: The Screen's Height</tt> </tt>
+<a name="L32"></a><tt class="py-lineno"> 32</tt>  <tt class="py-line"><tt class="py-docstring">        @type height: Integer</tt> </tt>
+<a name="L33"></a><tt class="py-lineno"> 33</tt>  <tt class="py-line"><tt class="py-docstring">        @return: The Constructed WebBrowser</tt> </tt>
+<a name="L34"></a><tt class="py-lineno"> 34</tt>  <tt class="py-line"><tt class="py-docstring">        @rtype: WebBrowser</tt> </tt>
+<a name="L35"></a><tt class="py-lineno"> 35</tt>  <tt class="py-line"><tt class="py-docstring">        """</tt> </tt>
+<a name="L36"></a><tt class="py-lineno"> 36</tt>  <tt class="py-line">        <tt class="py-name">gtk</tt><tt class="py-op">.</tt><tt class="py-name">Window</tt><tt class="py-op">.</tt><tt id="link-3" class="py-name" targets="Method Client.Classes.message.Message.__init__()=Client.Classes.message.Message-class.html#__init__,Method Client.Classes.slide.Slide.__init__()=Client.Classes.slide.Slide-class.html#__init__,Method Client.Classes.sockClass.sockClass.__init__()=Client.Classes.sockClass.sockClass-class.html#__init__,Method Client.gtkDisplay.WebBrowser.__init__()=Client.gtkDisplay.WebBrowser-class.html#__init__,Method Client.logging.Logger.__init__()=Client.logging.Logger-class.html#__init__,Method Client.slideShow.SlideShowPlugin.__init__()=Client.slideShow.SlideShowPlugin-class.html#__init__,Method Client.socketClient.IOPlugin.__init__()=Client.socketClient.IOPlugin-class.html#__init__,Method Server.Classes.QueueDict.QueueDict.__init__()=Server.Classes.QueueDict.QueueDict-class.html#__init__,Method Server.Classes.ThreadDict.ThreadDict.__init__()=Server.Classes.ThreadDict.ThreadDict-class.html#__init__,Method Server.Classes.log.logging.__init__()=Server.Classes.log.logging-class.html#__init__,Method Server.Classes.message.Message.__init__()=Server.Classes.message.Message-class.html#__init__,Method Server.Classes.slide.Slide.__init__()=Server.Classes.slide.Slide-class.html#__init__,Method Server.Classes.socketlist.socketList.__init__()=Server.Classes.socketlist.socketList-class.html#__init__"><a title="Client.Classes.message.Message.__init__
+Client.Classes.slide.Slide.__init__
+Client.Classes.sockClass.sockClass.__init__
+Client.gtkDisplay.WebBrowser.__init__
+Client.logging.Logger.__init__
+Client.slideShow.SlideShowPlugin.__init__
+Client.socketClient.IOPlugin.__init__
+Server.Classes.QueueDict.QueueDict.__init__
+Server.Classes.ThreadDict.ThreadDict.__init__
+Server.Classes.log.logging.__init__
+Server.Classes.message.Message.__init__
+Server.Classes.slide.Slide.__init__
+Server.Classes.socketlist.socketList.__init__" class="py-name" href="#" onclick="return doclink('link-3', '__init__', 'link-3');">__init__</a></tt><tt class="py-op">(</tt><tt class="py-name">self</tt><tt class="py-op">)</tt> </tt>
+<a name="L37"></a><tt class="py-lineno"> 37</tt>  <tt class="py-line">        <tt class="py-name">self</tt><tt class="py-op">.</tt><tt class="py-name">fullscreen</tt><tt class="py-op">(</tt><tt class="py-op">)</tt> </tt>
+<a name="L38"></a><tt class="py-lineno"> 38</tt>  <tt class="py-line"> </tt>
+<a name="L39"></a><tt class="py-lineno"> 39</tt>  <tt class="py-line">        <tt class="py-name">self</tt><tt class="py-op">.</tt><tt class="py-name">_browser</tt> <tt class="py-op">=</tt> <tt class="py-name">webkit</tt><tt class="py-op">.</tt><tt class="py-name">WebView</tt><tt class="py-op">(</tt><tt class="py-op">)</tt> </tt>
+<a name="L40"></a><tt class="py-lineno"> 40</tt>  <tt class="py-line">        <tt class="py-name">settings</tt> <tt class="py-op">=</tt> <tt class="py-name">webkit</tt><tt class="py-op">.</tt><tt class="py-name">WebSettings</tt><tt class="py-op">(</tt><tt class="py-op">)</tt> </tt>
+<a name="L41"></a><tt class="py-lineno"> 41</tt>  <tt class="py-line">        <tt class="py-name">settings</tt><tt class="py-op">.</tt><tt class="py-name">set_property</tt><tt class="py-op">(</tt><tt class="py-string">'enable-page-cache'</tt><tt class="py-op">,</tt> <tt class="py-name">True</tt><tt class="py-op">)</tt> </tt>
+<a name="L42"></a><tt class="py-lineno"> 42</tt>  <tt class="py-line">        <tt class="py-name">settings</tt><tt class="py-op">.</tt><tt class="py-name">set_property</tt><tt class="py-op">(</tt><tt class="py-string">'enable-accelerated-compositing'</tt><tt class="py-op">,</tt> <tt class="py-name">True</tt><tt class="py-op">)</tt> </tt>
+<a name="L43"></a><tt class="py-lineno"> 43</tt>  <tt class="py-line"> </tt>
+<a name="L44"></a><tt class="py-lineno"> 44</tt>  <tt class="py-line">        <tt class="py-name">self</tt><tt class="py-op">.</tt><tt class="py-name">_browser</tt><tt class="py-op">.</tt><tt class="py-name">set_settings</tt><tt class="py-op">(</tt><tt class="py-name">settings</tt><tt class="py-op">)</tt> </tt>
+<a name="L45"></a><tt class="py-lineno"> 45</tt>  <tt class="py-line">        <tt class="py-name">self</tt><tt class="py-op">.</tt><tt id="link-4" class="py-name" targets="Method Client.Classes.sockClass.sockClass.connect()=Client.Classes.sockClass.sockClass-class.html#connect,Function Server.socketServer.connect()=Server.socketServer-module.html#connect"><a title="Client.Classes.sockClass.sockClass.connect
+Server.socketServer.connect" class="py-name" href="#" onclick="return doclink('link-4', 'connect', 'link-4');">connect</a></tt><tt class="py-op">(</tt><tt class="py-string">'destroy'</tt><tt class="py-op">,</tt> <tt class="py-name">gtk</tt><tt class="py-op">.</tt><tt class="py-name">main_quit</tt><tt class="py-op">)</tt> </tt>
+<a name="L46"></a><tt class="py-lineno"> 46</tt>  <tt class="py-line">        <tt class="py-name">self</tt><tt class="py-op">.</tt><tt class="py-name">add</tt><tt class="py-op">(</tt><tt class="py-name">self</tt><tt class="py-op">.</tt><tt class="py-name">_browser</tt><tt class="py-op">)</tt> </tt>
+<a name="L47"></a><tt class="py-lineno"> 47</tt>  <tt class="py-line"> </tt>
+<a name="L48"></a><tt class="py-lineno"> 48</tt>  <tt class="py-line">        <tt class="py-name">self</tt><tt class="py-op">.</tt><tt class="py-name">_browser</tt><tt class="py-op">.</tt><tt class="py-name">load_uri</tt><tt class="py-op">(</tt><tt class="py-name">url</tt><tt class="py-op">)</tt> </tt>
+<a name="L49"></a><tt class="py-lineno"> 49</tt>  <tt class="py-line">        <tt class="py-name">self</tt><tt class="py-op">.</tt><tt class="py-name">_browser</tt><tt class="py-op">.</tt><tt class="py-name">set_size_request</tt><tt class="py-op">(</tt><tt class="py-name">int</tt><tt class="py-op">(</tt><tt class="py-name">width</tt><tt class="py-op">)</tt><tt class="py-op">,</tt> <tt class="py-name">int</tt><tt class="py-op">(</tt><tt class="py-name">height</tt><tt class="py-op">)</tt><tt class="py-op">)</tt> </tt>
+<a name="L50"></a><tt class="py-lineno"> 50</tt>  <tt class="py-line">        <tt class="py-name">self</tt><tt class="py-op">.</tt><tt class="py-name">show_all</tt><tt class="py-op">(</tt><tt class="py-op">)</tt> </tt>
+<a name="L51"></a><tt class="py-lineno"> 51</tt>  <tt class="py-line"> </tt>
+<a name="L52"></a><tt class="py-lineno"> 52</tt>  <tt class="py-line">        <tt class="py-name">gobject</tt><tt class="py-op">.</tt><tt class="py-name">threads_init</tt><tt class="py-op">(</tt><tt class="py-op">)</tt> </tt>
+</div><a name="L53"></a><tt class="py-lineno"> 53</tt>  <tt class="py-line"> </tt>
+<a name="WebBrowser.updatePage"></a><div id="WebBrowser.updatePage-def"><a name="L54"></a><tt class="py-lineno"> 54</tt> <a class="py-toggle" href="#" id="WebBrowser.updatePage-toggle" onclick="return toggle('WebBrowser.updatePage');">-</a><tt class="py-line">    <tt class="py-keyword">def</tt> <a class="py-def-name" href="Client.gtkDisplay.WebBrowser-class.html#updatePage">updatePage</a><tt class="py-op">(</tt><tt class="py-param">self</tt><tt class="py-op">,</tt> <tt class="py-param">url</tt><tt class="py-op">)</tt><tt class="py-op">:</tt> </tt>
+</div><div id="WebBrowser.updatePage-collapsed" style="display:none;" pad="+++" indent="++++++++"></div><div id="WebBrowser.updatePage-expanded"><a name="L55"></a><tt class="py-lineno"> 55</tt>  <tt class="py-line">        <tt class="py-docstring">"""</tt> </tt>
+<a name="L56"></a><tt class="py-lineno"> 56</tt>  <tt class="py-line"><tt class="py-docstring">        Updates the browser to show the given URL</tt> </tt>
+<a name="L57"></a><tt class="py-lineno"> 57</tt>  <tt class="py-line"><tt class="py-docstring">        @param url: The new URL to show</tt> </tt>
+<a name="L58"></a><tt class="py-lineno"> 58</tt>  <tt class="py-line"><tt class="py-docstring">        @type url: String</tt> </tt>
+<a name="L59"></a><tt class="py-lineno"> 59</tt>  <tt class="py-line"><tt class="py-docstring">        @return: None</tt> </tt>
+<a name="L60"></a><tt class="py-lineno"> 60</tt>  <tt class="py-line"><tt class="py-docstring">        @rtype: NoneType</tt> </tt>
+<a name="L61"></a><tt class="py-lineno"> 61</tt>  <tt class="py-line"><tt class="py-docstring">        """</tt> </tt>
+<a name="L62"></a><tt class="py-lineno"> 62</tt>  <tt class="py-line">        <tt class="py-keyword">print</tt> <tt class="py-string">"Update page running in : "</tt> <tt class="py-op">+</tt> <tt class="py-name">threading</tt><tt class="py-op">.</tt><tt class="py-name">currentThread</tt><tt class="py-op">(</tt><tt class="py-op">)</tt><tt class="py-op">.</tt><tt id="link-5" class="py-name" targets="Method Client.Plugins.ExamplePlugin.ExamplePlugin.getName()=Client.Plugins.ExamplePlugin.ExamplePlugin-class.html#getName,Method Client.Plugins.plugin.Plugin.getName()=Client.Plugins.plugin.Plugin-class.html#getName,Method Client.gtkDisplay.GTKPlugin.getName()=Client.gtkDisplay.GTKPlugin-class.html#getName,Method Client.slideShow.SlideShowPlugin.getName()=Client.slideShow.SlideShowPlugin-class.html#getName,Method Client.socketClient.IOPlugin.getName()=Client.socketClient.IOPlugin-class.html#getName"><a title="Client.Plugins.ExamplePlugin.ExamplePlugin.getName
+Client.Plugins.plugin.Plugin.getName
+Client.gtkDisplay.GTKPlugin.getName
+Client.slideShow.SlideShowPlugin.getName
+Client.socketClient.IOPlugin.getName" class="py-name" href="#" onclick="return doclink('link-5', 'getName', 'link-5');">getName</a></tt><tt class="py-op">(</tt><tt class="py-op">)</tt> </tt>
+<a name="L63"></a><tt class="py-lineno"> 63</tt>  <tt class="py-line">        <tt class="py-keyword">print</tt> <tt class="py-string">"updatePage"</tt> </tt>
+<a name="L64"></a><tt class="py-lineno"> 64</tt>  <tt class="py-line">        <tt class="py-name">self</tt><tt class="py-op">.</tt><tt class="py-name">_browser</tt><tt class="py-op">.</tt><tt class="py-name">load_uri</tt><tt class="py-op">(</tt><tt class="py-name">url</tt><tt class="py-op">)</tt> </tt>
+<a name="L65"></a><tt class="py-lineno"> 65</tt>  <tt class="py-line">        <tt class="py-keyword">try</tt><tt class="py-op">:</tt> </tt>
+<a name="L66"></a><tt class="py-lineno"> 66</tt>  <tt class="py-line">            <tt class="py-name">self</tt><tt class="py-op">.</tt><tt class="py-name">fullscreen</tt><tt class="py-op">(</tt><tt class="py-op">)</tt> </tt>
+<a name="L67"></a><tt class="py-lineno"> 67</tt>  <tt class="py-line">        <tt class="py-keyword">except</tt><tt class="py-op">:</tt> </tt>
+<a name="L68"></a><tt class="py-lineno"> 68</tt>  <tt class="py-line">            <tt class="py-keyword">pass</tt> </tt>
+<a name="L69"></a><tt class="py-lineno"> 69</tt>  <tt class="py-line">        <tt class="py-keyword">print</tt> <tt class="py-string">"showing"</tt> </tt>
+<a name="L70"></a><tt class="py-lineno"> 70</tt>  <tt class="py-line">        <tt class="py-name">self</tt><tt class="py-op">.</tt><tt class="py-name">show_all</tt><tt class="py-op">(</tt><tt class="py-op">)</tt> </tt>
+</div></div><a name="L71"></a><tt class="py-lineno"> 71</tt>  <tt class="py-line"> </tt>
+<a name="L72"></a><tt class="py-lineno"> 72</tt>  <tt class="py-line"> </tt>
+<a name="getUpdateHandle"></a><div id="getUpdateHandle-def"><a name="L73"></a><tt class="py-lineno"> 73</tt> <a class="py-toggle" href="#" id="getUpdateHandle-toggle" onclick="return toggle('getUpdateHandle');">-</a><tt class="py-line"><tt class="py-keyword">def</tt> <a class="py-def-name" href="Client.gtkDisplay-module.html#getUpdateHandle">getUpdateHandle</a><tt class="py-op">(</tt><tt class="py-param">runtimeVars</tt><tt class="py-op">)</tt><tt class="py-op">:</tt> </tt>
+</div><div id="getUpdateHandle-collapsed" style="display:none;" pad="+++" indent="++++"></div><div id="getUpdateHandle-expanded"><a name="L74"></a><tt class="py-lineno"> 74</tt>  <tt class="py-line">    <tt class="py-docstring">"""</tt> </tt>
+<a name="L75"></a><tt class="py-lineno"> 75</tt>  <tt class="py-line"><tt class="py-docstring">    Initializes the browser and returns the</tt> </tt>
+<a name="L76"></a><tt class="py-lineno"> 76</tt>  <tt class="py-line"><tt class="py-docstring">    function used to update its page</tt> </tt>
+<a name="L77"></a><tt class="py-lineno"> 77</tt>  <tt class="py-line"><tt class="py-docstring">    @param runtimeVars: User-defined Configuration</tt> </tt>
+<a name="L78"></a><tt class="py-lineno"> 78</tt>  <tt class="py-line"><tt class="py-docstring">    @type runtimeVars: Dictionary</tt> </tt>
+<a name="L79"></a><tt class="py-lineno"> 79</tt>  <tt class="py-line"><tt class="py-docstring">    @return: Function</tt> </tt>
+<a name="L80"></a><tt class="py-lineno"> 80</tt>  <tt class="py-line"><tt class="py-docstring">    """</tt> </tt>
+<a name="L81"></a><tt class="py-lineno"> 81</tt>  <tt class="py-line">    <tt class="py-name">browser</tt> <tt class="py-op">=</tt> <tt id="link-6" class="py-name" targets="Class Client.gtkDisplay.WebBrowser=Client.gtkDisplay.WebBrowser-class.html"><a title="Client.gtkDisplay.WebBrowser" class="py-name" href="#" onclick="return doclink('link-6', 'WebBrowser', 'link-6');">WebBrowser</a></tt><tt class="py-op">(</tt><tt class="py-string">""</tt><tt class="py-op">,</tt> <tt class="py-name">runtimeVars</tt><tt class="py-op">[</tt><tt class="py-string">"width"</tt><tt class="py-op">]</tt><tt class="py-op">,</tt> <tt class="py-name">runtimeVars</tt><tt class="py-op">[</tt><tt class="py-string">"height"</tt><tt class="py-op">]</tt><tt class="py-op">)</tt> </tt>
+<a name="L82"></a><tt class="py-lineno"> 82</tt>  <tt class="py-line"> </tt>
+<a name="L83"></a><tt class="py-lineno"> 83</tt>  <tt class="py-line">    <tt class="py-comment"># GTK Thread-Safe Wrapper for updatePage() method</tt> </tt>
+<a name="L84"></a><tt class="py-lineno"> 84</tt>  <tt class="py-line">    <tt class="py-keyword">def</tt> <tt class="py-def-name">updatePage</tt><tt class="py-op">(</tt><tt class="py-param">url</tt><tt class="py-op">)</tt><tt class="py-op">:</tt> </tt>
+<a name="L85"></a><tt class="py-lineno"> 85</tt>  <tt class="py-line">        <tt class="py-name">gobject</tt><tt class="py-op">.</tt><tt class="py-name">timeout_add</tt><tt class="py-op">(</tt><tt class="py-number">100</tt><tt class="py-op">,</tt> <tt class="py-name">browser</tt><tt class="py-op">.</tt><tt id="link-7" class="py-name" targets="Method Client.gtkDisplay.WebBrowser.updatePage()=Client.gtkDisplay.WebBrowser-class.html#updatePage"><a title="Client.gtkDisplay.WebBrowser.updatePage" class="py-name" href="#" onclick="return doclink('link-7', 'updatePage', 'link-7');">updatePage</a></tt><tt class="py-op">,</tt> <tt class="py-name">url</tt><tt class="py-op">)</tt> </tt>
+</div><a name="L86"></a><tt class="py-lineno"> 86</tt>  <tt class="py-line"> </tt>
+<a name="L87"></a><tt class="py-lineno"> 87</tt>  <tt class="py-line">    <tt class="py-keyword">return</tt> <tt id="link-8" class="py-name"><a title="Client.gtkDisplay.WebBrowser.updatePage" class="py-name" href="#" onclick="return doclink('link-8', 'updatePage', 'link-7');">updatePage</a></tt> </tt>
+</div><a name="L88"></a><tt class="py-lineno"> 88</tt>  <tt class="py-line"> </tt>
+<a name="L89"></a><tt class="py-lineno"> 89</tt>  <tt class="py-line"> </tt>
+<a name="GTKPlugin"></a><div id="GTKPlugin-def"><a name="L90"></a><tt class="py-lineno"> 90</tt> <a class="py-toggle" href="#" id="GTKPlugin-toggle" onclick="return toggle('GTKPlugin');">-</a><tt class="py-line"><tt class="py-keyword">class</tt> <a class="py-def-name" href="Client.gtkDisplay.GTKPlugin-class.html">GTKPlugin</a><tt class="py-op">(</tt><tt class="py-base-class">Plugin</tt><tt class="py-op">)</tt><tt class="py-op">:</tt> </tt>
+</div><div id="GTKPlugin-collapsed" style="display:none;" pad="+++" indent="++++"></div><div id="GTKPlugin-expanded"><a name="L91"></a><tt class="py-lineno"> 91</tt>  <tt class="py-line">    <tt class="py-docstring">"""</tt> </tt>
+<a name="L92"></a><tt class="py-lineno"> 92</tt>  <tt class="py-line"><tt class="py-docstring">    GTK Web Display Plugin Class</tt> </tt>
+<a name="L93"></a><tt class="py-lineno"> 93</tt>  <tt class="py-line"><tt class="py-docstring">    @see: Plugins/plugin.py for more information</tt> </tt>
+<a name="L94"></a><tt class="py-lineno"> 94</tt>  <tt class="py-line"><tt class="py-docstring">    @copyright: Northeastern University Crew 2014</tt> </tt>
+<a name="L95"></a><tt class="py-lineno"> 95</tt>  <tt class="py-line"><tt class="py-docstring">    """</tt> </tt>
+<a name="L96"></a><tt class="py-lineno"> 96</tt>  <tt class="py-line"> </tt>
+<a name="GTKPlugin.needsThread"></a><div id="GTKPlugin.needsThread-def"><a name="L97"></a><tt class="py-lineno"> 97</tt> <a class="py-toggle" href="#" id="GTKPlugin.needsThread-toggle" onclick="return toggle('GTKPlugin.needsThread');">-</a><tt class="py-line">    <tt class="py-keyword">def</tt> <a class="py-def-name" href="Client.gtkDisplay.GTKPlugin-class.html#needsThread">needsThread</a><tt class="py-op">(</tt><tt class="py-param">self</tt><tt class="py-op">)</tt><tt class="py-op">:</tt> </tt>
+</div><div id="GTKPlugin.needsThread-collapsed" style="display:none;" pad="+++" indent="++++++++"></div><div id="GTKPlugin.needsThread-expanded"><a name="L98"></a><tt class="py-lineno"> 98</tt>  <tt class="py-line">        <tt class="py-keyword">return</tt> <tt class="py-name">True</tt> </tt>
+</div><a name="L99"></a><tt class="py-lineno"> 99</tt>  <tt class="py-line"> </tt>
+<a name="GTKPlugin.run"></a><div id="GTKPlugin.run-def"><a name="L100"></a><tt class="py-lineno">100</tt> <a class="py-toggle" href="#" id="GTKPlugin.run-toggle" onclick="return toggle('GTKPlugin.run');">-</a><tt class="py-line">    <tt class="py-keyword">def</tt> <a class="py-def-name" href="Client.gtkDisplay.GTKPlugin-class.html#run">run</a><tt class="py-op">(</tt><tt class="py-param">self</tt><tt class="py-op">,</tt> <tt class="py-param">runtimeVars</tt><tt class="py-op">)</tt><tt class="py-op">:</tt> </tt>
+</div><div id="GTKPlugin.run-collapsed" style="display:none;" pad="+++" indent="++++++++"></div><div id="GTKPlugin.run-expanded"><a name="L101"></a><tt class="py-lineno">101</tt>  <tt class="py-line">        <tt class="py-name">gtk</tt><tt class="py-op">.</tt><tt id="link-9" class="py-name" targets="Module Client.main=Client.main-module.html,Function Client.main.main()=Client.main-module.html#main,Module Server.main=Server.main-module.html,Function Server.main.main()=Server.main-module.html#main"><a title="Client.main
+Client.main.main
+Server.main
+Server.main.main" class="py-name" href="#" onclick="return doclink('link-9', 'main', 'link-9');">main</a></tt><tt class="py-op">(</tt><tt class="py-op">)</tt> </tt>
+<a name="L102"></a><tt class="py-lineno">102</tt>  <tt class="py-line">        <tt class="py-keyword">while</tt> <tt class="py-name">True</tt><tt class="py-op">:</tt> </tt>
+<a name="L103"></a><tt class="py-lineno">103</tt>  <tt class="py-line">            <tt class="py-keyword">print</tt> <tt class="py-string">"Main loop"</tt> </tt>
+<a name="L104"></a><tt class="py-lineno">104</tt>  <tt class="py-line">            <tt class="py-name">time</tt><tt class="py-op">.</tt><tt class="py-name">sleep</tt><tt class="py-op">(</tt><tt class="py-number">5</tt><tt class="py-op">)</tt> </tt>
+</div><a name="L105"></a><tt class="py-lineno">105</tt>  <tt class="py-line"> </tt>
+<a name="GTKPlugin.getName"></a><div id="GTKPlugin.getName-def"><a name="L106"></a><tt class="py-lineno">106</tt> <a class="py-toggle" href="#" id="GTKPlugin.getName-toggle" onclick="return toggle('GTKPlugin.getName');">-</a><tt class="py-line">    <tt class="py-keyword">def</tt> <a class="py-def-name" href="Client.gtkDisplay.GTKPlugin-class.html#getName">getName</a><tt class="py-op">(</tt><tt class="py-param">self</tt><tt class="py-op">)</tt><tt class="py-op">:</tt> </tt>
+</div><div id="GTKPlugin.getName-collapsed" style="display:none;" pad="+++" indent="++++++++"></div><div id="GTKPlugin.getName-expanded"><a name="L107"></a><tt class="py-lineno">107</tt>  <tt class="py-line">        <tt class="py-keyword">return</tt> <tt class="py-string">"Gtk Plugin"</tt> </tt>
+</div><a name="L108"></a><tt class="py-lineno">108</tt>  <tt class="py-line"> </tt>
+<a name="GTKPlugin.addMessage"></a><div id="GTKPlugin.addMessage-def"><a name="L109"></a><tt class="py-lineno">109</tt> <a class="py-toggle" href="#" id="GTKPlugin.addMessage-toggle" onclick="return toggle('GTKPlugin.addMessage');">-</a><tt class="py-line">    <tt class="py-keyword">def</tt> <a class="py-def-name" href="Client.gtkDisplay.GTKPlugin-class.html#addMessage">addMessage</a><tt class="py-op">(</tt><tt class="py-param">self</tt><tt class="py-op">,</tt> <tt class="py-param">message</tt><tt class="py-op">)</tt><tt class="py-op">:</tt> </tt>
+</div><div id="GTKPlugin.addMessage-collapsed" style="display:none;" pad="+++" indent="++++++++"></div><div id="GTKPlugin.addMessage-expanded"><a name="L110"></a><tt class="py-lineno">110</tt>  <tt class="py-line">        <tt class="py-keyword">raise</tt> <tt class="py-name">Exception</tt><tt class="py-op">(</tt><tt class="py-string">"GTKPlugin does not take any messages"</tt><tt class="py-op">)</tt> </tt>
+</div></div><a name="L111"></a><tt class="py-lineno">111</tt>  <tt class="py-line"> </tt><script type="text/javascript">
+<!--
+expandto(location.href);
+// -->
+</script>
+</pre>
+<br />
+<!-- ==================== NAVIGATION BAR ==================== -->
+<table class="navbar" border="0" width="100%" cellpadding="0"
+       bgcolor="#a0c0ff" cellspacing="0">
+  <tr valign="middle">
+
+  <!-- Tree link -->
+      <th>&nbsp;&nbsp;&nbsp;<a
+        href="module-tree.html">Trees</a>&nbsp;&nbsp;&nbsp;</th>
+
+  <!-- Index link -->
+      <th>&nbsp;&nbsp;&nbsp;<a
+        href="identifier-index.html">Indices</a>&nbsp;&nbsp;&nbsp;</th>
+
+  <!-- Help link -->
+      <th>&nbsp;&nbsp;&nbsp;<a
+        href="help.html">Help</a>&nbsp;&nbsp;&nbsp;</th>
+
+      <th class="navbar" width="100%"></th>
+  </tr>
+</table>
+<table border="0" cellpadding="0" cellspacing="0" width="100%%">
+  <tr>
+    <td align="left" class="footer">
+    Generated by Epydoc 3.0.1 on Thu Dec 11 19:54:58 2014
+    </td>
+    <td align="right" class="footer">
+      <a target="mainFrame" href="http://epydoc.sourceforge.net"
+        >http://epydoc.sourceforge.net</a>
+    </td>
+  </tr>
+</table>
+
+<script type="text/javascript">
+  <!--
+  // Private objects are initially displayed (because if
+  // javascript is turned off then we want them to be
+  // visible); but by default, we want to hide them.  So hide
+  // them unless we have a cookie that says to show them.
+  checkCookie();
+  // -->
+</script>
+</body>
+</html>
