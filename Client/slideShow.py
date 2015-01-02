@@ -58,7 +58,7 @@ def runShow(inputQueue, runtimeVars, setPage, writeOut):
     @rtype: None
     """
     # TODO get DT
-    slideRequest = Message(runtimeVars["name"], "Grandma", 'WPHandler', "querySlides", "Maor slidez")
+    slideRequest = Message(runtimeVars["name"], "Grandma", 'WPHandler', "load-slides", "Maor slidez")
     print "slideReuqest " + slideRequest.toJSON()
     writeOut(slideRequest)
 

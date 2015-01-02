@@ -96,15 +96,19 @@ def socketServer(connection, Queues, server_socket, RECV_BUFFER):
                     write_log("No Data Received on Socket %s. Removing." % str(sock))
                     connection.removeSocket(sock)
                 else:
-                    currentMessage = json.loads(data)
-                    if not currentMessage["pluginDest"] == "socketServer":
-                        write_log("Placing message in destination: " + currentMessage["pluginDest"])
-                        Queues[currentMessage["pluginDest"]].put(Message.fromJSON(currentMessage))
-                    else:
-                        write_log("Connecting")
-                        connect(connection=connection, currentMessage=currentMessage, pieMap=connection.pieMap,
-                                sock=sock)
-                        write_log("Finished connection...")
+                    messages = filter(lambda s: s != "",
+                                      data.split('\v'))
+                    for rawMessage in messages:
+                        print rawMessage
+                        currentMessage = json.loads(rawMessage)
+                        if not currentMessage["pluginDest"] == "socketServer":
+                            write_log("Placing message in destination: " + currentMessage["pluginDest"])
+                            Queues[currentMessage["pluginDest"]].put(Message.fromJSON(currentMessage))
+                        else:
+                            write_log("Connecting")
+                            connect(connection=connection, currentMessage=currentMessage, pieMap=connection.pieMap,
+                                    sock=sock)
+                            write_log("Finished connection...")
 
 
 # TODO: Deal with the fact that we have multiple log() definitions across our codebase...

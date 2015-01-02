@@ -36,7 +36,7 @@ def handle(message, outputQueue, runtime):
     @return: None
     @rtype: NoneType
     """
-    if message["action"] == "querySlides":
+    if message["action"] == "load-slides":
         pieName = message["src"]
         jsonToSend = querySlidesFor(pieName, runtime["server"])
         message = Message("WPHandler", pieName, "slideShow", "load-slides", jsonToSend)
