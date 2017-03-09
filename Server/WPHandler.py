@@ -69,6 +69,16 @@ def querySlidesFor(pieName, url):
     @rtype: String
     """
     url = "http://" + url + "/wp-admin/admin-ajax.php?action=dds_api&pie_name=" + pieName
-    jsonString = str(urllib2.urlopen(url).read().decode("utf-8"))
+    #jsonString = str(urllib2.urlopen(url).read().decode("utf-8"))
+    jsonString = '''
+{
+    "actions":[
+{
+             "type":"slide",
+             "location":"http://elk.ccs.neu.edu/app/kibana#/dashboard/7e8374b0-04dc-11e7-a330-7fbd3eb62fc4?_g=(refreshInterval%3A(display%3A'5%20minutes'%2Cpause%3A!f%2Csection%3A2%2Cvalue%3A300000)%2Ctime%3A(from%3Anow-12h%2Cmode%3Aquick%2Cto%3Anow))&embed=true",
+             "duration":600,
+             "ID":1
+        }]}'''
     print "Slides for " + pieName + ": " + jsonString
     return jsonString
+
